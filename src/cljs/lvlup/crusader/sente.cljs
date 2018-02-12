@@ -68,7 +68,7 @@
     (if (:first-open? new-state-map)
       ;(notification-sente "Channel socket successfully established!: %s" new-state-map)
       (notification-sente "Connected to LvLUp :)"              new-state-map)
-      (notification-sente "Change in connection O.O"              new-state-map))))
+      (.log js/console (str ?data)))))
       ;(notification-sente "Channel socket state change: %s"  new-state-map))))
 
 (defmethod -event-msg-handler :chsk/recv
@@ -111,7 +111,7 @@
 
       :dungeon/waiting-pool (dispatch [:set-waiting-pool (read-string data)])
       :dungeon/get-invoices (dispatch [:set-invoices (read-string data)])
-      (notification action-type))))
+      (.log js/console (str action-type " - " data)))))
 
     ;(notification (str ev-msg))))
 
@@ -125,6 +125,16 @@
       (chsk-send! [:dungeon/get-invoices])
       (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
       (notification (str "Hello " ?uid)))))
+
+
+
+(defn chsk-disconnect! []
+  (sente/chsk-disconnect! chsk))
+
+
+
+(defn chsk-reconnect! []
+  (sente/chsk-reconnect! chsk))
 
 (defonce router_ (atom nil))
 (defn  stop-router! [] (when-let [stop-f @router_] (stop-f)))

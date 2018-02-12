@@ -1,6 +1,7 @@
 (ns lvlup.crusader.dungeon
   (:require     [reagent.core :as reagent :refer [atom]]
-                [lvlup.crusader.sente :refer [chsk-send! start-router!]]
+                [lvlup.crusader.sente :refer [chsk-send! start-router! chsk-reconnect! chsk-disconnect!]]
+
                 [reagent.session :as session]
                 [clojure.string  :as str]
                 [jayq.core :refer [$]]
@@ -310,7 +311,7 @@
   [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
        { :data-uk-icon "icon: sign-out"
          :on-click #(do
-                      (.log js/console item)
+                      ;(.log js/console item)
                       (chsk-send!
                                     [:dungeon/change
                                         (assoc item :players (dissoc (:players item) player-number))])
@@ -1133,6 +1134,16 @@
               (fn []
                 [:div.uk-background-cover.uk-offcanvas-content.svg-cursor
                          {:style {:background-image "url('../img/wow.jpg')" :min-height "100vh"}}
+                         [:button#btn5 {:type "button"
+                                        :on-click (fn [ev]
+                                                    (notification "Disconnecting")
+                                                    (chsk-disconnect!))}
+                                   "Disconnect"]
+                         [:button#btn6 {:type "button"
+                                        :on-click (fn [ev]
+                                                     (notification "Reconnecting")
+                                                     (chsk-reconnect!))}
+                                    "Reconnect"]
 
 
 
