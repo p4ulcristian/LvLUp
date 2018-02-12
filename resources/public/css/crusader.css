@@ -1,0 +1,139 @@
+
+.uk-dropdown-nav>li.uk-active>a, .uk-dropdown-nav>li>a:focus, .uk-dropdown-nav>li>a:hover {
+    color: blue;
+}
+
+.picker__list-item--disabled, .picker__list-item--disabled:hover, .picker--focused .picker__list-item--disabled {
+  display: none;
+}
+
+.picker--time .picker__holder {
+
+    width: 230px;
+}
+
+.to-the-waiting-pool{
+  border-radius: 50px;
+
+}
+.to-the-waiting-pool:hover{
+  background: yellow;
+
+}
+
+.svg-cursor {
+  cursor: url(https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-game-controller-b-512.png), auto;
+}
+
+.uk-search-large .uk-search-input{
+  font-size: 1.7em;
+  height: 50px;
+}
+
+#loading {
+		-webkit-animation: rotation 0.5s infinite linear;
+    -webkit-animation:  glowing 0.5s infinite linear;
+    }
+@keyframes glowing {
+    0% { box-shadow: 0 0 -10px #c4a300; }
+    40% { box-shadow: 0 0 20px #c4a300; }
+    60% { box-shadow: 0 0 20px #c4a300; }
+    100% { box-shadow: 0 0 -10px #c4a300; }
+}
+
+.button-glow {
+    animation: glowing 5000ms infinite;
+}
+.nav-hover:hover a{
+  background: #7F0100;
+  color: white !important;
+}
+.system-active a{
+  color:white !important;
+  background: #7F0100;
+  padding: 5px;
+}
+
+.system-free{
+  background: #A2FFA0 !important;
+}
+
+.uk-badge{
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+}
+
+a {
+  color: black !important;
+}
+.searching{
+
+}
+
+
+.uk-notification-message{
+  padding: 0px !important;
+}
+
+body {
+  cursor: default;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+
+}
+
+.uk-subnav-pill div.uk-active{
+  border: solid #7F0100 2px;
+  background: white;
+
+  margin: 3px;
+  border-radius: 5px;
+  color: black;
+}
+.uk-subnav-pill{
+
+
+
+  margin-bottom: 10px !important;
+  border-bottom: 5px solid black;
+
+  color: white;
+}
+
+@-webkit-keyframes rotation {
+		from {
+				-webkit-transform: rotate(0deg);
+		}
+		to {
+				-webkit-transform: rotate(359deg);
+		}
+}
+
+@media only screen and (max-width: 960px){
+  .timetable section {
+    width: 70% !important;
+  }
+  .timetable aside {
+    width: 30% !important;
+  }
+}
+@media only screen and (min-width: 960px){
+  .timetable section {
+    width: 80% !important;
+  }
+  .timetable aside {
+    width: 20% !important;
+  }}
+
+  .systems{
+    height: 100vh;
+    overflow-y: auto;
+  }
