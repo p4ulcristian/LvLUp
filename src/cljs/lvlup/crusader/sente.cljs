@@ -63,12 +63,12 @@
   (notification-sente "Unhandled event: %s" event))
 
 (defmethod -event-msg-handler :chsk/state
-  [{:as ev-msg :keys [?data]}]
+  [{:as ev-msg :keys [?data open?]}]
   (let [[old-state-map new-state-map] (have vector? ?data)]
     (if (:first-open? new-state-map)
       ;(notification-sente "Channel socket successfully established!: %s" new-state-map)
-      (notification-sente "Connected to LvLUp :)"              new-state-map)
-      (.log js/console (str ?data)))))
+      (notification-sente "Connected to LvLUp :)"              new-state-map))
+    (dispatch [:set-connection-state (:open? new-state-map)])))
       ;(notification-sente "Channel socket state change: %s"  new-state-map))))
 
 (defmethod -event-msg-handler :chsk/recv
@@ -124,6 +124,7 @@
       (chsk-send! [:dungeon/get-max-id])
       (chsk-send! [:dungeon/get-invoices])
       (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
+      
       (notification (str "Hello " ?uid)))))
 
 

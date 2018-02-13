@@ -433,6 +433,7 @@
 (defn crusader-navbar []
     (let [members (subscribe [:data "players"])
           search (atom "")
+          connection-state (subscribe [:data "connection-state"])
 
           actual-page (subscribe [:data "actual-page"])]
       (fn []  [:nav.uk-card-secondary
@@ -466,7 +467,15 @@
 
 
                [:div.uk-navbar-right.uk-grid {:data-uk-grid true}
-
+                [:div (if
+                         @connection-state
+                         "Connected."
+                         "Disconnected.")]
+                [:img {:width "80px"
+                       :src (if
+                                @connection-state
+                                "/Icons/connected.svg"
+                                "/Icons/disconnected.svg")}]
                 [:img {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "80px"}]
                 [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove { :style {:max-height "50vh" :overflow "auto" :z-index 1000}}
                  (doall

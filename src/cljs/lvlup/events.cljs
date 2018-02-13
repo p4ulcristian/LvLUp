@@ -17,6 +17,7 @@
         :invoices []
         :max-id 0
         :active-member 0
+        :connection-state false
         :reservation-data {:name ""
                            :date ""
 
@@ -93,6 +94,13 @@
 
 
         (assoc db :search-member the-map)))
+
+(reg-event-db
+  :set-connection-state
+      (fn [db [_ the-map]]
+
+
+        (assoc db :connection-state the-map)))
 
 
 (reg-event-db
