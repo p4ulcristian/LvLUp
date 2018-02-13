@@ -191,6 +191,15 @@
                                                        #(dissoc % :_id)
                                                         (with-collection db "members"))))])))
 
+
+  (defn remove-member [{:keys [event id ?data ring-req ?reply-fn send-fn]}]
+    (let [[key change-map] event]
+
+      (mc/remove db "members" {:id change-map})
+      (debugf (str "dsadsadasdas"))))
+
+
+
   (defn add-member [{:keys [event]}]
     (let [[key change-map] event]
 
@@ -348,6 +357,9 @@
 
 (defmethod -event-msg-handler :dungeon/add-member
         [ev-msg] (add-member ev-msg))
+
+(defmethod -event-msg-handler :dungeon/remove-member
+        [ev-msg] (remove-member ev-msg))
 
 (defmethod -event-msg-handler :dungeon/update-member
         [ev-msg] (update-member ev-msg))

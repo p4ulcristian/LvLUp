@@ -20,6 +20,7 @@
                 [cljs.reader :refer [read-string]]
                 [re-frame.core :refer [subscribe dispatch dispatch-sync]]
                 [lvlup.events]
+                [taoensso.sente  :as sente  :refer (cb-success?)]
                 [lvlup.subs])
   (:require-macros
      [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
@@ -894,7 +895,7 @@
                                  (.scrollspy
                                      js/UIkit
                                      (str "#user-" index)
-                                     (clj->js {:cls (if (even? index) "uk-animation-slide-right" "uk-animation-slide-left")
+                                     (clj->js {:cls nil
                                                :hidden false})))
                                (if
                                  (= 0 (mod (+ 10 index) 20))
@@ -915,13 +916,20 @@
                [:div.uk-card.uk-card-default.uk-padding-remove {:data-uk-grid true :style {:border "solid white 2px"}}
                  [:h1.uk-heading-bullet.uk-width-1-2.uk-padding-remove (str "Id: " ( :id member) "  - Bérlet: " ( :season-pass member))]
 
-                 [:div.uk-width-1-2.uk-padding-remove
+                 [:div.uk-width-1-2.uk-padding-remove.uk-inline
+                    [:div.uk-position-top-right
 
-                                                        [:button.uk-button-danger.uk-button.uk-align-right {:on-click #(do
 
-                                                                                                                          (chsk-send! [:dungeon/update-member
-                                                                                                                                          @modify-atom]))}
-                                                                                                     "Mentés!"]]
+                        [:img {:src "/Icons/save.svg" :height "30" :width "30" :on-click #(do
+                                                                                                            (chsk-send! [:dungeon/update-member
+                                                                                                                                    @modify-atom]))}]
+                        [:img {:src "/Icons/remove.svg"  :height "30" :width "30" :on-click #(do
+                                                                                                           ;(.log js/console (str))
+                                                                                                           (dispatch [:remove-member
+                                                                                                                          (conj [] {:id (:id member)})])
+                                                                                                           (chsk-send! [:dungeon/remove-member
+                                                                                                                           (:id member)]))}]]]
+
 
                  [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
                                                                    {:on-click #(do
