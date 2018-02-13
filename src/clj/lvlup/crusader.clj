@@ -4,6 +4,7 @@
 
   (:require
    [clojure.string     :as str]
+   [clojure.data     :as data]
    [ring.middleware.defaults]
    [compojure.core     :as comp :refer (defroutes GET POST)]
    [compojure.route    :as route]
@@ -99,18 +100,26 @@
       db   (mg/get-db conn "lvlup")]
 
   (defn get-max-id []
-    (let [how-many
+    (let [all-member-id (fn [] (vec
+                                 (map
+                                   :id
+                                   (with-collection db "members"
+                                     (find {})
+                                     (fields [:id])
+                                     ;; it is VERY IMPORTANT to use array maps with sort
+                                     (sort (array-map :id 1))))))
+          smallest-diff
             (fn []
-              (count
-                (map
-                       #(dissoc % :_id)
-                       (with-collection db "members"
-                         (find {})
-                         (fields [:id])
-                         ;; it is VERY IMPORTANT to use array maps with sort
-                         (sort (array-map :id 1))))))]
+              (apply min
+                     (vec
+                       (remove
+                        #(= % nil)
+                        (second
+                          (data/diff
+                           (all-member-id)
+                           (map inc (range (inc (count (all-member-id)))))))))))]
 
-      (send-all [:dungeon/max-id (how-many)])))
+      (send-all [:dungeon/max-id (smallest-diff)])))
 
 
 

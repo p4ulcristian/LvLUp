@@ -994,8 +994,8 @@
             :type "text"
             :value @search}]
         [:button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column
-           {:on-click #(chsk-send! [:dungeon/add-member {:id (inc @max-id) :name @search}])}
-           (str (inc @max-id) ". gamer hozzáadása!")]])))
+           {:on-click #(chsk-send! [:dungeon/add-member {:id @max-id :name @search}])}
+           (str @max-id) ". gamer hozzáadása!"]])))
 
 
 
