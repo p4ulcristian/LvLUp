@@ -436,22 +436,22 @@
 
                 [:div (str (:id (this-player)) " - " (:name (this-player)))]]
 
-           (if (:start data)
-               [:div
-                     [:div.uk-text-center
-                        (str (convert-time (tformat/parse (:start data)))
-                             " - "
-                             (minute-to-money
-                               @time-elapsed
-                               (:type data))
-                             " Ft")]
-                     [:h3.uk-text-center.uk-padding-remove.uk-margin-remove (elapsing-time @time-elapsed)]]
-               [start-button player-number system time-elapsed])
-           [modify-time player-number system "-" time-elapsed]
-           [modify-time player-number system "+" time-elapsed]
-           [cancel player-number system]
-           [pay-with-season-pass player-number system]
-           [pay player-number system]])))
+          (if (:start data)
+              [:div
+                    [:div.uk-text-center
+                       (str (convert-time (tformat/parse (:start data)))
+                            " - "
+                            (minute-to-money
+                              @time-elapsed
+                              (:type data))
+                            " Ft")]
+                    [:h3.uk-text-center.uk-padding-remove.uk-margin-remove (elapsing-time @time-elapsed)]]
+              [start-button player-number system time-elapsed])
+          [modify-time player-number system "-" time-elapsed]
+          [modify-time player-number system "+" time-elapsed]
+          [cancel player-number system]
+          [pay-with-season-pass player-number system]
+          [pay player-number system]])))
 
 
 (defn system [item]
@@ -546,9 +546,11 @@
                                   {:class (if (= (:id data) @active-member)
                                              "uk-card-primary"
                                              "uk-card-default")}
-                              [:div.uk-text-truncate {:style {:font-size "1.4em" :padding "3px"}} (str (:id data) ".-"(:name data))]
-                              [:div.uk-text-truncate (str "Bérlet: " (:season-pass data)) " óra"]
-                              [:div.uk-text-truncate (str "XP: " (:total-hours data))]
+                              [:div.container {:style {:font-size "1.4em" :padding "3px"}}
+                                    [:div
+                                          [:div.name-animated (str (:id data) ".-" (:name data))]]]
+                              [:div (str "Bérlet: " (:season-pass data)) " óra"]
+                              [:div (str "XP: " (:total-hours data))]
                               (if (= (:id data) @active-member)
                                   [:div
                                         [:div (str "Összesen: "(all-items-to-money (:id data)) " Ft")]

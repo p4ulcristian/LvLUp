@@ -21,6 +21,27 @@
 
 }
 
+.container {
+  padding: 15px;
+  overflow: hidden;
+}
+
+
+.name-animated:hover {
+  animation: backAndForth 10s linear infinite;
+
+}
+
+.name-animated {
+
+  white-space: nowrap;
+
+}
+@keyframes backAndForth {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-1000% )); }
+}
+
 .svg-cursor {
   cursor: url(https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-game-controller-b-512.png), auto;
 }
