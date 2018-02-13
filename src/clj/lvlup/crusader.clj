@@ -99,17 +99,19 @@
       db   (mg/get-db conn "lvlup")]
 
   (defn get-max-id []
-    (send-all [:dungeon/max-id
-                (str
-                  (vec
-                      (map
-                         #(dissoc % :_id)
-                         (with-collection db "members"
-                           (find {})
-                           (fields [:id])
-                           ;; it is VERY IMPORTANT to use array maps with sort
-                           (sort (array-map :id -1))
-                           (limit 1)))))]))
+    (let [how-many
+            (fn []
+              (count
+                (map
+                       #(dissoc % :_id)
+                       (with-collection db "members"
+                         (find {})
+                         (fields [:id])
+                         ;; it is VERY IMPORTANT to use array maps with sort
+                         (sort (array-map :id 1))))))]
+
+      (send-all [:dungeon/max-id (how-many)])))
+
 
 
 

@@ -894,7 +894,8 @@
                                  (.scrollspy
                                      js/UIkit
                                      (str "#user-" index)
-                                     (clj->js {:cls nil}))) ;(if (odd? index) "uk-animation-slide-right" "uk-animation-slide-left")})))
+                                     (clj->js {:cls (if (even? index) "uk-animation-slide-right" "uk-animation-slide-left")
+                                               :hidden false})))
                                (if
                                  (= 0 (mod (+ 10 index) 20))
                                  (.on

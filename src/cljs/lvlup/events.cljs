@@ -146,7 +146,7 @@
 (reg-event-db
     :set-max-id
       (fn [db [_ number]]
-        (assoc db :max-id (:id (first (read-string number))))))
+        (assoc db :max-id number)))
 
 (reg-event-db
     :set-actual-page
