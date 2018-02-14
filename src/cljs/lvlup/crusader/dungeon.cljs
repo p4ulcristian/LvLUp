@@ -254,12 +254,6 @@
                    ; (.log js/console (str "wtf" the-val))
                     (doseq [[the-key place] player]
 
-                           (.log js/console (str "wtf" (assoc
-                                                           filtered-system
-                                                           :players (dissoc
-                                                                      (:players
-                                                                        filtered-system)
-                                                                      the-key))))
 
                            (chsk-send!
                                          [:dungeon/change
@@ -699,13 +693,19 @@
         [filtered-system] (filter #(= system-name (:number %)) @systems)]
     (notification (str member-id ". -> " (:name filtered-system)))
     ;(places-on-console (:players filtered-system))
-    (.log js/console (= (:type filtered-system) "pc"))
+
+
     (if (= (:type filtered-system) "pc")
         (chsk-send!
           [:dungeon/change
             (assoc filtered-system
               :players {:one {:type (:type filtered-system)
                               :member-id (js/parseInt member-id)}})])
+        ;  8000
+        ;  (fn [reply] ; Reply is arbitrary Clojure data
+        ;    (if (sente/cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+        ;        (.log js/console reply)
+        ;        (.log js/console reply))])
 
         (if (= 4 (count (:players filtered-system)))
             (notification "Több játékos nem fér el!")

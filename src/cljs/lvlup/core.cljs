@@ -4,7 +4,8 @@
               [secretary.core :as secretary :include-macros true]
               [accountant.core :as accountant]
               [clojure.string :as string]
-              [lvlup.crusader.sente :refer [start-router! chsk-send!]]
+              [lvlup.crusader.sente :refer [start-router! chsk-send! chsk-reconnect! chsk-disconnect!]]
+              ;[lvlup.crusader.sente :refer [chsk-send! start-router! chsk-reconnect! chsk-disconnect!]]
               [lvlup.crusader.reservation :refer [reservation]]
               [lvlup.crusader.crusader :refer [crusader]]
               [lvlup.crusader.dungeon :refer [dungeon checkout registration filter-by-name-and-id sidenav]]
@@ -467,10 +468,10 @@
 
 
                [:div.uk-navbar-right.uk-grid {:data-uk-grid true}
-                [:div (if
+                 (if
                          @connection-state
-                         "Connected."
-                         "Disconnected.")]
+                         [:div {:on-click #(chsk-disconnect!)} "Connected."]
+                         [:div {:on-click #(chsk-reconnect!)} "Disconnected."])
                 [:img {:width "80px"
                        :src (if
                                 @connection-state

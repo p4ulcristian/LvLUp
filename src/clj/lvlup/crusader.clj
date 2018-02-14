@@ -68,10 +68,14 @@
 
 ;Utility functions
 
+
+
 (defn send-all [message]
   (let [uids (:any @connected-uids)]
-    ;(debugf "Broadcasting server>user: %s uids" (count uids))
+
+
        (doseq [uid uids]
+
          (chsk-send! uid
            message))))
 
@@ -128,6 +132,7 @@
       (let [[key change-map] event]
         (mc/update db "dungeon" {:name (:name change-map)}
                                 change-map)
+
         (send-all [:dungeon/change change-map])))
 
 
@@ -394,7 +399,9 @@
         [ev-msg] (get-members-with-id ev-msg))
 
 (defmethod -event-msg-handler :dungeon/change
-        [ev-msg] (dungeon-change ev-msg))
+        [{:as ev-msg :keys [?reply-fn]}]
+        (dungeon-change ev-msg))
+        ;(?reply-fn "mifasz"))
 
 (defmethod -event-msg-handler :example/count-clicks
   [ev-msg] (count-clicks))

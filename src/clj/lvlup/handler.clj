@@ -29,7 +29,10 @@
            [com.mongodb DB WriteConcern]))
 
 
+(defn stop!  []  (crusader/stop-router!)) ;(crusader/stop-web-server!))
+(defn start! [] (crusader/start-router!))
 
+(start!)
 
 
 (def pass "jokaiutca17")
@@ -211,8 +214,7 @@
 
 (defonce    web-server_ (atom nil)) ; (fn stop [])
 
-(defn stop!  []  (crusader/stop-router!)) ;(crusader/stop-web-server!))
-(defn start! [] (crusader/start-router!))
+
 
 
 
@@ -309,12 +311,8 @@
 
 
   (GET "/crusader" req (loading-page-crusader req))
-  (GET "/crusader/:a" req (do
-                            (start!)
-                            (loading-page-crusader req)))
-  (GET "/crusader/:a/:b" req (do
-                               (start!)
-                               (loading-page-crusader req)))
+  (GET "/crusader/:a" req (loading-page-crusader req))
+  (GET "/crusader/:a/:b" req (loading-page-crusader req))
   (POST "/send-email" req (send-email-to-fellow-gamer req))
   (GET  "/chsk" req (crusader/ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req (crusader/ring-ajax-post                req))

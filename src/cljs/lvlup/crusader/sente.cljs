@@ -24,7 +24,7 @@
 
 (defn notification-sente [fmt & args]
   (let [msg (apply encore/format fmt args)]
-    (timbre/debug msg)
+    ;(timbre/debug msg)
     (notification (str msg))))
 
 (let [;; For this example, select a random protocol:
