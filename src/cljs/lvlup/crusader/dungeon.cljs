@@ -43,7 +43,7 @@
 ;  ([el event-type] (events->chan el event-type (chan)))
 ;  ([el event-type c] (events/listen el event-type (fn [e] (put! c e))) c))
 (defn notification [valami]
-  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-secondary' style = 'color: red'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-right"})))
+  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-secondary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left"})))
 
 (defn includes? [word text]
   (clojure.string/includes? text word))
@@ -1145,16 +1145,16 @@
               (fn []
                 [:div.uk-background-cover.uk-offcanvas-content.svg-cursor
                          {:style {:background-image "url('../img/wow.jpg')" :min-height "100vh"}}
-                         [:button#btn5 {:type "button"
-                                        :on-click (fn [ev]
-                                                    (notification "Disconnecting")
-                                                    (chsk-disconnect!))}
-                                   "Disconnect"]
-                         [:button#btn6 {:type "button"
-                                        :on-click (fn [ev]
-                                                     (notification "Reconnecting")
-                                                     (chsk-reconnect!))}
-                                    "Reconnect"]
+                        ; [:button#btn5 {:type "button"
+                          ;              :on-click (fn [ev])}}
+                          ;                          (notification "Disconnecting"))}}
+                          ;                          (chsk-disconnect!))}}
+                          ;         "Disconnect"}}
+                         ; [:button#btn6 {:type "button"
+                          ;              :on-click (fn [ev]
+                          ;                           (notification "Reconnecting")
+                          ;                           (chsk-reconnect!)}}
+                          ;          "Reconnect"}}
 
 
 
