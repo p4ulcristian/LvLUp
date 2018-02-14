@@ -183,7 +183,7 @@
            (include-js "/externaljs/nouislider.min.js")
            (include-js "/externaljs/picker.date.js")
            (include-js "/externaljs/picker.time.js")
-           (include-js "/js/app.1.09.js")])))
+           (include-js "/js/app.1.10.js")])))
 
 (defn loading-page []
   (html5
@@ -208,7 +208,7 @@
 
 
      (include-js "https://use.fontawesome.com/cb88aeea27.js")
-     (include-js "/js/app.1.09.js")]))
+     (include-js "/js/app.1.10.js")]))
 
 
 
