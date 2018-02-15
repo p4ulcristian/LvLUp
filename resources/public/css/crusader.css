@@ -26,6 +26,13 @@
   overflow: hidden;
 }
 
+.invoice-icon{
+  color: rgba(255,255,255,.7)
+}
+
+.invoice-icon:hover{
+  color: white;
+}
 
 .name-animated:hover {
   animation: backAndForth 10s linear infinite;

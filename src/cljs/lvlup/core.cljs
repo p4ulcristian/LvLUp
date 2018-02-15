@@ -492,27 +492,27 @@
 (defn current-page []
   (let [actual-page (subscribe [:data "actual-page"])]
     (fn []
-        [:div
+        [:div {:style {:min-height "100vh"}}
             (case @actual-page
-              "crusader"    [:div
+              "crusader"    [:div {:style {:min-height "100vh" :background-image "url('../img/cash.jpg')" :background-size "cover"}}
                                 [crusader-navbar]
                                 [crusader]]
 
-              "dungeon"    [:div
+              "dungeon"    [:div {:style {:min-height "100vh"}}
                                 [crusader-navbar]
                                 [dungeon]]
-              "checkout"    [:div
+              "checkout"    [:div {:style {:min-height "100vh" :background-image "url('../img/cash.jpg')" :background-size "cover"}}
                                 [crusader-navbar]
                                 [checkout]]
-              "registration"  [:div
+              "registration"  [:div {:style {:min-height "100vh"}}
                                 [crusader-navbar]
                                 [registration]]
-              "table"  [:div
-                                [crusader-navbar]
-                                [reservation]]
-              "system"  [:div
-                                [crusader-navbar]
-                                [reservation]]
+              "table"  [:div {:style {:min-height "100vh"}}
+                             [crusader-navbar]
+                             [reservation]]
+              "system"  [:div {:style {:min-height "100vh"}}
+                              [crusader-navbar]
+                              [reservation]]
               "home-page"   [home-page (:parameters @app-state)]
               [not-found])])))
 

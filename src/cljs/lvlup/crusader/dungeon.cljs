@@ -43,7 +43,7 @@
 ;  ([el event-type] (events->chan el event-type (chan)))
 ;  ([el event-type c] (events/listen el event-type (fn [e] (put! c e))) c))
 (defn notification [valami]
-  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-primary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "top-left" :timeout 500})))
+  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-primary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "top-left" :timeout 700})))
 
 (defn includes? [word text]
   (clojure.string/includes? text word))
@@ -302,11 +302,11 @@
       (str "- "(quot seconds-negated 3600) "h " (mod (quot seconds-negated 60) 60) "m " (mod seconds-negated 60) "s")
       (str (quot seconds 3600) "h " (mod (quot seconds 60) 60) "m " (mod seconds 60) "s"))))
 
-(defn pay [player-number item]
+(defn pay [player-number item name]
   [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
        { :data-uk-icon "icon: sign-out"
          :on-click #(do
-                      ;(.log js/console item)
+                      (notification (str name " kasszához küldve!"))
                       (chsk-send!
                                     [:dungeon/change
                                         (assoc item :players (dissoc (:players item) player-number))])
@@ -330,12 +330,12 @@
 
 
 
-(defn pay-with-season-pass [player-number item]
+(defn pay-with-season-pass [player-number item name]
          [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
               { :data-uk-icon "icon: credit-card"
 
                 :on-click #(do
-                             (.log js/console item)
+                             (notification (str name " fizetett bérlettel!"))
                              (chsk-send!
                                [:dungeon/change
                                    (assoc item :players (dissoc (:players item) player-number))])
@@ -350,7 +350,7 @@
 
 
 
-(defn modify-time [player-number item elojel the-atom]
+(defn modify-time [player-number item elojel the-atom name]
   (fn [player-number item elojel the-atom]
     [:button.uk-button-small.uk-button.uk-button-danger.uk-width-1-2
        { :disabled (if (= nil (:start (get (:players item) player-number))) true false)
@@ -360,8 +360,8 @@
          :on-click #(do
                          (notification (if
                                          (= "+" elojel)
-                                         "+ 5 perc"
-                                         "- 5 perc"))
+                                         (str name " + 5 perc")
+                                         (str name " - 5 perc")))
                          (chsk-send! [:dungeon/change
                                        (assoc-in item
                                                [:players player-number :start]
@@ -377,23 +377,25 @@
                                                  (tcore/plus (tformat/parse (:start (get (:players item) player-number))) (tcore/minutes 5)))
                                                (tcore/plus (tcore/now) (tcore/hours 1)))))}]))
 
-(defn cancel [player-number item]
+(defn cancel [player-number item name]
   (let [];system (subscribe [:data "system-map"])]
     (fn [player-number item]
 
       [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
            {:data-uk-icon "icon: close"
             :on-click #(do
+                         (notification (str name " mégsézve!"))
                          (chsk-send!
                            [:dungeon/change
                                (assoc item :players (dissoc (:players item) player-number))]))}])))
 
 
 
-(defn start-button [player-number item the-atom]
+(defn start-button [player-number item the-atom name]
   [:button.uk-button.uk-button.uk-button-primary.uk-width-1-1.uk-margin-small-top
        {:data-uk-icon "icon: play"
         :on-click #(do
+                     (notification (str name " ideje elindítva!"))
                      (reset! the-atom 0)
                      (chsk-send!
                        [:dungeon/change
@@ -440,12 +442,12 @@
                               (:type data))
                             " Ft")]
                     [:h3.uk-text-center.uk-padding-remove.uk-margin-remove (elapsing-time @time-elapsed)]]
-              [start-button player-number system time-elapsed])
-          [modify-time player-number system "-" time-elapsed]
-          [modify-time player-number system "+" time-elapsed]
-          [cancel player-number system]
-          [pay-with-season-pass player-number system]
-          [pay player-number system]])))
+              [start-button player-number system time-elapsed (:name (this-player))])
+          [modify-time player-number system "-" time-elapsed (:name (this-player))]
+          [modify-time player-number system "+" time-elapsed (:name (this-player))]
+          [cancel player-number system (:name (this-player))]
+          [pay-with-season-pass player-number system (:name (this-player))]
+          [pay player-number system (:name (this-player))]])))
 
 
 (defn system [item]
@@ -454,7 +456,7 @@
       {:reagent-render
               (fn [item]
                  [:li.uk-width-1-5.valami.dropzone.dropzone2
-                    {:id (:number item)}
+                    {:id (:number item) :style {:opacity 0.95}}
                     [:div.uk-card.uk-card-secondary
                        [:div.uk-card-header.uk-padding-small
                         [:div.uk-grid-small.uk-flex-middle {:data-uk-grid true}
@@ -763,7 +765,7 @@
 
 
 
-(defn one-item [item season-pass]
+(defn one-item [item member]
   [:tr
      [:td
                    [:img
@@ -777,29 +779,34 @@
 
                 ;[:div (str "Kezdés: "(convert-time (tformat/parse (:start item))))]
                 ;[:div (str "Finish: "(convert-time (tformat/parse (:finish item))))]
-    [:td {:style {:color "red"}} (str (:price item) " Ft")]
-    [:td (str (convert-time (tformat/parse (:start item))) " - " (convert-time (tformat/parse (:finish item))))]
-    [:td (str  (elapsing-time-no-seconds
-                                        (tcore/in-seconds
-                                          (tcore/interval
-                                            (tformat/parse (:start item))
-                                            (tformat/parse (:finish item))))))]
+    [:td (str (:price item) " Ft")]
+    [:td
+          [:div {:style {:color "white"}} (str (convert-time (tformat/parse (:start item))) " - " (convert-time (tformat/parse (:finish item))))]
+          [:div (str  (elapsing-time-no-seconds
+                                              (tcore/in-seconds
+                                                (tcore/interval
+                                                  (tformat/parse (:start item))
+                                                  (tformat/parse (:finish item))))))]]
 
 
    [:td
-    [:button.uk-button-default.uk-button-danger.uk-padding-remove-horizontal.uk-text-center
-                                              { :data-uk-icon "icon: credit-card"
+    [:span.invoice-icon
+                                              {
+                                                :data-uk-icon "icon: credit-card; ratio: 1.7"
                                                 :on-click #(do
+                                                             (notification (str (:name member) " bérlettel fizetett!"))
                                                              (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}])
                                                              (chsk-send! [:dungeon/season-pass {:quantity (* -1 (count-time-halves
                                                                                                                   (tformat/parse (:start item))
                                                                                                                   (tformat/parse (:finish item))))
-                                                                                                :member-id (:member-id item)}]))}]
+                                                                                                :member-id (:member-id item)}]))}]]
                                                 ;:disabled (if (>= (count-time-halves (:start item) (:finish item)) season-pass) true false)}
-    [:button.uk-button-default.uk-button-success.uk-padding-remove-horizontal.uk-text-center
-                                              { :data-uk-icon "icon: check"
+   [:td
+     [:span.invoice-icon
+                                              {
+                                                :data-uk-icon "icon: check; ratio: 1.7"
                                                 :on-click #(do
-
+                                                             (notification (str (:name member) " készpénzzel fizetett!"))
                                                              (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}]))}]]])
 
 
@@ -810,27 +817,27 @@
         systems (subscribe [:data "system-map"])
         member (fn [] (first (doall (filter #(= (:id %) (first item)) @members))))]
     (fn [item]
-      [:div.uk-width-1-2.uk-animation-fade
+      [:div {:class "uk-width-1-2@s uk-width-1-2@m uk-width-1-3@l"}
         ; (str @members)
-         [:div.uk-card.uk-card-default.uk-padding-remove {:style {:border "2px black solid" :height "200px"}}
-           [:div.uk-padding-small
-                [:div.uk-float-right
-                      [:h3.uk-margin-remove.uk-padding-remove.uk-text-right {:style {:color "red"}}
-                                                              (str
-                                                                (reduce + (map :price (second item)))
-                                                                " Ft ")]
-                      (if (plays? (:id (member)))
-                          [:h5.uk-padding-remove.uk-margin-remove.uk-float-right "NEM JÁTSZIK"]
+         [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark {:style {:border "2px black solid" :opacity 0.95}}
+                [:div.uk-padding-small
+                  [:div.uk-float-right
+                        [:h3.uk-margin-remove.uk-padding-remove.uk-text-right {:style {:color "red"}}
+                                                                (str
+                                                                  (reduce + (map :price (second item)))
+                                                                  " Ft ")]
+                        (if (plays? (:id (member)))
+                            [:h5.uk-padding-remove.uk-margin-remove.uk-float-right "NEM JÁTSZIK"]
 
-                          [:h5.uk-margin-remove.uk-padding-remove.uk-float-right "JÁTSZIK MÉG"])]
+                            [:h5.uk-margin-remove.uk-padding-remove.uk-float-right "JÁTSZIK MÉG"])]
 
-                [:h4.uk-margin-remove.uk-text-truncate
+                  [:h4.uk-margin-remove.uk-text-truncate
 
-                    (str  (:id (member))
-                          ".- "
-                          (:name (member)))]
+                      (str  (:id (member))
+                            ".- "
+                            (:name (member)))]
 
-                [:h5.uk-margin-remove (str "Bérlet órák: " (:season-pass (member)))]
+                  [:h5.uk-margin-remove (str "Bérlet órák: " (:season-pass (member)))]]
 
 
 
@@ -846,12 +853,12 @@
 
 
                 [:div.uk-divider-icon.uk-margin-small.uk-margin-remove-top]
-                [:table.uk-width-1-1
-                   [:tbody
-
-                              (doall (map-indexed
-                                         #(-> ^{:key %2}[one-item %2 (:season-pass (member))])
-                                         (second item)))]]]]])))
+                [:div.uk-overflow-auto.uk-width-1-1 {:style {:height "180px"}}
+                   [:table.uk-width-1-1.uk-table-striped.uk-table.uk-table-middle
+                      [:tbody
+                         (doall (map-indexed
+                                  #(-> ^{:key %2}[one-item %2 (member)])
+                                  (second item)))]]]]])))
 
 
 
@@ -873,11 +880,11 @@
           [:div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1
               ;  (str @members)
             ;  [:button {:on-click #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])} "hello"]
-              ;:{:style {:background-image "url('../img/cash.jpg')" :overflow "auto" :min-height "100vh"}}
+
               (if (= @invoices [])
                   [:div
-                        [:h1.uk-heading-hero.uk-text-center "Senkinek sincs fizetetlen számlája!"]]
-                  [:div.uk-grid.uk-margin-top {:data-uk-grid true}
+                        [:h1.uk-heading-hero.uk-text-center {:style {:color "white"}} "Senkinek sincs fizetetlen számlája!"]]
+                  [:div.uk-grid.uk-grid-small.uk-margin-top {:data-uk-grid true}
 
                        (map-indexed
                          #(-> ^{:key %2}[invoice %2])
@@ -942,14 +949,14 @@
 
                                                                                  (chsk-send! [:dungeon/update-member
                                                                                                      (assoc @modify-atom :season-pass (- (:season-pass member) 0.5))])
-                                                                                 (notification (str (:name @modify-atom) " - bérlete 1-gyel csökkent")))}
+                                                                                 (notification (str (:name @modify-atom) " - bérlete 0.5-gyel csökkent")))}
                                                                "- 0.5"]
                  [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
                                                                  {:on-click #(do
 
                                                                                  (chsk-send! [:dungeon/update-member
                                                                                                      (assoc @modify-atom :season-pass (+ 0.5 (:season-pass member)))])
-                                                                                 (notification (str (:name @modify-atom) " - bérlete 1-gyel nőtt")))}
+                                                                                 (notification (str (:name @modify-atom) " - bérlete 0.5-gyel nőtt")))}
                                                   "+ 0.5"]
                  [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
                                                                  {:on-click #(do
