@@ -494,23 +494,25 @@
     (fn []
         [:div {:style {:min-height "100vh"}}
             (case @actual-page
-              "crusader"    [:div {:style {:min-height "100vh" :background-image "url('../img/cash.jpg')" :background-size "cover"}}
+              "crusader"    [:div.uk-inline
+                                {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
+                                [:img.uk-position-center { :src "/img/lvlup-logo-transparent.png"}]
                                 [crusader-navbar]
                                 [crusader]]
 
-              "dungeon"    [:div {:style {:min-height "100vh"}}
+              "dungeon"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
                                 [crusader-navbar]
                                 [dungeon]]
-              "checkout"    [:div {:style {:min-height "100vh" :background-image "url('../img/cash.jpg')" :background-size "cover"}}
+              "checkout"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
                                 [crusader-navbar]
                                 [checkout]]
-              "registration"  [:div {:style {:min-height "100vh"}}
+              "registration"  [:div ;{:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
                                 [crusader-navbar]
                                 [registration]]
-              "table"  [:div {:style {:min-height "100vh"}}
+              "table"  [:div ;{:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
                              [crusader-navbar]
                              [reservation]]
-              "system"  [:div {:style {:min-height "100vh"}}
+              "system"  [:div ;{:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
                               [crusader-navbar]
                               [reservation]]
               "home-page"   [home-page (:parameters @app-state)]

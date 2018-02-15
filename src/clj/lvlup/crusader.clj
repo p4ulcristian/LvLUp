@@ -140,28 +140,32 @@
 
   (defn modify-invoice [{:keys [event]}]
       (let [[key change-map] event
-            oid (ObjectId. (:id change-map))]
-        (mc/update db "invoices" {:_id oid}
-                                 {$set {:payed true}})
+            oid (ObjectId. (:id change-map))
+            the-invoice (fn [] (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))]
+        (send-all [:dungeon/bug-check (str oid " halika "(mc/find-one-as-map db "unpayedinvoices" {:_id oid}))])
+
+        (mc/insert db "invoices" (the-invoice))
+        (mc/remove-by-id db "unpayedinvoices" oid)
+
         (send-all [:dungeon/get-invoices
                     (str
                       (vec
                           (map
                              #(assoc % :_id (str (:_id %)))
-                              (with-collection db "invoices"
-                                (find {:payed false})))))])))
+                              (with-collection db "unpayedinvoices"))))])))
+                                ;(find {:payed false})))))])))
 
   (defn add-invoice [{:keys [event]}]
       (let [[key change-map] event]
-        (mc/insert db "invoices" change-map)
+        (mc/insert db "unpayedinvoices" change-map)
       ;  (mc/update db "members" {:id (:id change-map)} {$set {:total-hours}})
         (send-all [:dungeon/get-invoices
                     (str
                       (vec
                           (map
                              #(assoc % :_id (str (:_id %)))
-                              (with-collection db "invoices"
-                                (find {:payed false})))))])))
+                              (with-collection db "unpayedinvoices"))))])))
+                                ;(find {:payed false})))))])))
 
   (defn season-pass [{:keys [event]}]
       (let [[key change-map] event]
@@ -182,8 +186,8 @@
                       (vec
                           (map
                               #(assoc % :_id (str (:_id %)))
-                              (with-collection db "invoices"
-                                (find {:payed false})))))]))
+                              (with-collection db "unpayedinvoices"))))]))
+                                ;(find {:payed false})))))]))
 
   (defn update-member [{:keys [event]}]
     (let [[key change-map] event]

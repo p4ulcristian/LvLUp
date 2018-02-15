@@ -160,7 +160,7 @@
                                     :type (:type place)
                                     :name (:name place)
                                     :member-id player-id
-                                    :payed false
+                                    ;:payed false
                                     :start (convert-to-clojurescript-time (:start place))
                                     :finish (convert-to-clojurescript-time (str (tcore/plus (tcore/now) (tcore/hours 1))))
                                     :price (minute-to-money (tcore/in-seconds (tcore/interval
@@ -316,7 +316,7 @@
                                       :type (:type item)
                                       :name (:name item)
                                       :member-id (:member-id (get (:players item) player-number))
-                                      :payed false
+                                      ;:payed false
                                       :start (convert-to-clojurescript-time (:start (get (:players item) player-number)))
                                       :finish (convert-to-clojurescript-time (str (tcore/plus (tcore/now) (tcore/hours 1))))
                                       :price (minute-to-money (tcore/in-seconds (tcore/interval
@@ -456,7 +456,8 @@
       {:reagent-render
               (fn [item]
                  [:li.uk-width-1-5.valami.dropzone.dropzone2
-                    {:id (:number item) :style {:opacity 0.95}}
+                    {:id (:number item) :style {:opacity 0.91}}
+
                     [:div.uk-card.uk-card-secondary
                        [:div.uk-card-header.uk-padding-small
                         [:div.uk-grid-small.uk-flex-middle {:data-uk-grid true}
@@ -827,7 +828,7 @@
     (fn [item]
       [:div {:class "uk-width-1-2@s uk-width-1-2@m uk-width-1-3@l"}
         ; (str @members)
-         [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark {:style {:border "2px black solid" :opacity 0.95}}
+         [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark {:style {:border "2px black solid" :opacity 0.87}}
                 [:div.uk-padding-small
                   [:div.uk-float-right
                         [:h3.uk-margin-remove.uk-padding-remove.uk-text-right {:style {:color "red"}}
@@ -1157,7 +1158,7 @@
              :reagent-render
               (fn []
                 [:div.uk-background-cover.uk-offcanvas-content.svg-cursor
-                         {:style {:background-image "url('../img/wow.jpg')" :min-height "100vh"}}
+
                         ; [:button#btn5 {:type "button"
                           ;              :on-click (fn [ev])}}
                           ;                          (notification "Disconnecting"))}}

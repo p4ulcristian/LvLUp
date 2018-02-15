@@ -2,7 +2,9 @@
 
 (defn crusader []
   [:div {:data-uk-grid true}
-        [:img.uk-width-1-1 {:src "/img/fallout.png"}]])
+        [:div {:class "uk-width-1-1@s uk-width-1-2@m uk-align-center"}]])
+         
+        ;[:img.uk-width-1-1 {:src "/img/fallout.png"}]])
         ;[:h1.uk-text-center {:style {:border-bottom "solid 2px red"}} "Under construction"]])
 
 (comment
