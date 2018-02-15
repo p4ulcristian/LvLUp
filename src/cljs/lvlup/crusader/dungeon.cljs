@@ -883,7 +883,8 @@
 
 
    (reagent/create-class
-     {:component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+     { :component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+       :component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
       :reagent-render
         (fn []
           [:div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1
