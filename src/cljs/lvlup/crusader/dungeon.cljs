@@ -697,27 +697,35 @@
     ;(places-on-console (:players filtered-system))
 
 
-    (if (= (:type filtered-system) "pc")
-        (chsk-send!
-          [:dungeon/change
-            (assoc filtered-system
-              :players {:one {:type (:type filtered-system)
-                              :member-id (js/parseInt member-id)}})])
+    (case (:type filtered-system)
+      "pc" (if (and
+                  (= (:type filtered-system) "pc")
+                  (= 0 (count (:players filtered-system))))
+               (chsk-send!
+                 [:dungeon/change
+                   (assoc filtered-system
+                     :players {:one {:type (:type filtered-system)
+                                     :member-id (js/parseInt member-id)}})])
+               (notification "Több játékos nem fér el!"))
+      (if (= 4 (count (:players filtered-system)))
+          (notification "Több játékos nem fér el!")
+          (chsk-send!
+              [:dungeon/change
+                (assoc filtered-system :players
+                  (assoc (:players filtered-system)
+                         (places-on-console (:players filtered-system))
+                         {:type (:type filtered-system)
+                          :member-id (js/parseInt member-id)}))])))))
+
+
+
         ;  8000
         ;  (fn [reply] ; Reply is arbitrary Clojure data
         ;    (if (sente/cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
         ;        (.log js/console reply)
         ;        (.log js/console reply))])
 
-        (if (= 4 (count (:players filtered-system)))
-            (notification "Több játékos nem fér el!")
-            (chsk-send!
-                [:dungeon/change
-                  (assoc filtered-system :players
-                    (assoc (:players filtered-system)
-                           (places-on-console (:players filtered-system))
-                           {:type (:type filtered-system)
-                            :member-id (js/parseInt member-id)}))])))))
+
 
 
 
