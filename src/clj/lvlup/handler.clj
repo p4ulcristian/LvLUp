@@ -178,6 +178,7 @@
            (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit-icons.min.js")
            (include-js "https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.8/interact.min.js")
            (include-js "/externaljs/timetable.min.js")
+           (include-js "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js")
            (include-js "/externaljs/dragging.js")
            (include-js "/externaljs/picker.js")
            (include-js "/externaljs/nouislider.min.js")

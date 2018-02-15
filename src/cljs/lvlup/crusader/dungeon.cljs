@@ -43,7 +43,7 @@
 ;  ([el event-type] (events->chan el event-type (chan)))
 ;  ([el event-type c] (events/listen el event-type (fn [e] (put! c e))) c))
 (defn notification [valami]
-  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-secondary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left"})))
+  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-primary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "top-left" :timeout 500})))
 
 (defn includes? [word text]
   (clojure.string/includes? text word))
@@ -764,12 +764,8 @@
 
 
 (defn one-item [item season-pass]
-  [:div.uk-width-1-2.uk-animation-slide-bottom-medium
-     [:div.uk-card-secondary
-       [:div.uk-width-1-1.uk-padding-small
-
-          [:div.uk-grid {:data-uk-grid true}
-                [:div.uk-width-2-5
+  [:tr
+     [:td
                    [:img
                     { :height 30
                       :width 30
@@ -781,35 +777,30 @@
 
                 ;[:div (str "Kezdés: "(convert-time (tformat/parse (:start item))))]
                 ;[:div (str "Finish: "(convert-time (tformat/parse (:finish item))))]
-                [:h3.uk-padding-remove.uk-margin-remove.uk-text-right.uk-width-3-5 {:style {:color "red"}} (str (:price item) " Ft")]]
-          [:hr.uk-margin-small]
-          [:div
-           [:div.uk-text-center (str (convert-time (tformat/parse (:start item))) " - " (convert-time (tformat/parse (:finish item))))]
-           [:div.uk-text-center (str  (elapsing-time-no-seconds
+    [:td {:style {:color "red"}} (str (:price item) " Ft")]
+    [:td (str (convert-time (tformat/parse (:start item))) " - " (convert-time (tformat/parse (:finish item))))]
+    [:td (str  (elapsing-time-no-seconds
                                         (tcore/in-seconds
                                           (tcore/interval
                                             (tformat/parse (:start item))
-                                            (tformat/parse (:finish item))))))]]]
+                                            (tformat/parse (:finish item))))))]
 
 
-       [:div.uk-width-1-1.uk-child-width-1-2.uk-margin-remove.uk-padding-remove {:data-uk-grid true :style {:cursor "pointer"}}
-
-                [:button.uk-button-small.uk-button-danger.uk-padding-remove-horizontal.uk-text-center
+   [:td
+    [:button.uk-button-default.uk-button-danger.uk-padding-remove-horizontal.uk-text-center
                                               { :data-uk-icon "icon: credit-card"
                                                 :on-click #(do
-
                                                              (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}])
                                                              (chsk-send! [:dungeon/season-pass {:quantity (* -1 (count-time-halves
                                                                                                                   (tformat/parse (:start item))
                                                                                                                   (tformat/parse (:finish item))))
                                                                                                 :member-id (:member-id item)}]))}]
                                                 ;:disabled (if (>= (count-time-halves (:start item) (:finish item)) season-pass) true false)}
-
-                [:button.uk-button-small.uk-button-success.uk-padding-remove-horizontal.uk-text-center
+    [:button.uk-button-default.uk-button-success.uk-padding-remove-horizontal.uk-text-center
                                               { :data-uk-icon "icon: check"
                                                 :on-click #(do
 
-                                                             (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}]))}]]]])
+                                                             (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}]))}]]])
 
 
 
@@ -819,22 +810,30 @@
         systems (subscribe [:data "system-map"])
         member (fn [] (first (doall (filter #(= (:id %) (first item)) @members))))]
     (fn [item]
-      [:div.uk-width-1-3.uk-animation-fade
+      [:div.uk-width-1-2.uk-animation-fade
         ; (str @members)
-         [:div.uk-card.uk-card-default.uk-padding-small {:style {:border "2px black solid"}}
-           [:h4.uk-margin-remove.uk-text-truncate
+         [:div.uk-card.uk-card-default.uk-padding-remove {:style {:border "2px black solid" :height "200px"}}
+           [:div.uk-padding-small
+                [:div.uk-float-right
+                      [:h3.uk-margin-remove.uk-padding-remove.uk-text-right {:style {:color "red"}}
+                                                              (str
+                                                                (reduce + (map :price (second item)))
+                                                                " Ft ")]
+                      (if (plays? (:id (member)))
+                          [:h5.uk-padding-remove.uk-margin-remove.uk-float-right "NEM JÁTSZIK"]
 
-               (str  (:id (member))
-                     ".- "
-                     (:name (member)))]
-           [:h5.uk-margin-remove (str "Bérlet órák: " (:season-pass (member)))]
+                          [:h5.uk-margin-remove.uk-padding-remove.uk-float-right "JÁTSZIK MÉG"])]
+
+                [:h4.uk-margin-remove.uk-text-truncate
+
+                    (str  (:id (member))
+                          ".- "
+                          (:name (member)))]
+
+                [:h5.uk-margin-remove (str "Bérlet órák: " (:season-pass (member)))]
 
 
 
-           (if (plays? (:id (member)))
-               [:h5.uk-padding-remove.uk-margin-remove "NEM JÁTSZIK"]
-
-               [:div [:h5.uk-margin-remove.uk-padding-remove "JÁTSZIK MÉG"]])
 
                      ;[:button.uk-button-small.uk-button-danger.uk-width-1-2.uk-padding-remove
                     ;                    {;:style {:border "1px red solid"}
@@ -844,17 +843,15 @@
                       ;                  {:data-uk-icon "icon: sign-out"
                       ;                   :style {:border "1px red solid"}
                       ;                   :on-click #(all-items-to-invoices (:id (member)))]])
-           [:h3.uk-margin-remove.uk-padding-remove.uk-text-right {:style {:color "red"}}
-               (str
-                 "Összesen: "
-                 (reduce + (map :price (second item)))
-                 " Ft ")]
 
-           [:div.uk-divider-icon.uk-margin-small.uk-margin-remove-top]
-           [:div.uk-grid-small {:data-uk-grid true}
-                         (doall (map-indexed
-                                    #(-> ^{:key %2}[one-item %2 (:season-pass (member))])
-                                    (second item)))]]])))
+
+                [:div.uk-divider-icon.uk-margin-small.uk-margin-remove-top]
+                [:table.uk-width-1-1
+                   [:tbody
+
+                              (doall (map-indexed
+                                         #(-> ^{:key %2}[one-item %2 (:season-pass (member))])
+                                         (second item)))]]]]])))
 
 
 
@@ -1004,7 +1001,7 @@
             :type "text"
             :value @search}]
         [:button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column
-           {:on-click #(do (dispatch [:set-max-id (inc @max-id)]) 
+           {:on-click #(do (dispatch [:set-max-id (inc @max-id)])
                            (chsk-send! [:dungeon/add-member {:id @max-id :name @search}]))}
            (str @max-id) ". gamer hozzáadása!"]])))
 
