@@ -424,7 +424,7 @@
         (fn [system [player-number data]]
 
          [:div.uk-padding-remove.uk-animation-fade {
-                                                    :style {:border "1px solid red"}
+                                                    :style {:border-top "1px solid white"}
                                                     :class (if (= (:member-id data) @active-member)
                                                                "uk-card-primary"
                                                                "uk-card-secondary")}
@@ -458,7 +458,7 @@
                  [:li.uk-width-1-5.valami.dropzone.dropzone2
                     {:id (:number item) :style {:opacity 0.91}}
 
-                    [:div.uk-card.uk-card-secondary
+                    [:div.uk-card.uk-card-secondary {:style {:border-radius "5px"}}
                        [:div.uk-card-header.uk-padding-small
                         [:div.uk-grid-small.uk-flex-middle {:data-uk-grid true}
                          [:div.uk-width-auto
@@ -521,9 +521,10 @@
 
               (fn [data index which-tab]
                 [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small.uk-animation-fade
-                       {:style {:cursor "pointer"}}
+                       {:style {:cursor "pointer" }}
                      [:div.valami.uk-padding-remove.draggable.uk-card.uk-card-default.uk-margin-remove.uk-grid-collapse.uk-margin
                           {:data-uk-grid true
+                           :style {:border-radius "5px"}
                            :on-click #(dispatch [:set-active-member (:id data)])
                            :id (:id data)}
                         [:div.uk-width-1-3
@@ -828,7 +829,7 @@
     (fn [item]
       [:div {:class "uk-width-1-2@s uk-width-1-2@m uk-width-1-3@l"}
         ; (str @members)
-         [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark {:style {:border "2px black solid" :opacity 0.87}}
+         [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark {:style { :opacity 0.87 :border-radius "10px"}}
                 [:div.uk-padding-small
                   [:div.uk-float-right
                         [:h3.uk-margin-remove.uk-padding-remove.uk-text-right {:style {:color "red"}}
@@ -893,7 +894,13 @@
 
               (if (= @invoices [])
                   [:div
-                        [:h1.uk-heading-hero.uk-text-center {:style {:color "white"}} "Senkinek sincs fizetetlen számlája!"]]
+
+                        [:div.uk-inline
+                          [:img {:src "/img/pipboy-gangster.png"}]
+                          [:h1.uk-overlay.uk-overlay-primary.uk-position-top-left {:style {:border-radius "20px"}}
+                                                                                  "Senkinek sincs fizetetlen számlája! :)"]]]
+
+
                   [:div.uk-grid.uk-grid-small.uk-margin-top {:data-uk-grid true}
 
                        (map-indexed
