@@ -244,7 +244,8 @@
                                               (map
                                                  #(dissoc % :_id)
                                                   (with-collection db "members"
-                                                    (find {$or (vec (map (fn [a] (assoc {} :id a)) change-map))})))))])))
+                                                    (find {$or
+                                                            (vec (map (fn [a] (assoc {} :id a)) change-map))})))))])))
 
 
   (defn get-dungeon []
