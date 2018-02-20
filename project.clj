@@ -75,7 +75,7 @@
               :source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
              :compiler
              {
-               :output-to "target/cljsbuild/public/js/app.1.20.js"
+              :output-to "target/cljsbuild/public/js/app.1.20.js"
               :output-dir "target/uberjar"
               :optimizations :simple
               :externs ["externs/jquery.js"]

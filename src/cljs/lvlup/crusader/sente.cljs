@@ -76,6 +76,7 @@
   (let [actual-page (subscribe [:data "actual-page"])
         [action-type data] ?data]
     ;(.log js/console (str action-type ?data))
+    ;(dispatch [:set-loading false])
     (case action-type
       :dungeon/bug-check (.log js/console (str data))
       :dungeon/change (dispatch [:set-system data])

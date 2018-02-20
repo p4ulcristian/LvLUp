@@ -14,7 +14,7 @@
    [monger.query :refer :all]
    [monger.operators :refer :all]
    [hiccup.core        :as hiccup]
-   [clojure.core.async :as async  :refer (<! <!! >! >!! put! chan go go-loop)]
+   [clojure.core.async :as async  :refer (<! <!! >! >!! put! chan go go-loop timeout)]
    [taoensso.encore    :as encore :refer (have have?)]
    [taoensso.timbre    :as timbre :refer (tracef debugf infof warnf errorf)]
    [taoensso.sente     :as sente]
@@ -244,8 +244,10 @@
                                               (map
                                                  #(dissoc % :_id)
                                                   (with-collection db "members"
-                                                    (find {$or
-                                                            (vec (map (fn [a] (assoc {} :id a)) change-map))})))))])))
+                                                    (find (if (not= [] change-map)
+                                                              {$or
+                                                                (vec (map (fn [a] (assoc {} :id a)) change-map))}
+                                                              {}))))))])))
 
 
   (defn get-dungeon []
@@ -363,7 +365,11 @@
 
 
 (defmethod -event-msg-handler :dungeon/add-invoice
-        [ev-msg] (add-invoice ev-msg))
+        [{:as ev-msg :keys [?reply-fn]}]
+        (add-invoice ev-msg)
+        (?reply-fn true))
+
+
 
 (defmethod -event-msg-handler :dungeon/add-member
         [ev-msg] (add-member ev-msg))

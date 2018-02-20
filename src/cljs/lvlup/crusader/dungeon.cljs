@@ -302,14 +302,17 @@
       (str "- "(quot seconds-negated 3600) "h " (mod (quot seconds-negated 60) 60) "m " (mod seconds-negated 60) "s")
       (str (quot seconds 3600) "h " (mod (quot seconds 60) 60) "m " (mod seconds 60) "s"))))
 
-(defn pay [player-number item name]
+(defn pay [player-number item name loading]
   [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
-       { :data-uk-icon "icon: sign-out"
+       { :disabled loading
+         :data-uk-icon "icon: sign-out"
          :on-click #(do
                       (notification (str name " kasszához küldve!"))
+                      (dispatch [:set-loading true])
                       (chsk-send!
-                                    [:dungeon/change
-                                        (assoc item :players (dissoc (:players item) player-number))])
+                        [:dungeon/change
+                            (assoc item :players (dissoc (:players item) player-number))])
+
                       (chsk-send!
                            [:dungeon/add-invoice
                               (assoc  {}
@@ -322,7 +325,12 @@
                                       :price (minute-to-money (tcore/in-seconds (tcore/interval
                                                                                   (tformat/parse (:start (get (:players item) player-number)))
                                                                                   (tcore/plus (tcore/now) (tcore/hours 1))))
-                                                              (:type item)))]))}])
+                                                              (:type item)))]
+                           8000 ; Timeout
+
+                          (fn [reply] ; Reply is arbitrary Clojure data
+                            (if (sente/cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                                (dispatch [:set-loading false])))))}])
 
 
 
@@ -330,10 +338,11 @@
 
 
 
-(defn pay-with-season-pass [player-number item name]
+
+(defn pay-with-season-pass [player-number item name loading]
          [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
               { :data-uk-icon "icon: credit-card"
-
+                :disabled loading
                 :on-click #(do
                              (notification (str name " fizetett bérlettel!"))
                              (chsk-send!
@@ -410,6 +419,7 @@
 (defn player-playing [system [player-number data]]
       (let [
             active-member (subscribe [:data "active-member"])
+            loading (subscribe [:data "loading"])
             time-elapsed (atom (if (:start data)
                                    (calculate-time-interval
                                      (tformat/parse (:start data))
@@ -446,8 +456,8 @@
           [modify-time player-number system "-" time-elapsed (:name (this-player))]
           [modify-time player-number system "+" time-elapsed (:name (this-player))]
           [cancel player-number system (:name (this-player))]
-          [pay-with-season-pass player-number system (:name (this-player))]
-          [pay player-number system (:name (this-player))]])))
+          [pay-with-season-pass player-number system (:name (this-player)) @loading]
+          [pay player-number system (:name (this-player)) @loading]])))
 
 
 (defn system [item]
@@ -521,7 +531,7 @@
 
               (fn [data index which-tab]
                 [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small.uk-animation-fade
-                       {:style {:cursor "pointer" }}
+                       {:style {:cursor "pointer"}}
                      [:div.valami.uk-padding-remove.draggable.uk-card.uk-card-default.uk-margin-remove.uk-grid-collapse.uk-margin
                           {:data-uk-grid true
                            :style {:border-radius "5px"}
@@ -673,7 +683,7 @@
           :reagent-render
                             (fn []
                               [:div.uk-width-1-1
-
+                                ;[:div {:data-uk-spinner true}]
                                 [:div.uk-grid-match.uk-grid-small.uk-animation-slide-right { :data-uk-grid true} ;:style {:height "90vh" :overflow "auto"}}
                                     (map-indexed
                                               #(-> ^{:key (:name %2)} [system %2])

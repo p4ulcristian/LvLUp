@@ -12,6 +12,11 @@
     width: 230px;
 }
 
+.uk-button-primary:disabled{
+  background: black !important;
+  color: white !important;
+}
+
 .to-the-waiting-pool{
   border-radius: 50px;
 

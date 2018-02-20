@@ -150,7 +150,7 @@
       [:title "LvLUP Crusader"]
       [:link {:rel "icon" :href "/favicon.png"}]
 
-      (include-css "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/css/uikit.min.css")
+      (include-css "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css")
 
       (include-css "/css/timetablejs.css")
       (include-css "/css/classic.css")
@@ -174,8 +174,8 @@
            mount-target
 
            (include-js "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
-           (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit.min.js")
-           (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit-icons.min.js")
+           (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js")
+           (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js")
            (include-js "https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.8/interact.min.js")
            (include-js "/externaljs/timetable.min.js")
            (include-js "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js")

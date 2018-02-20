@@ -32,6 +32,7 @@
         :reservations nil
         :time (js/Date.)
         :time-table nil
+        :loading false
         :counter 0}))
 
 
@@ -122,7 +123,10 @@
              :error-handler #(js/alert (str "Valamit jól elrontottál :( :" %))})
       db))
 
-
+(reg-event-db
+    :set-loading
+      (fn [db [_ the-map]]
+        (assoc db :loading the-map)))
 
 (reg-event-db
     :set-active-member
