@@ -11,6 +11,10 @@
 
     width: 230px;
 }
+@media (min-width: 1200px)
+*+.uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
+    margin-top: 0px;
+}
 
 .uk-button-primary:disabled{
   background: black !important;

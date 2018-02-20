@@ -507,7 +507,7 @@
               "checkout"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
                                 [crusader-navbar]
                                 [checkout]]
-              "registration"  [:div ;{:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
+              "registration"  [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "contain" :background-repeat "repeat-y"  :min-height "100vh" :min-width "100vw"}}
                                 [crusader-navbar]
                                 [registration]]
               "table"  [:div ;{:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}

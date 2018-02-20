@@ -946,22 +946,29 @@
         (fn [member index]
             [:div.uk-width-1-2 {:id (str "user-" index)}
 
-               [:div.uk-card.uk-card-default.uk-padding-remove {:data-uk-grid true :style {:border "solid white 2px"}}
-                 [:h1.uk-heading-bullet.uk-width-1-2.uk-padding-remove (str "Id: " ( :id member) "  - Bérlet: " ( :season-pass member))]
+               [:div.uk-card.uk-card-secondary {:style {:opacity 0.85}}
 
-                 [:div.uk-width-1-2.uk-padding-remove.uk-inline
+
+                 [:div.uk-width-1-1.uk-padding-remove.uk-inline
+                    [:h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove {:style {:color "white !important"}}
+                      (str "Id: " ( :id member) "  - Bérlet: " ( :season-pass member))]
                     [:div.uk-position-top-right
 
 
-                        [:img {:src "/Icons/save.svg" :height "30" :width "30" :on-click #(do
-                                                                                                            (chsk-send! [:dungeon/update-member
-                                                                                                                                    @modify-atom]))}]
-                        [:img {:src "/Icons/remove.svg"  :height "30" :width "30" :on-click #(do
-                                                                                                           ;(.log js/console (str))
-                                                                                                           (dispatch [:remove-member
-                                                                                                                          (conj [] {:id (:id member)})])
-                                                                                                           (chsk-send! [:dungeon/remove-member
-                                                                                                                           (:id member)]))}]]]
+                        [:span {  :style {:cursor "pointer"}
+                                  :data-uk-icon "icon: check; ratio: 2.5"
+                                  :on-click #(do                   (notification "Név frissítve!")
+                                                                   (chsk-send! [:dungeon/update-member
+                                                                                           @modify-atom]))}]
+
+                        [:span {  :style {:cursor "pointer"}
+                                  :data-uk-icon "icon: close; ratio: 2.5"
+                                  :on-click #(do
+                                                                    (notification "Felhasználó törölve!")
+                                                                    (dispatch [:remove-member
+                                                                                 (conj [] {:id (:id member)})])
+                                                                    (chsk-send! [:dungeon/remove-member
+                                                                                    (:id member)]))}]]]
 
 
                  [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
@@ -1023,7 +1030,7 @@
   (let [max-id (subscribe [:data "max-id"])
         search (subscribe [:data "search-member"])]
     (fn [members]
-     [:div.uk-width-1-1.uk-sticky.uk-card.uk-margin-remove.uk-grid.uk-grid-stack
+     [:div.uk-width-1-1.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove
         {:data-uk-grid "true", :data-uk-sticky "true"}
         ;[:div.uk-width-1-1 (str @members)]
         [:input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column
@@ -1053,19 +1060,19 @@
 
        :reagent-render
           (fn []
-            [:div.uk-width-1-1
+            [:div.uk-container
 
                ;[:div (str (filter-by-name-and-id  @members search true))]
 
                [registration-input members]
 
-               [:div.uk-card.uk-grid.uk-margin-remove
+               [:div.uk-grid.uk-margin-remove.uk-padding-small
 
                                {:id "member"
                                 :class "uk-child-width-1-3@m member"
                                 ;:data-uk-scrollspy
                                 ;"cls: uk-animation-slide-left; target: > div > .uk-card; delay: 0; repeat: true"
-                                :data-uk-grid "uk-grid"}
+                                :data-uk-grid true}
 
                              ;[:h3 (str "hello" @members)]
                              ;(str (sort-by :id #(> %2 %1) (filter-by-name-and-id  @members search true)))
