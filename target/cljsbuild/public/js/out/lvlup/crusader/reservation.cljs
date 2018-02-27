@@ -212,7 +212,7 @@
    (.getDate @date)
    "."))
 
-(defn reservation []
+(defn reservation-2 []
   (let [reservation (atom {:date nil})
         date (subscribe [:data "time"])
         reservations (subscribe [:data "reservations"])
@@ -266,3 +266,70 @@
                      :margin-top "-150px"}
              :src "/img/lvlup-logo-transparent.png"}])
          [:div.timetable]])})))
+
+(defn quarters [hour quarter]
+  [:div.uk-text-right {:style {:padding-right "10px"}} quarter])
+
+(defn hours-time [hour]
+  (let [minutes ["00" 15 30 45]]
+    (fn [hour]
+      [:div.uk-grid.uk-grid-match.uk-margin-remove {:data-uk-grid true :style {:border-bottom "1px solid red"}}
+       [:div.uk-width-expand.uk-padding-remove
+        [:div.uk-inline
+         [:div.uk-margin-small.uk-position-center
+          {:style {:font-size "1.8em"}}
+          hour]]]
+       [:div.uk-width-expand.uk-padding-remove
+        (map-indexed
+         #(-> ^{:key %2} [quarters hour %2])
+         minutes)]])))
+
+(defn reservation-dates []
+  (let [hours (vec (range 12 26))]
+    [:div.uk-margin-left
+     [:div.uk-card.uk-card-secondary.uk-padding-remove
+
+      [:div
+       [:div.uk-inline.uk-padding-small
+        [:img
+         {:src "/Icons/time.svg"
+
+          :height "50"
+          :width "50"}]]
+       [:div
+        (map-indexed
+         #(-> ^{:key %2} [hours-time %2])
+         (filter #(and (>= % 12) (<= % 25))
+                 hours))]]]]))
+
+      ;[:span.uk-badge.uk-position-bottom-left (:number item)]]]]])
+
+(defn reservation-column [item]
+  [:div.uk-padding-remove.uk-width-auto
+   [:div.uk-card.uk-card-secondary.uk-padding-small.uk-margin-remove {:style {:height "100%"}}
+    [:div
+     [:div.uk-inline
+      [:img
+       {:src (case (:type item)
+               "ps" "/Icons/ps.svg"
+               "xbox" "/Icons/xbox.svg"
+               "pc" "/Icons/pc.svg"
+               "hmm")
+        :height "50"
+        :width "50"}]
+      [:span.uk-badge.uk-position-bottom-left (:number item)]]]]])
+
+          ;[:div (:number item)]]]])
+
+(defn reservation []
+  (let [system-map (subscribe [:data "system-map"])]
+    [:div.uk-grid.uk-margin-top
+
+     {:data-uk-grid true}
+     [reservation-dates]
+     [:div.uk-padding-remove.uk-margin-remove {:style {:width "90vw" :overflow-x "scroll"}}
+      [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove
+       {:data-uk-grid true :style {:width "max-content" :height "100%"}};}}
+
+       (for [item (sort-by :number @system-map)]
+         (-> ^{:key (str "h" item)} [reservation-column item]))]]]))

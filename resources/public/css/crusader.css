@@ -11,10 +11,11 @@
 
     width: 230px;
 }
-@media (min-width: 1200px)
-*+.uk-grid-margin, .uk-grid+.uk-grid, .uk-grid>.uk-grid-margin {
-    margin-top: 0px;
-}
+
+
+
+
+
 
 .uk-button-primary:disabled{
   background: black !important;
@@ -95,12 +96,7 @@
   background: #A2FFA0 !important;
 }
 
-.uk-badge{
-  border-bottom-left-radius: 0px !important;
-  border-bottom-right-radius: 0px !important;
-  border-top-left-radius: 0px !important;
-  border-top-right-radius: 0px !important;
-}
+
 
 a {
   color: black !important;
