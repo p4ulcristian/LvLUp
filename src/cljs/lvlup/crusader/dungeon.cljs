@@ -785,85 +785,85 @@
                                 (str "#user-" index)
                                 (clj->js {:cls nil
                                           :hidden false})))
-                              (if
-                               (= 0 (mod (+ 10 index) 20))
+                              (if (= 0 (mod (+ 10 index) 20))
                                 (.on
                                  ($ js/document)
                                  "inview"
                                  (str "#user-" index)
-                                 (fn [a] (chsk-send! [:dungeon/get-members {:number (+ 10 index) :search ""}]))))) :reagent-render
-      (fn [member index]
-        [:div.uk-width-1-2 {:id (str "user-" index)}
+                                 (fn [a] (chsk-send! [:dungeon/get-members {:number (+ 10 index) :search ""}])))))})
+    :reagent-render
+    (fn [member index]
+      [:div.uk-width-1-2 {:id (str "user-" index)}
 
-         [:div.uk-card.uk-card-secondary {:style {:opacity 0.85}} [:div.uk-width-1-1.uk-padding-remove.uk-inline
-                                                                   [:h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove {:style {:color "white !important"}}
-                                                                    (str "Id: " (:id member) "  - Bérlet: " (:season-pass member))]
-                                                                   [:div.uk-position-top-right [:span {:style {:cursor "pointer"}
-                                                                                                       :data-uk-icon "icon: check; ratio: 2.5"
-                                                                                                       :on-click #(do                   (notification "Név frissítve!")
-                                                                                                                                        (chsk-send! [:dungeon/update-member
-                                                                                                                                                     @modify-atom]))}]
+       [:div.uk-card.uk-card-secondary {:style {:opacity 0.85}} [:div.uk-width-1-1.uk-padding-remove.uk-inline
+                                                                 [:h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove {:style {:color "white !important"}}
+                                                                  (str "Id: " (:id member) "  - Bérlet: " (:season-pass member))]
+                                                                 [:div.uk-position-top-right [:span {:style {:cursor "pointer"}
+                                                                                                     :data-uk-icon "icon: check; ratio: 2.5"
+                                                                                                     :on-click #(do                   (notification "Név frissítve!")
+                                                                                                                                      (chsk-send! [:dungeon/update-member
+                                                                                                                                                   @modify-atom]))}]
 
-                                                                    [:span {:style {:cursor "pointer"}
-                                                                            :data-uk-icon "icon: close; ratio: 2.5"
-                                                                            :on-click #(do
-                                                                                         (notification "Felhasználó törölve!")
-                                                                                         (dispatch [:remove-member
-                                                                                                    (conj [] {:id (:id member)})])
-                                                                                         (chsk-send! [:dungeon/remove-member
-                                                                                                      (:id member)]))}]]] [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-                                                                                                                           {:on-click #(do
+                                                                  [:span {:style {:cursor "pointer"}
+                                                                          :data-uk-icon "icon: close; ratio: 2.5"
+                                                                          :on-click #(do
+                                                                                       (notification "Felhasználó törölve!")
+                                                                                       (dispatch [:remove-member
+                                                                                                  (conj [] {:id (:id member)})])
+                                                                                       (chsk-send! [:dungeon/remove-member
+                                                                                                    (:id member)]))}]]] [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+                                                                                                                         {:on-click #(do
 
-                                                                                                                                         (chsk-send! [:dungeon/update-member
-                                                                                                                                                      (assoc @modify-atom :season-pass (- (:season-pass member) 1))])
-                                                                                                                                         (notification (str (:name @modify-atom) " - bérlete 1-gyel csökkent")))}
-                                                                                                                           "- 1"]
-          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-           {:on-click #(do
+                                                                                                                                       (chsk-send! [:dungeon/update-member
+                                                                                                                                                    (assoc @modify-atom :season-pass (- (:season-pass member) 1))])
+                                                                                                                                       (notification (str (:name @modify-atom) " - bérlete 1-gyel csökkent")))}
+                                                                                                                         "- 1"]
+        [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+         {:on-click #(do
 
-                         (chsk-send! [:dungeon/update-member
-                                      (assoc @modify-atom :season-pass (- (:season-pass member) 0.5))])
-                         (notification (str (:name @modify-atom) " - bérlete 0.5-gyel csökkent")))}
-           "- 0.5"]
-          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-           {:on-click #(do
+                       (chsk-send! [:dungeon/update-member
+                                    (assoc @modify-atom :season-pass (- (:season-pass member) 0.5))])
+                       (notification (str (:name @modify-atom) " - bérlete 0.5-gyel csökkent")))}
+         "- 0.5"]
+        [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+         {:on-click #(do
 
-                         (chsk-send! [:dungeon/update-member
-                                      (assoc @modify-atom :season-pass (+ 0.5 (:season-pass member)))])
-                         (notification (str (:name @modify-atom) " - bérlete 0.5-gyel nőtt")))}
-           "+ 0.5"]
-          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-           {:on-click #(do
+                       (chsk-send! [:dungeon/update-member
+                                    (assoc @modify-atom :season-pass (+ 0.5 (:season-pass member)))])
+                       (notification (str (:name @modify-atom) " - bérlete 0.5-gyel nőtt")))}
+         "+ 0.5"]
+        [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+         {:on-click #(do
 
-                         (chsk-send! [:dungeon/update-member
-                                      (assoc @modify-atom :season-pass (+ 1 (:season-pass member)))])
-                         (notification (str (:name (:id @modify-atom)) " - bérlete 1-gyel nőtt")))}
-           "+ 1"]
+                       (chsk-send! [:dungeon/update-member
+                                    (assoc @modify-atom :season-pass (+ 1 (:season-pass member)))])
+                       (notification (str (:name (:id @modify-atom)) " - bérlete 1-gyel nőtt")))}
+         "+ 1"]
                  ;[:h6.uk-heading-bullet.uk-width-1-1.uk-padding-remove]
-          [:div.uk-width-1-1.uk-padding-remove.uk-margin-remove
-           [:input.uk-input.uk-text-center {:on-change #(swap! modify-atom assoc :name (-> % .-target .-value)) :value (:name @modify-atom)}]]
+        [:div.uk-width-1-1.uk-padding-remove.uk-margin-remove
+         [:input.uk-input.uk-text-center {:on-change #(swap! modify-atom assoc :name (-> % .-target .-value)) :value (:name @modify-atom)}]]
                  ;[:input.uk-input {:on-change #(swap! modify-atom assoc :season-pass (-> % .-target .-value)) :value (:season-pass member)}]
                  ;[:input.uk-input {:on-change #(swap! modify-atom assoc :name (-> % .-target .-value)) :value (str (:playing @modify-atom))}]
-          [:div.uk-grid.uk-child-width-1-3.uk-margin-remove.uk-width-1-1.uk-padding-remove {:data-uk-grid true}
-           [:button.uk-button.uk-button-default {:on-click #(do
+        [:div.uk-grid.uk-child-width-1-3.uk-margin-remove.uk-width-1-1.uk-padding-remove {:data-uk-grid true}
+         [:button.uk-button.uk-button-default {:on-click #(do
 
-                                                              (chsk-send! [:dungeon/update-member
-                                                                           (assoc @modify-atom :season-pass (+ 6 (:season-pass member)))])
-                                                              (notification (str (:name @modify-atom) " kapott egy Beginner bérletet!")))}
-            "+ Beginner"]
-           [:button.uk-button.uk-button-default {:on-click #(do
+                                                            (chsk-send! [:dungeon/update-member
+                                                                         (assoc @modify-atom :season-pass (+ 6 (:season-pass member)))])
+                                                            (notification (str (:name @modify-atom) " kapott egy Beginner bérletet!")))}
+          "+ Beginner"]
+         [:button.uk-button.uk-button-default {:on-click #(do
 
-                                                              (chsk-send! [:dungeon/update-member
-                                                                           (assoc @modify-atom :season-pass (+ 13 (:season-pass member)))])
-                                                              (notification (str (:name @modify-atom) " kapott egy Medium bérletet!")))}
-            "+ Medium"]
-           [:button.uk-button.uk-button-default {:on-click #(do
+                                                            (chsk-send! [:dungeon/update-member
+                                                                         (assoc @modify-atom :season-pass (+ 13 (:season-pass member)))])
+                                                            (notification (str (:name @modify-atom) " kapott egy Medium bérletet!")))}
+          "+ Medium"]
+         [:button.uk-button.uk-button-default {:on-click #(do
 
-                                                              (chsk-send! [:dungeon/update-member
-                                                                           (assoc @modify-atom :season-pass (+ 28 (:season-pass member)))])
+                                                            (chsk-send! [:dungeon/update-member
+                                                                         (assoc @modify-atom :season-pass (+ 28 (:season-pass member)))])
 
-                                                              (notification (str (:name @modify-atom) " kapott egy Hardcore bérletet!")))}
-            "+ Hardcore"]]]])})))
+                                                            (notification (str (:name @modify-atom) " kapott egy Hardcore bérletet!")))}]
+         "+ Hardcore"]]])))
 
 (defn registration-input [members]
   (let [max-id (subscribe [:data "max-id"])
@@ -932,49 +932,46 @@
 
         [:div.uk-grid.uk-child-width-1-4.uk-padding-small {:data-uk-grid true}
          [:div {:on-click #(dispatch [:set-sidenav-state 1])}
-          [:img {:src (if
-                       (not= @sidenav-state 1)
+          [:img {:src (if (not= @sidenav-state 1)
                         "/Icons/search.svg"
                         "/Icons/search-active.svg")}]]
          [:div {:on-click #(dispatch [:set-sidenav-state 2])}
-          [:img {:src (if
-                       (not= @sidenav-state 2)
+          [:img {:src (if (not= @sidenav-state 2)
                         "/Icons/playing.svg"
                         "/Icons/playing-active.svg")}]]
          [:div {:on-click #(dispatch [:set-sidenav-state 3])}
-          [:img {:src  (if
-                        (not= @sidenav-state 3)
+          [:img {:src  (if (not= @sidenav-state 3)
                          "/Icons/payment-method.svg"
                          "/Icons/cash-active.svg")}]]
          [:div {:on-click #(dispatch [:set-sidenav-state 4])}
-          [:img {:src (if
-                       (not= @sidenav-state 4)
+          [:img {:src (if (not= @sidenav-state 4)
                         "/Icons/waiting.svg"
-                        "/Icons/waiting-active.svg")}]]] (case @sidenav-state
-                                                           1 [:div
-                                                              [:form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical
-                                                               [:input.uk-search-input.uk-animation-slide-top
-                                                                {:on-change #(do
-                                                                               (reset! number 20)
-                                                                               (chsk-send! [:dungeon/get-members
-                                                                                            {:number 0 :search (-> % .-target .-value)}])
-                                                                               (dispatch [:set-search-member (-> % .-target .-value)]))
+                        "/Icons/waiting-active.svg")}]]]
+        (case @sidenav-state
+          1 [:div
+             [:form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical
+              [:input.uk-search-input.uk-animation-slide-top
+               {:on-change #(do
+                              (reset! number 20)
+                              (chsk-send! [:dungeon/get-members
+                                           {:number 0 :search (-> % .-target .-value)}])
+                              (dispatch [:set-search-member (-> % .-target .-value)]))
                                    ;:placeholder "Regisztráció/Keresés",
 
-                                                                 :value @search
-                                                                 :placeholder "Keresés", :type "search"}]]
-                                                              [gamers]
-                                                              [show-20-more number]]
+                :value @search
+                :placeholder "Keresés", :type "search"}]]
+             [gamers]
+             [show-20-more number]]
 
-                                                           2 [:div
-                                                              ^{:key 2} [:h3.uk-heading-bullet.uk-animation-slide-top "Dungeonben"]
-                                                              [gaming-gamers]]
-                                                           3 [:div
-                                                              ^{:key 3} [:h3.uk-heading-bullet.uk-animation-slide-top "Kasszánál"]
-                                                              [paying-gamers]]
-                                                           4 [:div
-                                                              ^{:key 4} [:h3.uk-heading-bullet.uk-animation-slide-top "Váróterem"]
-                                                              [waiting-pool]])]])))
+          2 [:div
+             ^{:key 2} [:h3.uk-heading-bullet.uk-animation-slide-top "Dungeonben"]
+             [gaming-gamers]]
+          3 [:div
+             ^{:key 3} [:h3.uk-heading-bullet.uk-animation-slide-top "Kasszánál"]
+             [paying-gamers]]
+          4 [:div
+             ^{:key 4} [:h3.uk-heading-bullet.uk-animation-slide-top "Váróterem"]
+             [waiting-pool]])]])))
 
 (defn dungeon []
   (let [systems (subscribe [:data "system-map"])

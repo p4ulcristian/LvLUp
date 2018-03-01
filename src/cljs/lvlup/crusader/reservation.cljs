@@ -289,13 +289,12 @@
     [:div
      [:div.uk-card.uk-card-secondary.uk-padding-remove
 
-      [:div
-       [:div.uk-inline.uk-margin-small.uk-padding-small.uk-padding-remove-vertical
-        [:img
-         {:src "/Icons/time.svg"
+      [:div {:style {:width "80px"}}
+       [:div.uk-inline.uk-margin-small.uk-padding-small.uk-padding-remove-vertical.uk-card.uk-card-secondary {:data-uk-sticky " bottom: #top", :style {:z-index "980" :border-radius "30px"}}
+        [:img {:src "/Icons/time.svg"
 
-          :height "50"
-          :width "50"}]]
+               :height "50"
+               :width "50"}]]
        [:div
         (map-indexed
          #(-> ^{:key %2} [hours-time %2])
@@ -319,7 +318,7 @@
     :reagent-render
     (fn []
       [:div.uk-padding-remove.uk-width-auto
-       [:div.uk-padding-remove.uk-margin-remove {:style {:height "100%"}}
+       [:div.uk-padding-remove.uk-margin-remove {:style {:height "100%" :border-right "red solid 1px"}}
         [:div
          [:div.uk-inline.uk-margin-small
           [:img
@@ -334,16 +333,36 @@
         [:div.uk-grid.uk-margin-remove.uk-height-1-1 {:data-uk-grid true :style {:height "calc(100% - 60px)"}} ;:style {:height "100%"}}
          [:div.uk-width-1-1.dropzone.uk-padding-remove
           [:div.uk-card.uk-card-default.uk-padding-small.uk-margin-small
-           {:on-click #(.notification js/UIkit "hello")
+           {:data-uk-toggle "target: #my-id"
+            :on-click #(.notification js/UIkit "hello")
             :style {:transition "transform .05s ease-in-out"}};}
            "M. V."]]]]])}))
               ;[:div (:number item)]]]])
+
+(defn reservation-modal []
+  [:div#my-id
+   {:data-uk-modal true}
+   [:div.uk-modal-dialog
+    [:button.uk-modal-close-default
+     {:data-uk-close true :type "button"}]
+    [:div.uk-modal-header [:h2.uk-modal-title "Modal Title"]]
+    [:div.uk-modal-body
+     [:p
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."]]
+    [:div.uk-modal-footer.uk-text-right
+     [:button.uk-button.uk-button-default.uk-modal-close
+      {:type "button"}
+      "Cancel"]
+     [:button.uk-button.uk-button-primary
+      {:type "button"}
+      "Save"]]]])
 
 (defn reservation []
   (let [system-map (subscribe [:data "system-map"])]
     [:div.uk-grid.uk-margin-top
 
      {:data-uk-grid true}
+     [reservation-modal]
      [reservation-dates]
      [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 100px)" :overflow-x "scroll" :overflow-y "visible"}}
       [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict
