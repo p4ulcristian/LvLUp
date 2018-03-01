@@ -143,16 +143,12 @@
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css")])
 
 (defn loading-page-crusader [req]
-  (if-not
-   (authenticated? (:session req))
-
+  (if-not (authenticated? (:session req))
     (throw-unauthorized)
-
     (html5
      (head-crusader)
-     [:body {:class "body-container"}
+     [:body.dragscroll {:class "body-container"}
       mount-target
-
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js")
@@ -160,10 +156,12 @@
       (include-js "/externaljs/timetable.min.js")
       (include-js "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js")
       (include-js "/externaljs/dragging.js")
+      (include-js "/externaljs/reservationInteract.js")
       (include-js "/externaljs/picker.js")
       (include-js "/externaljs/nouislider.min.js")
       (include-js "/externaljs/picker.date.js")
       (include-js "/externaljs/picker.time.js")
+      (include-js "/externaljs/dragscroll.js")
       (include-js "/js/app.1.21.js")])))
 
 (defn loading-page []

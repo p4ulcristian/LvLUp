@@ -273,7 +273,7 @@
 (defn hours-time [hour]
   (let [minutes ["00" 15 30 45]]
     (fn [hour]
-      [:div.uk-grid.uk-grid-match.uk-margin-remove {:data-uk-grid true :style {:border-bottom "1px solid red"}}
+      [:div.uk-grid.uk-grid-match.uk-margin-remove {:data-uk-grid true};;:style {:border-bottom "1px solid red"}}
        [:div.uk-width-expand.uk-padding-remove
         [:div.uk-inline
          [:div.uk-margin-small.uk-position-center
@@ -286,11 +286,11 @@
 
 (defn reservation-dates []
   (let [hours (vec (range 12 26))]
-    [:div.uk-margin-left
+    [:div
      [:div.uk-card.uk-card-secondary.uk-padding-remove
 
       [:div
-       [:div.uk-inline.uk-padding-small
+       [:div.uk-inline.uk-margin-small.uk-padding-small.uk-padding-remove-vertical
         [:img
          {:src "/Icons/time.svg"
 
@@ -305,21 +305,39 @@
       ;[:span.uk-badge.uk-position-bottom-left (:number item)]]]]])
 
 (defn reservation-column [item]
-  [:div.uk-padding-remove.uk-width-auto
-   [:div.uk-card.uk-card-secondary.uk-padding-small.uk-margin-remove {:style {:height "100%"}}
-    [:div
-     [:div.uk-inline
-      [:img
-       {:src (case (:type item)
-               "ps" "/Icons/ps.svg"
-               "xbox" "/Icons/xbox.svg"
-               "pc" "/Icons/pc.svg"
-               "hmm")
-        :height "50"
-        :width "50"}]
-      [:span.uk-badge.uk-position-bottom-left (:number item)]]]]])
-
-          ;[:div (:number item)]]]])
+  (reagent/create-class
+   {:component-did-mount #(do
+                            (.reset js/dragscroll)
+                            (.reservationInteract js/window)
+                            (.dropzone
+                             (.interact js/window ".dropzone")
+                             (clj->js {:accept ".draggable-reservation"
+                                                  ;:overlap 0.75
+                                       :ondragenter (fn [e] (.notification js/UIkit "mukodik")) ;(.hide @sidenav-canvas))
+                                                  ;:ondragleave (fn [e] (.notification js/UIkit "Elhagytál, Csengő Zolival megcsaltáll"))
+                                       :ondrop (fn [e] (.notification js/UIkit "meh"))})))
+    :reagent-render
+    (fn []
+      [:div.uk-padding-remove.uk-width-auto
+       [:div.uk-padding-remove.uk-margin-remove {:style {:height "100%"}}
+        [:div
+         [:div.uk-inline.uk-margin-small
+          [:img
+           {:src (case (:type item)
+                   "ps" "/Icons/ps.svg"
+                   "xbox" "/Icons/xbox.svg"
+                   "pc" "/Icons/pc.svg"
+                   "hmm")
+            :height "50"
+            :width "50"}]
+          [:span.uk-badge.uk-position-bottom-left (:number item)]]]
+        [:div.uk-grid.uk-margin-remove.uk-height-1-1 {:data-uk-grid true :style {:height "calc(100% - 60px)"}} ;:style {:height "100%"}}
+         [:div.uk-width-1-1.dropzone.uk-padding-remove
+          [:div.uk-card.uk-card-default.uk-padding-small.uk-margin-small
+           {:on-click #(.notification js/UIkit "hello")
+            :style {:transition "transform .05s ease-in-out"}};}
+           "M. V."]]]]])}))
+              ;[:div (:number item)]]]])
 
 (defn reservation []
   (let [system-map (subscribe [:data "system-map"])]
@@ -327,8 +345,8 @@
 
      {:data-uk-grid true}
      [reservation-dates]
-     [:div.uk-padding-remove.uk-margin-remove {:style {:width "90vw" :overflow-x "scroll"}}
-      [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove
+     [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 100px)" :overflow-x "scroll" :overflow-y "visible"}}
+      [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict
        {:data-uk-grid true :style {:width "max-content" :height "100%"}};}}
 
        (for [item (sort-by :number @system-map)]

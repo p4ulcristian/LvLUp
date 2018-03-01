@@ -32,5 +32,3 @@ var facebook = function (account, divclass) {
                 }
             });
         };
-
-   

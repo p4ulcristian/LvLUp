@@ -435,7 +435,7 @@
 (defn current-page []
   (let [actual-page (subscribe [:data "actual-page"])]
     (fn []
-      [:div {:style {:min-height "100vh"}}
+      [:div.dragscroll {:style {:min-height "100vh"}}
        (case @actual-page
          "crusader"    [:div.uk-inline
                         {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
