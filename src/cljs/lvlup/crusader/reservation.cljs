@@ -334,28 +334,46 @@
          [:div.uk-width-1-1.dropzone.uk-padding-remove
           [:div.uk-card.uk-card-default.uk-padding-small.uk-margin-small
            {:data-uk-toggle "target: #my-id"
-            :on-click #(.notification js/UIkit "hello")
+
             :style {:transition "transform .05s ease-in-out"}};}
            "M. V."]]]]])}))
               ;[:div (:number item)]]]])
 
 (defn reservation-modal []
-  [:div#my-id
-   {:data-uk-modal true}
-   [:div.uk-modal-dialog
-    [:button.uk-modal-close-default
-     {:data-uk-close true :type "button"}]
-    [:div.uk-modal-header [:h2.uk-modal-title "Modal Title"]]
-    [:div.uk-modal-body
-     [:p
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."]]
-    [:div.uk-modal-footer.uk-text-right
-     [:button.uk-button.uk-button-default.uk-modal-close
-      {:type "button"}
-      "Cancel"]
-     [:button.uk-button.uk-button-primary
-      {:type "button"}
-      "Save"]]]])
+  (let [slider-atom (atom nil)
+        slider-values (atom nil)]
+    (reagent/create-class
+     {:component-did-mount #(do
+                              (reset! slider-atom
+                                      (.create js/noUiSlider (.getElementById js/document "no-ui-slider")
+                                               (clj->js
+                                                {:start [0 100]
+                                                 :connect true
+                                                 :step 1
+                                                 :behaviour "drag-tap"
+                                                 :range {"min" 0
+                                                         "max" 100}})))
+                              (.on @slider-atom "update" (fn [e] (reset! slider-values (js->clj e)))))
+      :reagent-render
+      (fn []
+        [:div#my-id
+         {:data-uk-modal true}
+         [:div.uk-modal-dialog
+          [:button.uk-modal-close-default
+           {:data-uk-close true :type "button"}]
+          [:div.uk-modal-header [:h2.uk-modal-title "Foglalás módosítása"]]
+          [:div.uk-modal-body
+           [:div#no-ui-slider]
+           [:div (str @slider-values)]
+           [:p
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."]]
+          [:div.uk-modal-footer.uk-text-right
+           [:button.uk-button.uk-button-default.uk-modal-close
+            {:type "button"}
+            "Mégsem"]
+           [:button.uk-button.uk-button-primary
+            {:type "button"}
+            "Mentés"]]]])})))
 
 (defn reservation []
   (let [system-map (subscribe [:data "system-map"])]
