@@ -135,6 +135,7 @@
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css")
 
    (include-css "/css/timetablejs.css")
+   (include-css "https://npmcdn.com/flatpickr/dist/themes/dark.css")
    (include-css "/css/classic.css")
    (include-css "/css/nouislider.min.css")
    (include-css "/css/crusader.css")
@@ -153,6 +154,7 @@
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.8/interact.min.js")
+      (include-js "https://cdn.jsdelivr.net/npm/flatpickr")
       (include-js "/externaljs/timetable.min.js")
       (include-js "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js")
       (include-js "/externaljs/dragging.js")
@@ -160,6 +162,7 @@
       (include-js "/externaljs/picker.js")
       (include-js "/externaljs/nouislider.min.js")
       (include-js "/externaljs/picker.date.js")
+      (include-js "https://npmcdn.com/flatpickr/dist/l10n/hu.js")
       (include-js "/externaljs/picker.time.js")
       (include-js "/externaljs/dragscroll.js")
       (include-js "/js/app.1.21.js")])))

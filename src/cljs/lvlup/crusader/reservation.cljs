@@ -4,8 +4,10 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
             [clojure.string :as str]
+            [goog.string :as gstring]
             [lvlup.sente :refer [chsk-send! start-router!]]
             [ajax.core :refer [GET POST]]
+            [clojure.set :refer [union]]
             [cljs-time.core :as tcore]
             [cljs-time.format :as tformat]
             [cljs-time.coerce :as coerce]
@@ -303,6 +305,25 @@
 
       ;[:span.uk-badge.uk-position-bottom-left (:number item)]]]]])
 
+(defn calc-top [item])
+
+(defn calc-height [item])
+
+(defn one-reservation [reservation]
+  [:div.uk-card.uk-card-default.uk-padding-small.uk-margin-small.uk-inline.one-reservation
+   {:data-uk-toggle "target: #my-id"
+    :style {:transition "transform .05s ease-in-out"
+            :top (str
+                  (* 18 (calc-top (:start-hour reservation)))
+                  "px")
+            :height (str
+                     (* 18 (calc-height (:start-hour reservation)))
+                     "px")
+            :width "100%"}};}
+   [:div.uk-position-center {:data-uk-tooltip "title: Morvai Viktor; pos: bottom" :style {:color "white"}} "M. V."]
+   [:span.uk-label.uk-label-success.uk-position-top {:data-uk-tooltip "title: 12:30; pos: top" :style {:height "20px" :opacity 0}}]
+   [:span.uk-label.uk-label-success.uk-position-bottom {:data-uk-tooltip "title: 15:45; pos: bottom" :style {:height "25px" :opacity 0}}]])
+
 (defn reservation-column [item]
   (reagent/create-class
    {:component-did-mount #(do
@@ -317,10 +338,10 @@
                                        :ondrop (fn [e] (.notification js/UIkit "meh"))})))
     :reagent-render
     (fn []
-      [:div.uk-padding-remove.uk-width-auto
-       [:div.uk-padding-remove.uk-margin-remove {:style {:height "100%" :border-right "red solid 1px"}}
-        [:div
-         [:div.uk-inline.uk-margin-small
+      [:div.uk-padding-small.uk-padding-remove-vertical.uk-width-auto
+       [:div.uk-padding-remove {:style {:height "100%"}}
+        [:div.uk-text-center
+         [:div.uk-inline.uk-margin-small.uk-align-center
           [:img
            {:src (case (:type item)
                    "ps" "/Icons/ps.svg"
@@ -332,41 +353,116 @@
           [:span.uk-badge.uk-position-bottom-left (:number item)]]]
         [:div.uk-grid.uk-margin-remove.uk-height-1-1 {:data-uk-grid true :style {:height "calc(100% - 60px)"}} ;:style {:height "100%"}}
          [:div.uk-width-1-1.dropzone.uk-padding-remove
-          [:div.uk-card.uk-card-default.uk-padding-small.uk-margin-small
-           {:data-uk-toggle "target: #my-id"
-
-            :style {:transition "transform .05s ease-in-out"}};}
-           "M. V."]]]]])}))
+          [one-reservation]]]]])}))
               ;[:div (:number item)]]]])
 
+
+(defn choose-systems []
+  (let [system-map (subscribe [:data "system-map"])]
+    [:div.uk-grid.uk-margin {:data-uk-grid true}
+     (for [item @system-map]
+       (-> ^{:key (:number item)} [:div.uk-width-1-4.uk-padding-small.reserve-system
+                                   [:img.uk-align-center
+                                    {:src (case (:type item)
+                                            "ps" "/Icons/ps.svg"
+                                            "xbox" "/Icons/xbox.svg"
+                                            "pc" "/Icons/pc.svg"
+                                            "hmm")
+                                     :height "50"
+                                     :width "50"}]]))]))
+
+(def szeged-opening-hours
+  ;Vasarnap az elso nap utana hetfo
+  {0 {:from 48 :to 92}
+   1 {:from 48 :to 96}
+   2 {:from 48 :to 96}
+   3 {:from 48 :to 96}
+   4 {:from 48 :to 104}
+   5 {:from 48 :to 104}
+   6 {:from 48 :to 104}})
+
+(defn which-quarter [number]
+  (case number
+    0 "00"
+    1 "15"
+    2 "30"
+    3 "45"))
+
+(defn to-24-pm [hour]
+  (if (< 23 hour)
+    (- hour 24)
+    hour))
+
+(defn quarter-to-time [quarter]
+  (str (gstring/format "%02d" (to-24-pm (quot quarter 4)))
+       ":"
+       (which-quarter (mod quarter 4))))
+
+(defn display-time [[from to]]
+  (let []
+    [:h1.uk-text-center
+     (str (quarter-to-time from)
+          " - "
+          (quarter-to-time to))]))
+
 (defn reservation-modal []
-  (let [slider-atom (atom nil)
+  (let [date (subscribe [:data "time"])
+        modal-day (atom 0)
+        opening-hours (fn [] (get szeged-opening-hours @modal-day))
+        slider-atom (atom nil)
         slider-values (atom nil)]
     (reagent/create-class
      {:component-did-mount #(do
+                              (.flatpickr
+                               js/window
+                               "#flatpickr"
+                               (clj->js {"altInput" true
+                                         "altFormat" "F j, Y"
+                                         "dateFormat" "Y-m-d"
+                                         "locale" "hu"
+                                         "onChange"
+
+                                         (fn [a b c]
+                                           (reset! modal-day (.getDay (first a)))
+                                           (.updateOptions
+
+                                            @slider-atom
+                                            (clj->js
+                                             {:range {"min" (:from (opening-hours))
+                                                      "max" (:to (opening-hours))}})
+                                            true))}))
                               (reset! slider-atom
                                       (.create js/noUiSlider (.getElementById js/document "no-ui-slider")
                                                (clj->js
-                                                {:start [0 100]
+                                                {:start [55 66]
                                                  :connect true
                                                  :step 1
+                                                 :margin 4
                                                  :behaviour "drag-tap"
-                                                 :range {"min" 0
-                                                         "max" 100}})))
+                                                 :range {"min" (:from (opening-hours))
+                                                         "max" (:to (opening-hours))}})))
+
                               (.on @slider-atom "update" (fn [e] (reset! slider-values (js->clj e)))))
+                              ;
+
       :reagent-render
       (fn []
         [:div#my-id
-         {:data-uk-modal true}
+         {:data-uk-modal "bg-close:	false" :style {:opacity 0.95}}
          [:div.uk-modal-dialog
           [:button.uk-modal-close-default
            {:data-uk-close true :type "button"}]
           [:div.uk-modal-header [:h2.uk-modal-title "Foglalás módosítása"]]
           [:div.uk-modal-body
-           [:div#no-ui-slider]
-           [:div (str @slider-values)]
-           [:p
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."]]
+           [:form.uk-form
+            [:div.uk-margin {:data-uk-grid true}
+             [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-large.uk-text-center.uk-width-1-2 {:placeholder "Dátum"}]
+             [:h2.uk-margin-small.uk-width-1-2.uk-text-center.uk-text-truncate "Asztalos Ádám"]]]
+           [display-time @slider-values]
+
+           [:div#no-ui-slider]; [:div (str range-config)]
+           [choose-systems]]
+
           [:div.uk-modal-footer.uk-text-right
            [:button.uk-button.uk-button-default.uk-modal-close
             {:type "button"}
