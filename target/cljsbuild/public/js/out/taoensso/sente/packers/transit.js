@@ -59,8 +59,8 @@ taoensso.sente.packers.transit.TransitPacker.cljs$lang$type = true;
 
 taoensso.sente.packers.transit.TransitPacker.cljs$lang$ctorStr = "taoensso.sente.packers.transit/TransitPacker";
 
-taoensso.sente.packers.transit.TransitPacker.cljs$lang$ctorPrWriter = (function (this__37364__auto__,writer__37365__auto__,opt__37366__auto__){
-return cljs.core._write.call(null,writer__37365__auto__,"taoensso.sente.packers.transit/TransitPacker");
+taoensso.sente.packers.transit.TransitPacker.cljs$lang$ctorPrWriter = (function (this__37408__auto__,writer__37409__auto__,opt__37410__auto__){
+return cljs.core._write.call(null,writer__37409__auto__,"taoensso.sente.packers.transit/TransitPacker");
 });
 
 taoensso.sente.packers.transit.__GT_TransitPacker = (function taoensso$sente$packers$transit$__GT_TransitPacker(transit_fmt,writer_opts,reader_opts){
@@ -71,23 +71,23 @@ return (new taoensso.sente.packers.transit.TransitPacker(transit_fmt,writer_opts
  * Returns a new TransitPacker
  */
 taoensso.sente.packers.transit.get_transit_packer = (function taoensso$sente$packers$transit$get_transit_packer(var_args){
-var args49614 = [];
-var len__37833__auto___49620 = arguments.length;
-var i__37834__auto___49621 = (0);
+var args49620 = [];
+var len__37877__auto___49626 = arguments.length;
+var i__37878__auto___49627 = (0);
 while(true){
-if((i__37834__auto___49621 < len__37833__auto___49620)){
-args49614.push((arguments[i__37834__auto___49621]));
+if((i__37878__auto___49627 < len__37877__auto___49626)){
+args49620.push((arguments[i__37878__auto___49627]));
 
-var G__49622 = (i__37834__auto___49621 + (1));
-i__37834__auto___49621 = G__49622;
+var G__49628 = (i__37878__auto___49627 + (1));
+i__37878__auto___49627 = G__49628;
 continue;
 } else {
 }
 break;
 }
 
-var G__49616 = args49614.length;
-switch (G__49616) {
+var G__49622 = args49620.length;
+switch (G__49622) {
 case 0:
 return taoensso.sente.packers.transit.get_transit_packer.cljs$core$IFn$_invoke$arity$0();
 
@@ -101,7 +101,7 @@ return taoensso.sente.packers.transit.get_transit_packer.cljs$core$IFn$_invoke$a
 
 break;
 default:
-throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args49614.length)].join('')));
+throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args49620.length)].join('')));
 
 }
 });
@@ -115,24 +115,24 @@ return taoensso.sente.packers.transit.get_transit_packer.call(null,transit_fmt,c
 });
 
 taoensso.sente.packers.transit.get_transit_packer.cljs$core$IFn$_invoke$arity$3 = (function (transit_fmt,writer_opts,reader_opts){
-var e_49624 = (function (){try{if((function (x){
+var e_49630 = (function (){try{if((function (x){
 return cljs.core.contains_QMARK_.call(null,taoensso.truss.impl.set_STAR_.call(null,new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"json","json",1279968570),null], null), null)),x);
 }).call(null,transit_fmt)){
 return null;
 } else {
 return taoensso.truss.impl._dummy_error;
 }
-}catch (e49617){if((e49617 instanceof Error)){
-var e = e49617;
+}catch (e49623){if((e49623 instanceof Error)){
+var e = e49623;
 return e;
 } else {
-throw e49617;
+throw e49623;
 
 }
 }})();
-if((e_49624 == null)){
+if((e_49630 == null)){
 } else {
-taoensso.truss.impl._invar_violation_BANG_.call(null,true,"taoensso.sente.packers.transit",null,"([:el #{:json}] transit-fmt)",transit_fmt,e_49624,null);
+taoensso.truss.impl._invar_violation_BANG_.call(null,true,"taoensso.sente.packers.transit",null,"([:el #{:json}] transit-fmt)",transit_fmt,e_49630,null);
 }
 
 new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [(function (){var e = (function (){try{if(cljs.core.map_QMARK_.call(null,writer_opts)){
@@ -140,11 +140,11 @@ return null;
 } else {
 return taoensso.truss.impl._dummy_error;
 }
-}catch (e49618){if((e49618 instanceof Error)){
-var e = e49618;
+}catch (e49624){if((e49624 instanceof Error)){
+var e = e49624;
 return e;
 } else {
-throw e49618;
+throw e49624;
 
 }
 }})();
@@ -158,11 +158,11 @@ return null;
 } else {
 return taoensso.truss.impl._dummy_error;
 }
-}catch (e49619){if((e49619 instanceof Error)){
-var e = e49619;
+}catch (e49625){if((e49625 instanceof Error)){
+var e = e49625;
 return e;
 } else {
-throw e49619;
+throw e49625;
 
 }
 }})();

@@ -20,6 +20,12 @@
             [taoensso.sente  :as sente :refer (cb-success?)]
             [jayq.core :refer [$ css html]]))
 
+(defn szeged-tables []
+  (let [numbers (range 1 13)]
+    (vec
+     (map #(assoc {} :type "table" :number % :reservation-type "tavern")
+          numbers))))
+
 (def szeged-opening-hours
   ;Vasarnap az elso nap utana hetfo
   {0 {:from 48 :to 92}
@@ -95,17 +101,19 @@
          [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-margin-remove
           ;
           [:div {:style {:width "80px"}}
-           [:div.uk-inline.uk-margin-small.uk-padding-small.uk-padding-remove-vertical.uk-card.uk-card-secondary
+           [:div.uk-inline.uk-margin-small.uk-padding-small.uk-padding-remove-vertical
             {:data-uk-sticky " bottom: #top"
              :data-uk-toggle "target: #my-id"
              :on-click (dispatch [:set-modal-data {}])
-             :style {:z-index "980" :border-radius "30px"}}
+             :style {:z-index "980"}}
             [:img.add-reservation {:src "/Icons/plus.svg"
                                    :height "50"
+                                   :style {:background "white"
+                                           :padding "3px"
+                                           :border-radius "100px"}
                                    :width "50"}]]
            [:div
-            (str @date)
-            (str (opening-hours))
+
             (map-indexed
              #(-> ^{:key %2} [hours-time %2])
              (filter #(and (>= % 12) (<= % 25))
@@ -154,6 +162,7 @@
                      "ps" "/Icons/ps.svg"
                      "xbox" "/Icons/xbox.svg"
                      "pc" "/Icons/pc.svg"
+                     "table" "/Icons/table.svg"
                      "hmm")
               :height "50"
               :width "50"}]
@@ -177,6 +186,7 @@
                   "ps" "/Icons/ps.svg"
                   "xbox" "/Icons/xbox.svg"
                   "pc" "/Icons/pc.svg"
+                  "table" "/Icons/table.svg"
                   "hmm")
            :height "50"
            :width "50"}]]))]))
@@ -203,45 +213,50 @@
 (defn reservation-modal []
   (let [date (subscribe [:data "date"])
         modal-data (subscribe [:data "modal-data"])
-        modal-day (atom 0)
-        opening-hours (fn [] (get szeged-opening-hours @modal-day))
+        opening-hours (fn [] (get szeged-opening-hours (.getDay @date)))
         slider-atom (atom nil)
+        reservation-details {:date ""
+                             :name ""
+                             :id nil
+                             :places []}
+
         slider-values (atom nil)]
     (reagent/create-class
-     {:component-did-mount #(do
-                              (chsk-send! [:dungeon/get-reservations])
-                              (.flatpickr
-                               js/window
-                               "#flatpickr"
-                               (clj->js {"altInput" true
-                                         "altFormat" "F j, Y"
-                                         "dateFormat" "Y-m-d"
-                                         "locale" "hu"
-                                         "inline" true
-                                         "minDate" (.fp_incr (js/Date.) -1)
-                                         "onChange"
+     {:component-did-mount
+      #(do
+         (chsk-send! [:dungeon/get-reservations])
+         (.flatpickr
+          js/window
+          "#flatpickr"
+          (clj->js {"altInput" true
+                    "altFormat" "F j, Y"
+                    "dateFormat" "Y-m-d"
+                    "locale" "hu"
+                                         ;"inline" true
+                    "minDate" (.fp_incr (js/Date.) -1)
+                    "onChange"
+                    (fn [a b c]
+                      (swap! reservation-details assoc :date b)
+                      (dispatch [:set-date b])
+                      (.updateOptions
 
-                                         (fn [a b c]
-                                           (reset! modal-day (.getDay (first a)))
-                                           (.updateOptions
+                       @slider-atom
+                       (clj->js
+                        {:range {"min" (:from (opening-hours))
+                                 "max" (:to (opening-hours))}})
+                       true))}))
+         (reset! slider-atom
+                 (.create js/noUiSlider (.getElementById js/document "no-ui-slider")
+                          (clj->js
+                           {:start [55 66]
+                            :connect true
+                            :step 1
+                            :margin 4
+                            :behaviour "drag-tap"
+                            :range {"min" (:from (opening-hours))
+                                    "max" (:to (opening-hours))}})))
 
-                                            @slider-atom
-                                            (clj->js
-                                             {:range {"min" (:from (opening-hours))
-                                                      "max" (:to (opening-hours))}})
-                                            true))}))
-                              (reset! slider-atom
-                                      (.create js/noUiSlider (.getElementById js/document "no-ui-slider")
-                                               (clj->js
-                                                {:start [55 66]
-                                                 :connect true
-                                                 :step 1
-                                                 :margin 4
-                                                 :behaviour "drag-tap"
-                                                 :range {"min" (:from (opening-hours))
-                                                         "max" (:to (opening-hours))}})))
-
-                              (.on @slider-atom "update" (fn [e] (reset! slider-values (js->clj e)))))
+         (.on @slider-atom "update" (fn [e] (reset! slider-values (js->clj e)))))
                               ;
 
       :reagent-render
@@ -253,10 +268,11 @@
            {:data-uk-close true :type "button"}]
           [:div.uk-modal-header [:h2.uk-modal-title "Foglalás módosítása"]]
           [:div.uk-modal-body.uk-padding-remove-vertical
-           [:form.uk-form.uk-padding-small.remove-padding-vertical
-            [:div {:data-uk-grid true}
-             [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-large.uk-text-center.uk-width-1-2 {:placeholder "Dátum"}]
-             [:h2.uk-margin-small.uk-width-1-2.uk-text-center.uk-text-truncate "Asztalos Ádám"]]]
+           [:div.uk-form.uk-padding-small.remove-padding-vertical
+            [:div.uk-child-width-expand {:data-uk-grid true}
+             [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-large.uk-text-center {:placeholder "Dátum"}]
+             [:input {:placeholder "Id"}]
+             [:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-input {:placeholder "Teljes név"}]]]
            [display-time @slider-values]
            ;(str @reservations)
            [:div#no-ui-slider.uk-margin-small]; [:div (str range-config)]
@@ -270,39 +286,59 @@
             {:type "button"}
             "Mentés"]]]])})))
 
-(defn choose-date-panel []
-  (let [date (subscribe [:data "date"])
-        modal-data (subscribe [:data "modal-data"])
-        modal-day (atom 0)
-        opening-hours (fn [] (get szeged-opening-hours @modal-day))
-        slider-atom (atom nil)
-        slider-values (atom nil)]
-    (reagent/create-class
-     {:component-did-mount #(do
-                              (chsk-send! [:dungeon/get-reservations])
-                              (.flatpickr
-                               js/window
-                               "#choose-date"
-                               (clj->js {"altInput" true
-                                         "altFormat" "F j, Y"
-                                         "dateFormat" "Y-m-d"
-                                         "locale" "hu"
-                                         "minDate" (.fp_incr (js/Date.) -1)
-                                         "onChange"
+(defn display-date [date]
+  (get days (.getDay date)))
 
-                                         (fn [a b c]
-                                           (dispatch [:set-date b]))})))
+(defn panel-img [item]
+  [:div
+   [:img {:src (str "/Icons/" item ".svg")
+          :height "35"
+          :width "35"}]])
+
+(defn reservation-categories []
+  [:div.uk-grid.uk-margin-remove.uk-float-right.uk-child-width-expand {:data-uk-grid true}
+   [panel-img "pc"]
+   [panel-img "console"]
+   [panel-img "table"]])
+
+(defn choose-date-panel []
+  (let [date (subscribe [:data "date"])]
+    (reagent/create-class
+     {:component-did-mount
+      #(do
+         (chsk-send! [:dungeon/get-reservations])
+         (.flatpickr
+          js/window
+          "#choose-date"
+          (clj->js {"altInput" true
+                    "altFormat" "F j, Y"
+                    "dateFormat" "Y-m-d"
+
+                    "locale" "hu"
+                    "minDate" (.fp_incr (js/Date.) -1)
+                    "onChange"
+                    (fn [a b c]
+                      (dispatch [:set-date b]))})))
       :reagent-render
       (fn []
         [:div.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove.uk-width-1-1
-         [:div.uk-grid.uk-child-width-expand.uk-padding-small
+         [:div.uk-grid.uk-child-width-expand.uk-padding-small.uk-margin-remove
           {:data-uk-grid true}
-          [:input#choose-date {:placeholder "Válassz dátumot!"}]
-          [:h3.uk-text-right (str @date)]]])})))
+          [:h3.uk-text-left.uk-heading-bullet (display-date @date)]
+          [:input#choose-date.uk-text-center.uk-padding-remove {:placeholder "Válassz dátumot"}]
+          [reservation-categories]]])})))
+
+(defn systems-to-reservations [systems]
+  (map #(assoc
+         (dissoc % :players :name)
+         :reservation-type "dungeon")
+       systems))
+
 (defn reservation []
   (let [system-map (subscribe [:data "system-map"])]
     [:div {:style {:opacity 0.8}}
      [choose-date-panel]
+     ;[:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-width-auto {:placeholder "Id"}]
      [:div.uk-grid
       {:data-uk-grid true}
 
@@ -310,7 +346,11 @@
       [reservation-dates]
       [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 80px)" :overflow-x "scroll" :overflow-y "visible"}}
        [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict
-        {:data-uk-grid true :style {:width "max-content" :height "100%"}};}}
-
-        (for [item (sort-by :number @system-map)]
+        {:data-uk-grid true :style {:min-width "calc(100vw - 80px)" :width "max-content" :height "100%"}};}}
+        ;(str (systems-to-reservations @system-map))
+        (for [item (sort-by
+                    (juxt :reservation-type :number)
+                    (concat
+                     (systems-to-reservations @system-map)
+                     (szeged-tables)))]
           (-> ^{:key (str "h" item)} [reservation-column item]))]]]]))
