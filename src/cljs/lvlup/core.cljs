@@ -394,42 +394,43 @@
 
         actual-page (subscribe [:data "actual-page"])]
     (fn []  [:nav.uk-card-secondary
-             {:data-uk-navbar "mode: click" :style {:cursor "pointer" :height "50px"}}
+             {:data-uk-navbar "mode: click" :style {:cursor "pointer" :height "45px"}}
              [sidenav]
              [:div.uk-navbar-left
               [:ul.uk-navbar-nav
                [:li
                 [:a {:href "#" :style {:height "50px"}}
-
-                 [:img {:height "80" :width "80" :src "/img/lvlup-logo-transparent.png"}]
-                 [:h1.uk-margin-remove.uk-padding-remove-vertical.uk-padding-small.uk-animation-slide-left-medium {:style {:font-size "2.5em"}} (decide-title (str @actual-page))]]
+                 [:img {:height "50" :width "50" :src "/img/lvlup-logo-transparent.png"}]
+                 [:h1.uk-margin-remove.uk-padding-remove-vertical.uk-padding-small.uk-animation-slide-left-medium
+                  {:style {:font-size "2em"}}
+                  (decide-title (str @actual-page))]]
                 [:div.uk-navbar-dropdown ; {:data-uk-dropdown " animation: uk-animation-slide-top; duration: 500"}
                  [:ul.uk-nav.uk-navbar-dropdown-nav
                   [:li.uk-nav-header "LvLuP Szeged"]
                   [:li.nav-hover [:a {:href "/crusader/reservation"} "Foglalás"]]
                   [:li.nav-hover [:a {:href "/crusader/checkout"} "Kassza"]]
                   [:li.nav-hover [:a {:href "/crusader/registration"} "Felhasználók"]]
-                  [:li.nav-hover [:a {:href "/crusader/dungeon"} "Dungeon"]]
+                  [:li.nav-hover [:a {:href "/crusader/dungeon"} "Dungeon"]]]]]]]
 
-                  [:li.uk-nav-divider]
-                  [:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]] [:div.uk-navbar-right.uk-grid {:data-uk-grid true}
-                                                                     (if
-                                                                      @connection-state
-                                                                       [:div {:on-click #(chsk-disconnect!)} "Connected."]
-                                                                       [:div {:on-click #(chsk-reconnect!)} "Disconnected."])
-                                                                     [:img {:width "80px"
-                                                                            :src (if
-                                                                                  @connection-state
-                                                                                   "/Icons/connected.svg"
-                                                                                   "/Icons/disconnected.svg")}]
-                                                                     [:img {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "80px"}]
-                                                                     [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove {:style {:max-height "50vh" :overflow "auto" :z-index 1000}}
-                                                                      (doall
-                                                                       (map-indexed
-                                                                        #(-> ^{:key %1} [member-name %2 search])
-                                                                        (if (= "" (:id @search))
-                                                                          []
-                                                                          (filter-by-name-and-id  @members search false))))]]])))
+                  ;[:li.uk-nav-divider]
+                  ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
+             [:div.uk-navbar-right.uk-grid {:data-uk-grid true}
+              [:img {:width "65px"
+                     :data-uk-tooltip (if @connection-state
+                                        "Kapcsolódva"
+                                        "Szétkapcsolódva")
+                     :src (if
+                           @connection-state
+                            "/Icons/connected.svg"
+                            "/Icons/disconnected.svg")}]
+              [:img {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "70px"}]
+              [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove {:style {:max-height "50vh" :overflow "auto" :z-index 1000}}
+               (doall
+                (map-indexed
+                 #(-> ^{:key %1} [member-name %2 search])
+                 (if (= "" (:id @search))
+                   []
+                   (filter-by-name-and-id  @members search false))))]]])))
 
 (defn current-page []
   (let [actual-page (subscribe [:data "actual-page"])]

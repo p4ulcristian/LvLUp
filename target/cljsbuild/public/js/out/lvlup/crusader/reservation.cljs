@@ -215,10 +215,11 @@
         modal-data (subscribe [:data "modal-data"])
         opening-hours (fn [] (get szeged-opening-hours (.getDay @date)))
         slider-atom (atom nil)
-        reservation-details {:date ""
-                             :name ""
-                             :id nil
-                             :places []}
+        reservation-details (atom
+                             {:date ""
+                              :name ""
+                              :id nil
+                              :places []})
 
         slider-values (atom nil)]
     (reagent/create-class
@@ -276,7 +277,8 @@
            [display-time @slider-values]
            ;(str @reservations)
            [:div#no-ui-slider.uk-margin-small]; [:div (str range-config)]
-           [choose-systems]]
+           [choose-systems]
+           (str @reservation-details)]
 
           [:div.uk-modal-footer.uk-text-right
            [:button.uk-button.uk-button-default.uk-modal-close
