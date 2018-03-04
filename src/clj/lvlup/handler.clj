@@ -148,7 +148,7 @@
     (throw-unauthorized)
     (html5
      (head-crusader)
-     [:body.dragscroll {:class "body-container"}
+     [:body {:class "body-container"}
       mount-target
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js")

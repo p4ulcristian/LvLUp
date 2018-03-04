@@ -271,7 +271,7 @@
            [:div.uk-form.uk-padding-small.remove-padding-vertical
             [:div.uk-child-width-expand {:data-uk-grid true}
              [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-large.uk-text-center {:placeholder "Dátum"}]
-             [:input {:placeholder "Id"}]
+             [:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-input {:placeholder "Id"}]
              [:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-input {:placeholder "Teljes név"}]]]
            [display-time @slider-values]
            ;(str @reservations)
