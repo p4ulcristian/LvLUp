@@ -75,6 +75,7 @@
     (case action-type
       :dungeon/bug-check (.log js/console (str data))
       :dungeon/change (dispatch [:set-system data])
+      :dungeon/get-reservations (dispatch [:set-reservations (read-string data)])
       :dungeon/max-id (dispatch [:set-max-id data])
       :dungeon/get-dungeon (do
                              (case @actual-page

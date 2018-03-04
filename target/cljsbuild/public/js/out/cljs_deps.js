@@ -65,7 +65,7 @@ goog.addDependency("../com/cognitect/transit.js", ['com.cognitect.transit'], ['c
 goog.addDependency("../cognitect/transit.js", ['cognitect.transit'], ['com.cognitect.transit.eq', 'cljs.core', 'com.cognitect.transit.types', 'com.cognitect.transit', 'goog.math.Long']);
 goog.addDependency("../ajax/xhrio.js", ['ajax.xhrio'], ['goog.net.XhrManager', 'goog.net.XhrIo', 'goog.json', 'goog.Uri', 'cljs.core', 'goog.net.EventType', 'ajax.protocols', 'goog.events', 'goog.net.ErrorCode']);
 goog.addDependency("../ajax/core.js", ['ajax.core'], ['goog.net.XhrIo', 'ajax.xml_http_request', 'goog.json', 'goog.Uri.QueryData', 'cljs.core', 'cognitect.transit', 'goog.structs', 'goog.json.Serializer', 'ajax.protocols', 'clojure.string', 'ajax.xhrio']);
-goog.addDependency("../lvlup/events.js", ['lvlup.events'], ['ajax.core', 'goog.string', 'cljs.core', 'goog.string.format', 'clojure.string', 'cljs.reader', 're_frame.core']);
+goog.addDependency("../lvlup/events.js", ['lvlup.events'], ['ajax.core', 'goog.string', 'cljs.core', 'clojure.set', 'goog.string.format', 'clojure.string', 'cljs.reader', 're_frame.core']);
 goog.addDependency("../cljs/tools/reader/impl/utils.js", ['cljs.tools.reader.impl.utils'], ['goog.string', 'cljs.core', 'clojure.string']);
 goog.addDependency("../cljs/tools/reader/reader_types.js", ['cljs.tools.reader.reader_types'], ['goog.string', 'cljs.core', 'goog.string.StringBuffer', 'cljs.tools.reader.impl.utils']);
 goog.addDependency("../cljs/tools/reader/impl/commons.js", ['cljs.tools.reader.impl.commons'], ['cljs.core', 'cljs.tools.reader.reader_types', 'cljs.tools.reader.impl.utils']);

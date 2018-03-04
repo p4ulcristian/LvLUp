@@ -406,8 +406,7 @@
                 [:div.uk-navbar-dropdown ; {:data-uk-dropdown " animation: uk-animation-slide-top; duration: 500"}
                  [:ul.uk-nav.uk-navbar-dropdown-nav
                   [:li.uk-nav-header "LvLuP Szeged"]
-                  [:li.nav-hover [:a {:href "/crusader/reservation/table"} "Asztalfoglalás"]]
-                  [:li.nav-hover [:a {:href "/crusader/reservation/system"} "Gépfoglalás"]]
+                  [:li.nav-hover [:a {:href "/crusader/reservation"} "Foglalás"]]
                   [:li.nav-hover [:a {:href "/crusader/checkout"} "Kassza"]]
                   [:li.nav-hover [:a {:href "/crusader/registration"} "Felhasználók"]]
                   [:li.nav-hover [:a {:href "/crusader/dungeon"} "Dungeon"]]
@@ -452,12 +451,9 @@
          "registration"  [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "contain" :background-repeat "repeat-y"  :min-height "100vh" :min-width "100vw"}}
                           [crusader-navbar]
                           [registration]]
-         "table"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
-                   [crusader-navbar]
-                   [reservation]]
-         "system"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
-                    [crusader-navbar]
-                    [reservation]]
+         "reservation"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
+                         [crusader-navbar]
+                         [reservation]]
          "home-page"   [home-page (:parameters @app-state)]
          [not-found])])))
 
@@ -475,10 +471,10 @@
                     (dispatch [:set-actual-page "crusader"])
                     (chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
 
-(secretary/defroute "/crusader/reservation/:a" [a]
+(secretary/defroute "/crusader/reservation" []
                     (start-router!)
 
-                    (dispatch [:set-actual-page a])
+                    (dispatch [:set-actual-page "reservation"])
                     (dispatch [:init-reservation-data])
                     (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
                     (chsk-send! [:dungeon/get-dungeon]))

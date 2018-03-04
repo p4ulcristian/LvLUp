@@ -12,7 +12,16 @@
     width: 230px;
 }
 
+.add-reservation:hover{
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
 
+}
+
+.add-reservation:hover{
+  transform: scale(1.2);
+
+}
 
 
 
