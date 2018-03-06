@@ -15,23 +15,23 @@ lvlup.sente.notification = (function lvlup$sente$notification(valami){
 return UIkit.notification([cljs.core.str("<div class='uk-padding-small uk-card uk-card-secondary notification-style'><span uk-icon='icon: check'></span> "),cljs.core.str(valami),cljs.core.str("</div>")].join(''),cljs.core.clj__GT_js.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"pos","pos",-864607220),"bottom-left"], null)));
 });
 lvlup.sente.notification_sente = (function lvlup$sente$notification_sente(var_args){
-var args__37885__auto__ = [];
-var len__37878__auto___49585 = arguments.length;
-var i__37879__auto___49586 = (0);
+var args__37884__auto__ = [];
+var len__37877__auto___55555 = arguments.length;
+var i__37878__auto___55556 = (0);
 while(true){
-if((i__37879__auto___49586 < len__37878__auto___49585)){
-args__37885__auto__.push((arguments[i__37879__auto___49586]));
+if((i__37878__auto___55556 < len__37877__auto___55555)){
+args__37884__auto__.push((arguments[i__37878__auto___55556]));
 
-var G__49587 = (i__37879__auto___49586 + (1));
-i__37879__auto___49586 = G__49587;
+var G__55557 = (i__37878__auto___55556 + (1));
+i__37878__auto___55556 = G__55557;
 continue;
 } else {
 }
 break;
 }
 
-var argseq__37886__auto__ = ((((1) < args__37885__auto__.length))?(new cljs.core.IndexedSeq(args__37885__auto__.slice((1)),(0),null)):null);
-return lvlup.sente.notification_sente.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),argseq__37886__auto__);
+var argseq__37885__auto__ = ((((1) < args__37884__auto__.length))?(new cljs.core.IndexedSeq(args__37884__auto__.slice((1)),(0),null)):null);
+return lvlup.sente.notification_sente.cljs$core$IFn$_invoke$arity$variadic((arguments[(0)]),argseq__37885__auto__);
 });
 
 lvlup.sente.notification_sente.cljs$core$IFn$_invoke$arity$variadic = (function (fmt,args){
@@ -41,27 +41,27 @@ return lvlup.sente.notification.call(null,[cljs.core.str(msg)].join(''));
 
 lvlup.sente.notification_sente.cljs$lang$maxFixedArity = (1);
 
-lvlup.sente.notification_sente.cljs$lang$applyTo = (function (seq49583){
-var G__49584 = cljs.core.first.call(null,seq49583);
-var seq49583__$1 = cljs.core.next.call(null,seq49583);
-return lvlup.sente.notification_sente.cljs$core$IFn$_invoke$arity$variadic(G__49584,seq49583__$1);
+lvlup.sente.notification_sente.cljs$lang$applyTo = (function (seq55553){
+var G__55554 = cljs.core.first.call(null,seq55553);
+var seq55553__$1 = cljs.core.next.call(null,seq55553);
+return lvlup.sente.notification_sente.cljs$core$IFn$_invoke$arity$variadic(G__55554,seq55553__$1);
 });
 
-var rand_chsk_type_49590 = new cljs.core.Keyword(null,"auto","auto",-566279492);
-var packer_49591 = new cljs.core.Keyword(null,"edn","edn",1317840885);
-var map__49588_49592 = taoensso.sente.make_channel_socket_client_BANG_.call(null,"/chsk",new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"type","type",1174270348),rand_chsk_type_49590,new cljs.core.Keyword(null,"packer","packer",66077544),packer_49591], null));
-var map__49588_49593__$1 = ((((!((map__49588_49592 == null)))?((((map__49588_49592.cljs$lang$protocol_mask$partition0$ & (64))) || (map__49588_49592.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__49588_49592):map__49588_49592);
-var chsk_49594 = cljs.core.get.call(null,map__49588_49593__$1,new cljs.core.Keyword(null,"chsk","chsk",-863703081));
-var ch_recv_49595 = cljs.core.get.call(null,map__49588_49593__$1,new cljs.core.Keyword(null,"ch-recv","ch-recv",-990916861));
-var send_fn_49596 = cljs.core.get.call(null,map__49588_49593__$1,new cljs.core.Keyword(null,"send-fn","send-fn",351002041));
-var state_49597 = cljs.core.get.call(null,map__49588_49593__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
-lvlup.sente.chsk = chsk_49594;
+var rand_chsk_type_55560 = new cljs.core.Keyword(null,"auto","auto",-566279492);
+var packer_55561 = new cljs.core.Keyword(null,"edn","edn",1317840885);
+var map__55558_55562 = taoensso.sente.make_channel_socket_client_BANG_.call(null,"/chsk",new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"type","type",1174270348),rand_chsk_type_55560,new cljs.core.Keyword(null,"packer","packer",66077544),packer_55561], null));
+var map__55558_55563__$1 = ((((!((map__55558_55562 == null)))?((((map__55558_55562.cljs$lang$protocol_mask$partition0$ & (64))) || (map__55558_55562.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__55558_55562):map__55558_55562);
+var chsk_55564 = cljs.core.get.call(null,map__55558_55563__$1,new cljs.core.Keyword(null,"chsk","chsk",-863703081));
+var ch_recv_55565 = cljs.core.get.call(null,map__55558_55563__$1,new cljs.core.Keyword(null,"ch-recv","ch-recv",-990916861));
+var send_fn_55566 = cljs.core.get.call(null,map__55558_55563__$1,new cljs.core.Keyword(null,"send-fn","send-fn",351002041));
+var state_55567 = cljs.core.get.call(null,map__55558_55563__$1,new cljs.core.Keyword(null,"state","state",-1988618099));
+lvlup.sente.chsk = chsk_55564;
 
-lvlup.sente.ch_chsk = ch_recv_49595;
+lvlup.sente.ch_chsk = ch_recv_55565;
 
-lvlup.sente.chsk_send_BANG_ = send_fn_49596;
+lvlup.sente.chsk_send_BANG_ = send_fn_55566;
 
-lvlup.sente.chsk_state = state_49597;
+lvlup.sente.chsk_state = state_55567;
 if(typeof lvlup.sente._event_msg_handler !== 'undefined'){
 } else {
 /**
@@ -78,38 +78,38 @@ return (new cljs.core.MultiFn(cljs.core.symbol.call(null,"lvlup.sente","-event-m
 /**
  * Wraps `-event-msg-handler` with logging, error catching, etc.
  */
-lvlup.sente.event_msg_handler = (function lvlup$sente$event_msg_handler(p__49598){
-var map__49601 = p__49598;
-var map__49601__$1 = ((((!((map__49601 == null)))?((((map__49601.cljs$lang$protocol_mask$partition0$ & (64))) || (map__49601.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__49601):map__49601);
-var ev_msg = map__49601__$1;
-var id = cljs.core.get.call(null,map__49601__$1,new cljs.core.Keyword(null,"id","id",-1388402092));
-var _QMARK_data = cljs.core.get.call(null,map__49601__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
-var event = cljs.core.get.call(null,map__49601__$1,new cljs.core.Keyword(null,"event","event",301435442));
+lvlup.sente.event_msg_handler = (function lvlup$sente$event_msg_handler(p__55568){
+var map__55571 = p__55568;
+var map__55571__$1 = ((((!((map__55571 == null)))?((((map__55571.cljs$lang$protocol_mask$partition0$ & (64))) || (map__55571.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__55571):map__55571);
+var ev_msg = map__55571__$1;
+var id = cljs.core.get.call(null,map__55571__$1,new cljs.core.Keyword(null,"id","id",-1388402092));
+var _QMARK_data = cljs.core.get.call(null,map__55571__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
+var event = cljs.core.get.call(null,map__55571__$1,new cljs.core.Keyword(null,"event","event",301435442));
 return lvlup.sente._event_msg_handler.call(null,ev_msg);
 });
-cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword(null,"default","default",-1987822328),(function (p__49603){
-var map__49604 = p__49603;
-var map__49604__$1 = ((((!((map__49604 == null)))?((((map__49604.cljs$lang$protocol_mask$partition0$ & (64))) || (map__49604.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__49604):map__49604);
-var ev_msg = map__49604__$1;
-var event = cljs.core.get.call(null,map__49604__$1,new cljs.core.Keyword(null,"event","event",301435442));
+cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword(null,"default","default",-1987822328),(function (p__55573){
+var map__55574 = p__55573;
+var map__55574__$1 = ((((!((map__55574 == null)))?((((map__55574.cljs$lang$protocol_mask$partition0$ & (64))) || (map__55574.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__55574):map__55574);
+var ev_msg = map__55574__$1;
+var event = cljs.core.get.call(null,map__55574__$1,new cljs.core.Keyword(null,"event","event",301435442));
 return lvlup.sente.notification_sente.call(null,"Unhandled event: %s",event);
 }));
-cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword("chsk","state","chsk/state",-1991397620),(function (p__49606){
-var map__49607 = p__49606;
-var map__49607__$1 = ((((!((map__49607 == null)))?((((map__49607.cljs$lang$protocol_mask$partition0$ & (64))) || (map__49607.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__49607):map__49607);
-var ev_msg = map__49607__$1;
-var _QMARK_data = cljs.core.get.call(null,map__49607__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
-var open_QMARK_ = cljs.core.get.call(null,map__49607__$1,new cljs.core.Keyword(null,"open?","open?",1238443125));
-var vec__49609 = (function (){var e = (function (){try{if(cljs.core.vector_QMARK_.call(null,_QMARK_data)){
+cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword("chsk","state","chsk/state",-1991397620),(function (p__55576){
+var map__55577 = p__55576;
+var map__55577__$1 = ((((!((map__55577 == null)))?((((map__55577.cljs$lang$protocol_mask$partition0$ & (64))) || (map__55577.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__55577):map__55577);
+var ev_msg = map__55577__$1;
+var _QMARK_data = cljs.core.get.call(null,map__55577__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
+var open_QMARK_ = cljs.core.get.call(null,map__55577__$1,new cljs.core.Keyword(null,"open?","open?",1238443125));
+var vec__55579 = (function (){var e = (function (){try{if(cljs.core.vector_QMARK_.call(null,_QMARK_data)){
 return null;
 } else {
 return taoensso.truss.impl._dummy_error;
 }
-}catch (e49612){if((e49612 instanceof Error)){
-var e = e49612;
+}catch (e55582){if((e55582 instanceof Error)){
+var e = e55582;
 return e;
 } else {
-throw e49612;
+throw e55582;
 
 }
 }})();
@@ -119,8 +119,8 @@ return _QMARK_data;
 return taoensso.truss.impl._invar_violation_BANG_.call(null,true,"lvlup.sente",null,"(vector? ?data)",_QMARK_data,e,null);
 }
 })();
-var old_state_map = cljs.core.nth.call(null,vec__49609,(0),null);
-var new_state_map = cljs.core.nth.call(null,vec__49609,(1),null);
+var old_state_map = cljs.core.nth.call(null,vec__55579,(0),null);
+var new_state_map = cljs.core.nth.call(null,vec__55579,(1),null);
 if(cljs.core.truth_(new cljs.core.Keyword(null,"first-open?","first-open?",396686530).cljs$core$IFn$_invoke$arity$1(new_state_map))){
 lvlup.sente.notification_sente.call(null,"Connected to LvLUp :)",new_state_map);
 } else {
@@ -128,17 +128,17 @@ lvlup.sente.notification_sente.call(null,"Connected to LvLUp :)",new_state_map);
 
 return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-connection-state","set-connection-state",1425405326),new cljs.core.Keyword(null,"open?","open?",1238443125).cljs$core$IFn$_invoke$arity$1(new_state_map)], null));
 }));
-cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword("chsk","recv","chsk/recv",561097091),(function (p__49613){
-var map__49614 = p__49613;
-var map__49614__$1 = ((((!((map__49614 == null)))?((((map__49614.cljs$lang$protocol_mask$partition0$ & (64))) || (map__49614.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__49614):map__49614);
-var ev_msg = map__49614__$1;
-var _QMARK_data = cljs.core.get.call(null,map__49614__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
+cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword("chsk","recv","chsk/recv",561097091),(function (p__55583){
+var map__55584 = p__55583;
+var map__55584__$1 = ((((!((map__55584 == null)))?((((map__55584.cljs$lang$protocol_mask$partition0$ & (64))) || (map__55584.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__55584):map__55584);
+var ev_msg = map__55584__$1;
+var _QMARK_data = cljs.core.get.call(null,map__55584__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
 var actual_page = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"actual-page"], null));
-var vec__49616 = _QMARK_data;
-var action_type = cljs.core.nth.call(null,vec__49616,(0),null);
-var data = cljs.core.nth.call(null,vec__49616,(1),null);
-var G__49619 = (((action_type instanceof cljs.core.Keyword))?action_type.fqn:null);
-switch (G__49619) {
+var vec__55586 = _QMARK_data;
+var action_type = cljs.core.nth.call(null,vec__55586,(0),null);
+var data = cljs.core.nth.call(null,vec__55586,(1),null);
+var G__55589 = (((action_type instanceof cljs.core.Keyword))?action_type.fqn:null);
+switch (G__55589) {
 case "dungeon/bug-check":
 return console.log([cljs.core.str(data)].join(''));
 
@@ -156,8 +156,8 @@ return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 
 
 break;
 case "dungeon/get-dungeon":
-var G__49620 = cljs.core.deref.call(null,actual_page);
-switch (G__49620) {
+var G__55590 = cljs.core.deref.call(null,actual_page);
+switch (G__55590) {
 case "table":
 re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-systems","set-systems",-1796466809),new cljs.core.PersistentVector(null, 12, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(1),new cljs.core.Keyword(null,"name","name",1843675177),"1. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(2),new cljs.core.Keyword(null,"name","name",1843675177),"2. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(3),new cljs.core.Keyword(null,"name","name",1843675177),"3. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(4),new cljs.core.Keyword(null,"name","name",1843675177),"4. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(5),new cljs.core.Keyword(null,"name","name",1843675177),"5. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(6),new cljs.core.Keyword(null,"name","name",1843675177),"6. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(7),new cljs.core.Keyword(null,"name","name",1843675177),"7. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(8),new cljs.core.Keyword(null,"name","name",1843675177),"8. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(9),new cljs.core.Keyword(null,"name","name",1843675177),"9. Fenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(10),new cljs.core.Keyword(null,"name","name",1843675177),"10. Lenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(11),new cljs.core.Keyword(null,"name","name",1843675177),"11. Lenti asztal"], null),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(12),new cljs.core.Keyword(null,"name","name",1843675177),"12. Lenti asztal"], null)], null)], null));
 
@@ -197,19 +197,19 @@ return console.log([cljs.core.str(action_type),cljs.core.str(" - "),cljs.core.st
 
 }
 }));
-cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword("chsk","handshake","chsk/handshake",64910686),(function (p__49623){
-var map__49624 = p__49623;
-var map__49624__$1 = ((((!((map__49624 == null)))?((((map__49624.cljs$lang$protocol_mask$partition0$ & (64))) || (map__49624.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__49624):map__49624);
-var ev_msg = map__49624__$1;
-var _QMARK_data = cljs.core.get.call(null,map__49624__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
+cljs.core._add_method.call(null,lvlup.sente._event_msg_handler,new cljs.core.Keyword("chsk","handshake","chsk/handshake",64910686),(function (p__55593){
+var map__55594 = p__55593;
+var map__55594__$1 = ((((!((map__55594 == null)))?((((map__55594.cljs$lang$protocol_mask$partition0$ & (64))) || (map__55594.cljs$core$ISeq$))?true:false):false))?cljs.core.apply.call(null,cljs.core.hash_map,map__55594):map__55594);
+var ev_msg = map__55594__$1;
+var _QMARK_data = cljs.core.get.call(null,map__55594__$1,new cljs.core.Keyword(null,"?data","?data",-9471433));
 var actual_page = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"actual-page"], null));
-var vec__49626 = _QMARK_data;
-var _QMARK_uid = cljs.core.nth.call(null,vec__49626,(0),null);
-var _QMARK_csrf_token = cljs.core.nth.call(null,vec__49626,(1),null);
-var _QMARK_handshake_data = cljs.core.nth.call(null,vec__49626,(2),null);
+var vec__55596 = _QMARK_data;
+var _QMARK_uid = cljs.core.nth.call(null,vec__55596,(0),null);
+var _QMARK_csrf_token = cljs.core.nth.call(null,vec__55596,(1),null);
+var _QMARK_handshake_data = cljs.core.nth.call(null,vec__55596,(2),null);
 lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-dungeon","dungeon/get-dungeon",1397841491)], null));
 
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-max-id","dungeon/get-max-id",-1922889201)], null));
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-max-id","dungeon/get-max-id",-1922889201)], null),lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-reservations","dungeon/get-reservations",436689929)], null)));
 
 lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-invoices","dungeon/get-invoices",1865227055)], null));
 

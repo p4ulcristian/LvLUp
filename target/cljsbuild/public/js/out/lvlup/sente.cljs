@@ -115,7 +115,8 @@
         [?uid ?csrf-token ?handshake-data] ?data]
     (do
       (chsk-send! [:dungeon/get-dungeon])
-      (chsk-send! [:dungeon/get-max-id])
+      (chsk-send! [:dungeon/get-max-id]
+                  (chsk-send! [:dungeon/get-reservations]))
       (chsk-send! [:dungeon/get-invoices])
       (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
 

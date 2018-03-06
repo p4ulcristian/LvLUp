@@ -476,7 +476,6 @@
                     (start-router!)
 
                     (dispatch [:set-actual-page "reservation"])
-                    (dispatch [:init-reservation-data])
                     (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
                     (chsk-send! [:dungeon/get-dungeon]))
 

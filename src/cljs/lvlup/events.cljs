@@ -17,13 +17,13 @@
     :max-id 0
     :active-member 0
     :connection-state false
-    :reservation-data {:name ""
-                       :date ""
-
-                       :start-hour ""
-                       :finish-hour ""
-                       :system-name []}
-    :modal-data {}
+    :reservation-modal {:name ""
+                        :id ""
+                        :date (js/Date.)
+                        :start 0
+                        :finish 0
+                        :places []}
+    :modal-data nil
     :waiting-pool []
     :sidenav-state 1
     :search-member ""
@@ -59,19 +59,22 @@
    (assoc db :active-member the-map)))
 
 (reg-event-db
- :set-reservation-data
+ :set-reservation-modal
  (fn [db [_ what-key the-map]]
-   (assoc db :reservation-data (assoc (:reservation-data db) what-key the-map))))
+   (.log js/console (str what-key))
+   (case what-key
 
-(reg-event-db
- :init-reservation-data
- (fn [db [_ what-key the-map]]
-   (assoc db :reservation-data {:name ""
-                                :date ""
-
-                                :start-hour ""
-                                :finish-hour ""
-                                :system-name []})))
+     "replace" (assoc db :reservation-modal the-map)
+     "reset" (assoc db :reservation-modal {:name ""
+                                           :id ""
+                                           :date (:date db)
+                                           :start 0
+                                           :finish 0
+                                           :places []})
+     :date (assoc db
+                  :reservation-modal (assoc (:reservation-modal db) what-key the-map)
+                  :date (js/Date. the-map))
+     (assoc db :reservation-modal (assoc (:reservation-modal db) what-key the-map)))))
 
 (reg-event-db
  :set-system
@@ -119,17 +122,6 @@
                          (fn [a] (= (:id %) (:id a)))
                          the-map)
                        (:players db)))))
-
-(reg-event-db
- :delete-reservation
- (fn [db [_ id]]
-   (POST "/delete-reservation"
-         {:params id
-          :handler #(do
-                      (dispatch [:get-reservations])
-                      (.notification js/UIkit "Foglalás törölve!" (clj->js {"pos" "top-right"})))
-          :error-handler #(js/alert "semmi")})
-   db))
 
 (reg-event-db
  :set-reservations

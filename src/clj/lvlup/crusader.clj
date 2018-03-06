@@ -234,7 +234,8 @@
                    (map
                     #(dissoc % :_id)
                     (with-collection db "reservations"
-                                     (find {:date "2018-03-03"})))))])))
+                                     (find {})))))])))
+
   (defn add-reservations [{:keys [event]}]
     (let [[key change-map] event]
       (mc/insert db "reservations" change-map)
@@ -244,7 +245,7 @@
                    (map
                     #(dissoc % :_id)
                     (with-collection db "reservations"
-                                     (find {:date "2018-03-03"})))))])))
+                                     (find {})))))])))
 
                                                   ;(fields [:id :name :season-pass])
                                                   ;; it is VERY IMPORTANT to use array maps with sort
