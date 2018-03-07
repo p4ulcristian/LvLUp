@@ -140,18 +140,25 @@
  :set-members
  (fn [db [_ the-map]]
       ;  (.log js/console (str (set (clojure.set/union (:players db) the-map))))
-   (assoc db :players (set (clojure.set/union (:players db) the-map)))))
+   (assoc db :players (concat (:players db) the-map))))
 
 (reg-event-db
  :remove-member
  (fn [db [_ the-map]]
-        ;(.log js/console (str (:players (assoc db :players (clojure.set/union (:players db) the-map)))))
-        ;(.log js/console (str (remove #(some (fn [a] (= (:id %) (:id a))) the-map)) (:players db)))
-   (assoc db :players (remove
-                       #(some
-                         (fn [a] (= (:id %) (:id a)))
-                         the-map)
-                       (:players db)))))
+   (assoc db :players (vec
+                       (remove
+                        #(= (:id %) (:id the-map))
+                        (:players db))))))
+
+(reg-event-db
+ :replace-member
+ (fn [db [_ the-map]]
+   (assoc db :players (vec
+                       (conj
+                        (remove
+                         #(= (:id %) (:id the-map))
+                         (:players db))
+                        the-map)))))
 
 (reg-event-db
  :set-reservations

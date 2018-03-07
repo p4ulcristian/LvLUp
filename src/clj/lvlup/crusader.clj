@@ -115,27 +115,29 @@
                        (all-member-id)
                        (map inc (range (inc (count (all-member-id)))))))))))]
 
-      (send-all [:dungeon/max-id (smallest-diff)]))) (defn dungeon-change [{:keys [event]}]
-                                                       (let [[key change-map] event]
-                                                         (mc/update db "dungeon" {:name (:name change-map)}
-                                                                    change-map)
+      (send-all [:dungeon/max-id (smallest-diff)])))
+  (defn dungeon-change [{:keys [event]}]
+    (let [[key change-map] event]
+      (mc/update db "dungeon" {:name (:name change-map)}
+                 change-map)
 
-                                                         (send-all [:dungeon/change change-map]))) (defn modify-invoice [{:keys [event]}]
-                                                                                                     (let [[key change-map] event
-                                                                                                           oid (ObjectId. (:id change-map))
-                                                                                                           the-invoice (fn [] (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))]
-                                                                                                       (send-all [:dungeon/bug-check (str oid " halika " (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))])
+      (send-all [:dungeon/change change-map])))
+  (defn modify-invoice [{:keys [event]}]
+    (let [[key change-map] event
+          oid (ObjectId. (:id change-map))
+          the-invoice (fn [] (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))]
+      (send-all [:dungeon/bug-check (str oid " halika " (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))
 
-                                                                                                       (mc/insert db "invoices" (the-invoice))
-                                                                                                       (mc/remove-by-id db "unpayedinvoices" oid)
+                 (mc/insert db "invoices" (the-invoice))
+                 (mc/remove-by-id db "unpayedinvoices" oid)
 
-                                                                                                       (send-all [:dungeon/get-invoices
-                                                                                                                  (str
-                                                                                                                   (vec
-                                                                                                                    (map
-                                                                                                                     #(assoc % :_id (str (:_id %)))
-                                                                                                                     (with-collection db "unpayedinvoices"))))])))
-                                ;(find {:payed false})))))])))
+                 (send-all [:dungeon/get-invoices
+                            (str
+                             (vec
+                              (map
+                               #(assoc % :_id (str (:_id %)))
+                               (with-collection db "unpayedinvoices"))))])])))
+    ;(find {:payed false})))))])))
 
   (defn add-invoice [{:keys [event]}]
     (let [[key change-map] event]
@@ -157,75 +159,55 @@
                   (vec
                    (map
                     #(dissoc % :_id)
-                    (with-collection db "members"))))]))) (defn get-invoices []
+                    (with-collection db "members"))))])))
+  (defn get-invoices []
 
-                                                            (send-all [:dungeon/get-invoices
-                                                                       (str
-                                                                        (vec
-                                                                         (map
-                                                                          #(assoc % :_id (str (:_id %)))
-                                                                          (with-collection db "unpayedinvoices"))))]))
+    (send-all [:dungeon/get-invoices
+               (str
+                (vec
+                 (map
+                  #(assoc % :_id (str (:_id %)))
+                  (with-collection db "unpayedinvoices"))))]))
                                 ;(find {:payed false})))))]))
 
   (defn update-member [{:keys [event]}]
     (let [[key change-map] event]
-
       (mc/update db "members" {:id (:id change-map)} change-map)
+      ;(mc/find db "members" {:id (:id change-map)})
+      (send-all [:dungeon/replace-member (dissoc
+                                          (mc/find-one-as-map db "members" {:id (:id change-map)})
+                                          :_id)])))
 
-      (send-all [:dungeon/get-members (str
-                                       (vec
-                                        (map
-                                         #(dissoc % :_id)
-                                         (with-collection db "members"))))]))) (defn remove-member [{:keys [event id ?data ring-req ?reply-fn send-fn]}]
-                                                                                 (let [[key change-map] event]
+  (defn remove-member [{:keys [event id ?data ring-req ?reply-fn send-fn]}]
+    (let [[key change-map] event]
+      (mc/remove db "members" {:id change-map})))
 
-                                                                                   (mc/remove db "members" {:id change-map})
-                                                                                   (debugf (str "dsadsadasdas"))))
   (defn add-member [{:keys [event]}]
     (let [[key change-map] event]
 
       (mc/insert db "members" (assoc change-map :season-pass 0 :total-hours 0))
-      (send-all [:dungeon/get-members (str
-                                       (vec
-                                        (map
-                                         #(dissoc % :_id)
-                                         (with-collection db "members"))))])))
+      (send-all [:dungeon/replace-member
+                 (mc/find-one-as-map db "members" {:id (:id change-map)} (assoc change-map :season-pass 0 :total-hours 0))])))
 
   (defn get-members [{:keys [event]}]
     (let [[key change-map] event]
-      (send-all [:dungeon/get-members (str
-                                       (vec
-                                        (map
-                                         #(dissoc % :_id)
-                                         (with-collection db "members"
-                                                          (find {$or [(if (= "" (:search change-map))
-                                                                        {}
-                                                                        {$or [{:name {$regex (str (:search change-map) ".*") $options "i"}}
-                                                                              {:id (read-string (:search change-map))}]})]})
+      (send-all [:dungeon/get-members
+                 (str
+                  (vec
+                   (map
+                    #(dissoc % :_id)
+                    (with-collection
+                     db "members"
+                     (find {$or [(if (= "" (:search change-map))
+                                   {}
+                                   {$or [{:name {$regex (str (:search change-map) ".*") $options "i"}}
+                                         {:id (read-string (:search change-map))}]})]})
 
                                                   ;(fields [:id :name :season-pass])
                                                   ;; it is VERY IMPORTANT to use array maps with sort
-                                                          (sort (array-map :id -1 :name 1))
-                                                          (limit 20)
-                                                          (skip (:number change-map))))))])))
-
-  (defn get-members [{:keys [event]}]
-    (let [[key change-map] event]
-      (send-all [:dungeon/get-members (str
-                                       (vec
-                                        (map
-                                         #(dissoc % :_id)
-                                         (with-collection db "members"
-                                                          (find {$or [(if (= "" (:search change-map))
-                                                                        {}
-                                                                        {$or [{:name {$regex (str (:search change-map) ".*") $options "i"}}
-                                                                              {:id (read-string (:search change-map))}]})]})
-
-                                                  ;(fields [:id :name :season-pass])
-                                                  ;; it is VERY IMPORTANT to use array maps with sort
-                                                          (sort (array-map :id -1 :name 1))
-                                                          (limit 20)
-                                                          (skip (:number change-map))))))])))
+                     (sort (array-map :id -1 :name 1))
+                     (limit 20)
+                     (skip (:number change-map))))))])))
   (defn get-reservations [{:keys [event]}]
     (let [[key change-map] event]
       (str

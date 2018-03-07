@@ -795,7 +795,7 @@
       (fn [member index]
         [:div.uk-width-1-2 {:id (str "user-" index)}
 
-         [:div.uk-card.uk-card-secondary {:style {:opacity 0.85}}
+         [:div.uk-card.uk-card-secondary ;{:style {:opacity 0.85}}
           [:div.uk-width-1-1.uk-padding-remove.uk-inline
            [:h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove {:style {:color "white !important"}}
             (str "Id: " (:id member) "  - Bérlet: " (:season-pass member))]
@@ -816,8 +816,8 @@
          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
           {:on-click #(do
 
-                        (chsk-send! [:dungeon/update-member]
-                                    (assoc @modify-atom :season-pass (- (:season-pass member) 1)))
+                        (chsk-send! [:dungeon/update-member
+                                     (assoc @modify-atom :season-pass (- (:season-pass member) 1))])
                         (notification (str (:name @modify-atom) " - bérlete 1-gyel csökkent")))}
           "- 1"]
          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
@@ -889,29 +889,30 @@
 
 (defn registration []
   (let [members (subscribe [:data "players"])
-        search (subscribe [:data "search-member"])] (reagent/create-class
-                                                     {:reagent-render
-                                                      (fn []
-                                                        [:div.uk-container
+        search (subscribe [:data "search-member"])]
+    (reagent/create-class
+     {:reagent-render
+      (fn []
+        [:div.uk-container
 
                ;[:div (str (filter-by-name-and-id  @members search true))]
 
-                                                         [registration-input members]
+         [registration-input members]
 
-                                                         [:div.uk-grid.uk-margin-remove.uk-padding-small
+         [:div.uk-grid.uk-margin-remove.uk-padding-small
 
-                                                          {:id "member"
-                                                           :class "uk-child-width-1-3@m member"
+          {:id "member"
+           :class "uk-child-width-1-3@m member"
                                 ;:data-uk-scrollspy
                                 ;"cls: uk-animation-slide-left; target: > div > .uk-card; delay: 0; repeat: true"
-                                                           :data-uk-grid true}
+           :data-uk-grid true}
 
                              ;[:h3 (str "hello" @members)]
                              ;(str (sort-by :id #(> %2 %1) (filter-by-name-and-id  @members search true)))
 
-                                                          (map-indexed
-                                                           #(-> ^{:key (:id %2)} [modify-member %2 %1])
-                                                           (sort-by :id #(> %1 %2) (filter-by-name-and-id  @members search true)))]])})))
+          (map-indexed
+           #(-> ^{:key (:id %2)} [modify-member %2 %1])
+           (sort-by :id #(> %1 %2) (filter-by-name-and-id  @members search true)))]])})))
 
 (defn show-20-more [number]
   (let [search (subscribe [:data "search-member"])]

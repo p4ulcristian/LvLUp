@@ -79,29 +79,15 @@
       :dungeon/max-id (dispatch [:set-max-id data])
       :dungeon/get-dungeon (do
                              (case @actual-page
-                               "table" (do
-                                         (dispatch [:set-systems
-                                                    [{:number 1 :name "1. Fenti asztal"}
-                                                     {:number 2 :name "2. Fenti asztal"}
-                                                     {:number 3 :name "3. Fenti asztal"}
-                                                     {:number 4 :name "4. Fenti asztal"}
-                                                     {:number 5 :name "5. Fenti asztal"}
-                                                     {:number 6 :name "6. Fenti asztal"}
-                                                     {:number 7 :name "7. Fenti asztal"}
-                                                     {:number 8 :name "8. Fenti asztal"}
-                                                     {:number 9 :name "9. Fenti asztal"}
-                                                     {:number 10 :name "10. Lenti asztal"}
-                                                     {:number 11 :name "11. Lenti asztal"}
-                                                     {:number 12 :name "12. Lenti asztal"}]]))
-                                         ;(dispatch [:get-reservations]))
-                               "system" (do
-                                          (dispatch [:set-systems (read-string data)])
-                                          (dispatch [:get-reservations]))
-                               (dispatch [:set-systems (read-string data)]))) :dungeon/get-members (do
+                               (dispatch [:set-systems (read-string data)])))
+      :dungeon/replace-member (dispatch [:replace-member data])
+                               ;(chsk-send! [:dungeon/get-max-id])
+                               ;(dispatch [:set-members (read-string data)]))
+      :dungeon/get-members (do
                                ;(.log js/console (str "meh-" (read-string data)))
-                                                                                                     (dispatch [:remove-member (read-string data)])
-                                                                                                     (chsk-send! [:dungeon/get-max-id])
-                                                                                                     (dispatch [:set-members (read-string data)]))
+                             (dispatch [:remove-member (read-string data)])
+                             (chsk-send! [:dungeon/get-max-id])
+                             (dispatch [:set-members (read-string data)]))
 
       :dungeon/waiting-pool (dispatch [:set-waiting-pool (read-string data)])
       :dungeon/get-invoices (dispatch [:set-invoices (read-string data)])

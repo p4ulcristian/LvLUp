@@ -34,23 +34,23 @@ re_frame.cofx.register = cljs.core.partial.call(null,re_frame.registrar.register
  * 
  */
 re_frame.cofx.inject_cofx = (function re_frame$cofx$inject_cofx(var_args){
-var args39132 = [];
-var len__37879__auto___39135 = arguments.length;
-var i__37880__auto___39136 = (0);
+var args39083 = [];
+var len__37879__auto___39086 = arguments.length;
+var i__37880__auto___39087 = (0);
 while(true){
-if((i__37880__auto___39136 < len__37879__auto___39135)){
-args39132.push((arguments[i__37880__auto___39136]));
+if((i__37880__auto___39087 < len__37879__auto___39086)){
+args39083.push((arguments[i__37880__auto___39087]));
 
-var G__39137 = (i__37880__auto___39136 + (1));
-i__37880__auto___39136 = G__39137;
+var G__39088 = (i__37880__auto___39087 + (1));
+i__37880__auto___39087 = G__39088;
 continue;
 } else {
 }
 break;
 }
 
-var G__39134 = args39132.length;
-switch (G__39134) {
+var G__39085 = args39083.length;
+switch (G__39085) {
 case 1:
 return re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$1((arguments[(0)]));
 
@@ -60,7 +60,7 @@ return re_frame.cofx.inject_cofx.cljs$core$IFn$_invoke$arity$2((arguments[(0)]),
 
 break;
 default:
-throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args39132.length)].join('')));
+throw (new Error([cljs.core.str("Invalid arity: "),cljs.core.str(args39083.length)].join('')));
 
 }
 });

@@ -35,12 +35,12 @@ return clojure.string.lower_case.call(null,word);
 });
 lvlup.crusader.dungeon.filter_by_name_and_id = (function lvlup$crusader$dungeon$filter_by_name_and_id(members,search_term,keep_QMARK_){
 if(cljs.core.not_EQ_.call(null,"",cljs.core.deref.call(null,search_term))){
-return cljs.core.doall.call(null,cljs.core.filter.call(null,(function (p1__56245_SHARP_){
-var or__36804__auto__ = lvlup.crusader.dungeon.includes_QMARK_.call(null,lvlup.crusader.dungeon.lower.call(null,cljs.core.deref.call(null,search_term)),lvlup.crusader.dungeon.lower.call(null,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(p1__56245_SHARP_)));
+return cljs.core.doall.call(null,cljs.core.filter.call(null,(function (p1__64903_SHARP_){
+var or__36804__auto__ = lvlup.crusader.dungeon.includes_QMARK_.call(null,lvlup.crusader.dungeon.lower.call(null,cljs.core.deref.call(null,search_term)),lvlup.crusader.dungeon.lower.call(null,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(p1__64903_SHARP_)));
 if(cljs.core.truth_(or__36804__auto__)){
 return or__36804__auto__;
 } else {
-return cljs.core._EQ_.call(null,parseInt(cljs.core.deref.call(null,search_term)),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__56245_SHARP_));
+return cljs.core._EQ_.call(null,parseInt(cljs.core.deref.call(null,search_term)),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__64903_SHARP_));
 }
 }),members));
 } else {
@@ -59,8 +59,8 @@ lvlup.crusader.dungeon.minute_to_money = (function lvlup$crusader$dungeon$minute
 var minutes = cljs.core.quot.call(null,seconds,(60));
 var halves = cljs.core.quot.call(null,minutes,(30));
 var remaining_minutes = cljs.core.mod.call(null,minutes,(30));
-var type_price = (function (){var G__56247 = type;
-switch (G__56247) {
+var type_price = (function (){var G__64905 = type;
+switch (G__64905) {
 case "xbox":
 return (150);
 
@@ -114,13 +114,13 @@ return (function (a){
 return (cljs.core.not_EQ_.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(a),cljs.core.PersistentArrayMap.EMPTY)) && (cljs.core.not_EQ_.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(a),null));
 });})(all_systems))
 ,cljs.core.map.call(null,((function (all_systems){
-return (function (p1__56249_SHARP_){
-return cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"number","number",1570378438),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56249_SHARP_),new cljs.core.Keyword(null,"players","players",-1361554569),new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56249_SHARP_));
+return (function (p1__64907_SHARP_){
+return cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"number","number",1570378438),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__64907_SHARP_),new cljs.core.Keyword(null,"players","players",-1361554569),new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__64907_SHARP_));
 });})(all_systems))
 ,cljs.core.deref.call(null,all_systems)));
 var this_player_all_systems = cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
-return (function (p1__56250_SHARP_){
-return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56250_SHARP_)))));
+return (function (p1__64908_SHARP_){
+return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__64908_SHARP_)))));
 });})(all_systems,all_players))
 ,cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
 return (function (a){
@@ -128,78 +128,78 @@ return cljs.core.contains_QMARK_.call(null,cljs.core.second.call(null,cljs.core.
 });})(all_systems,all_players))
 ,all_players))));
 var this_player_systems = cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players,this_player_all_systems){
-return (function (p1__56251_SHARP_){
-return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56251_SHARP_)))));
+return (function (p1__64909_SHARP_){
+return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__64909_SHARP_)))));
 });})(all_systems,all_players,this_player_all_systems))
 ,cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players,this_player_all_systems){
 return (function (a){
 return cljs.core.contains_QMARK_.call(null,cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(a))),new cljs.core.Keyword(null,"start","start",-355208981));
 });})(all_systems,all_players,this_player_all_systems))
 ,all_players))));
-var seq__56314_56374 = cljs.core.seq.call(null,this_player_systems);
-var chunk__56315_56375 = null;
-var count__56316_56376 = (0);
-var i__56317_56377 = (0);
+var seq__64972_65032 = cljs.core.seq.call(null,this_player_systems);
+var chunk__64973_65033 = null;
+var count__64974_65034 = (0);
+var i__64975_65035 = (0);
 while(true){
-if((i__56317_56377 < count__56316_56376)){
-var system_56378 = cljs.core._nth.call(null,chunk__56315_56375,i__56317_56377);
-var number_56379 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_56378);
-var player_56380 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_56378);
-var vec__56318_56381 = cljs.core.filter.call(null,((function (seq__56314_56374,chunk__56315_56375,count__56316_56376,i__56317_56377,number_56379,player_56380,system_56378,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56252_SHARP_){
-return cljs.core._EQ_.call(null,number_56379,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56252_SHARP_));
-});})(seq__56314_56374,chunk__56315_56375,count__56316_56376,i__56317_56377,number_56379,player_56380,system_56378,all_systems,all_players,this_player_all_systems,this_player_systems))
+if((i__64975_65035 < count__64974_65034)){
+var system_65036 = cljs.core._nth.call(null,chunk__64973_65033,i__64975_65035);
+var number_65037 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_65036);
+var player_65038 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_65036);
+var vec__64976_65039 = cljs.core.filter.call(null,((function (seq__64972_65032,chunk__64973_65033,count__64974_65034,i__64975_65035,number_65037,player_65038,system_65036,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__64910_SHARP_){
+return cljs.core._EQ_.call(null,number_65037,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__64910_SHARP_));
+});})(seq__64972_65032,chunk__64973_65033,count__64974_65034,i__64975_65035,number_65037,player_65038,system_65036,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56382 = cljs.core.nth.call(null,vec__56318_56381,(0),null);
-var seq__56321_56383 = cljs.core.seq.call(null,player_56380);
-var chunk__56322_56384 = null;
-var count__56323_56385 = (0);
-var i__56324_56386 = (0);
+var filtered_system_65040 = cljs.core.nth.call(null,vec__64976_65039,(0),null);
+var seq__64979_65041 = cljs.core.seq.call(null,player_65038);
+var chunk__64980_65042 = null;
+var count__64981_65043 = (0);
+var i__64982_65044 = (0);
 while(true){
-if((i__56324_56386 < count__56323_56385)){
-var vec__56325_56387 = cljs.core._nth.call(null,chunk__56322_56384,i__56324_56386);
-var the_key_56388 = cljs.core.nth.call(null,vec__56325_56387,(0),null);
-var place_56389 = cljs.core.nth.call(null,vec__56325_56387,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56389),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_56389),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56389)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56389)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56389)))], null));
+if((i__64982_65044 < count__64981_65043)){
+var vec__64983_65045 = cljs.core._nth.call(null,chunk__64980_65042,i__64982_65044);
+var the_key_65046 = cljs.core.nth.call(null,vec__64983_65045,(0),null);
+var place_65047 = cljs.core.nth.call(null,vec__64983_65045,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65047),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_65047),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65047)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65047)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65047)))], null));
 
-var G__56390 = seq__56321_56383;
-var G__56391 = chunk__56322_56384;
-var G__56392 = count__56323_56385;
-var G__56393 = (i__56324_56386 + (1));
-seq__56321_56383 = G__56390;
-chunk__56322_56384 = G__56391;
-count__56323_56385 = G__56392;
-i__56324_56386 = G__56393;
+var G__65048 = seq__64979_65041;
+var G__65049 = chunk__64980_65042;
+var G__65050 = count__64981_65043;
+var G__65051 = (i__64982_65044 + (1));
+seq__64979_65041 = G__65048;
+chunk__64980_65042 = G__65049;
+count__64981_65043 = G__65050;
+i__64982_65044 = G__65051;
 continue;
 } else {
-var temp__4657__auto___56394 = cljs.core.seq.call(null,seq__56321_56383);
-if(temp__4657__auto___56394){
-var seq__56321_56395__$1 = temp__4657__auto___56394;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56321_56395__$1)){
-var c__37615__auto___56396 = cljs.core.chunk_first.call(null,seq__56321_56395__$1);
-var G__56397 = cljs.core.chunk_rest.call(null,seq__56321_56395__$1);
-var G__56398 = c__37615__auto___56396;
-var G__56399 = cljs.core.count.call(null,c__37615__auto___56396);
-var G__56400 = (0);
-seq__56321_56383 = G__56397;
-chunk__56322_56384 = G__56398;
-count__56323_56385 = G__56399;
-i__56324_56386 = G__56400;
+var temp__4657__auto___65052 = cljs.core.seq.call(null,seq__64979_65041);
+if(temp__4657__auto___65052){
+var seq__64979_65053__$1 = temp__4657__auto___65052;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__64979_65053__$1)){
+var c__37615__auto___65054 = cljs.core.chunk_first.call(null,seq__64979_65053__$1);
+var G__65055 = cljs.core.chunk_rest.call(null,seq__64979_65053__$1);
+var G__65056 = c__37615__auto___65054;
+var G__65057 = cljs.core.count.call(null,c__37615__auto___65054);
+var G__65058 = (0);
+seq__64979_65041 = G__65055;
+chunk__64980_65042 = G__65056;
+count__64981_65043 = G__65057;
+i__64982_65044 = G__65058;
 continue;
 } else {
-var vec__56328_56401 = cljs.core.first.call(null,seq__56321_56395__$1);
-var the_key_56402 = cljs.core.nth.call(null,vec__56328_56401,(0),null);
-var place_56403 = cljs.core.nth.call(null,vec__56328_56401,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56403),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_56403),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56403)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56403)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56403)))], null));
+var vec__64986_65059 = cljs.core.first.call(null,seq__64979_65053__$1);
+var the_key_65060 = cljs.core.nth.call(null,vec__64986_65059,(0),null);
+var place_65061 = cljs.core.nth.call(null,vec__64986_65059,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65061),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_65061),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65061)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65061)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65061)))], null));
 
-var G__56404 = cljs.core.next.call(null,seq__56321_56395__$1);
-var G__56405 = null;
-var G__56406 = (0);
-var G__56407 = (0);
-seq__56321_56383 = G__56404;
-chunk__56322_56384 = G__56405;
-count__56323_56385 = G__56406;
-i__56324_56386 = G__56407;
+var G__65062 = cljs.core.next.call(null,seq__64979_65053__$1);
+var G__65063 = null;
+var G__65064 = (0);
+var G__65065 = (0);
+seq__64979_65041 = G__65062;
+chunk__64980_65042 = G__65063;
+count__64981_65043 = G__65064;
+i__64982_65044 = G__65065;
 continue;
 }
 } else {
@@ -208,89 +208,89 @@ continue;
 break;
 }
 
-var G__56408 = seq__56314_56374;
-var G__56409 = chunk__56315_56375;
-var G__56410 = count__56316_56376;
-var G__56411 = (i__56317_56377 + (1));
-seq__56314_56374 = G__56408;
-chunk__56315_56375 = G__56409;
-count__56316_56376 = G__56410;
-i__56317_56377 = G__56411;
+var G__65066 = seq__64972_65032;
+var G__65067 = chunk__64973_65033;
+var G__65068 = count__64974_65034;
+var G__65069 = (i__64975_65035 + (1));
+seq__64972_65032 = G__65066;
+chunk__64973_65033 = G__65067;
+count__64974_65034 = G__65068;
+i__64975_65035 = G__65069;
 continue;
 } else {
-var temp__4657__auto___56412 = cljs.core.seq.call(null,seq__56314_56374);
-if(temp__4657__auto___56412){
-var seq__56314_56413__$1 = temp__4657__auto___56412;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56314_56413__$1)){
-var c__37615__auto___56414 = cljs.core.chunk_first.call(null,seq__56314_56413__$1);
-var G__56415 = cljs.core.chunk_rest.call(null,seq__56314_56413__$1);
-var G__56416 = c__37615__auto___56414;
-var G__56417 = cljs.core.count.call(null,c__37615__auto___56414);
-var G__56418 = (0);
-seq__56314_56374 = G__56415;
-chunk__56315_56375 = G__56416;
-count__56316_56376 = G__56417;
-i__56317_56377 = G__56418;
+var temp__4657__auto___65070 = cljs.core.seq.call(null,seq__64972_65032);
+if(temp__4657__auto___65070){
+var seq__64972_65071__$1 = temp__4657__auto___65070;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__64972_65071__$1)){
+var c__37615__auto___65072 = cljs.core.chunk_first.call(null,seq__64972_65071__$1);
+var G__65073 = cljs.core.chunk_rest.call(null,seq__64972_65071__$1);
+var G__65074 = c__37615__auto___65072;
+var G__65075 = cljs.core.count.call(null,c__37615__auto___65072);
+var G__65076 = (0);
+seq__64972_65032 = G__65073;
+chunk__64973_65033 = G__65074;
+count__64974_65034 = G__65075;
+i__64975_65035 = G__65076;
 continue;
 } else {
-var system_56419 = cljs.core.first.call(null,seq__56314_56413__$1);
-var number_56420 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_56419);
-var player_56421 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_56419);
-var vec__56331_56422 = cljs.core.filter.call(null,((function (seq__56314_56374,chunk__56315_56375,count__56316_56376,i__56317_56377,number_56420,player_56421,system_56419,seq__56314_56413__$1,temp__4657__auto___56412,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56252_SHARP_){
-return cljs.core._EQ_.call(null,number_56420,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56252_SHARP_));
-});})(seq__56314_56374,chunk__56315_56375,count__56316_56376,i__56317_56377,number_56420,player_56421,system_56419,seq__56314_56413__$1,temp__4657__auto___56412,all_systems,all_players,this_player_all_systems,this_player_systems))
+var system_65077 = cljs.core.first.call(null,seq__64972_65071__$1);
+var number_65078 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_65077);
+var player_65079 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_65077);
+var vec__64989_65080 = cljs.core.filter.call(null,((function (seq__64972_65032,chunk__64973_65033,count__64974_65034,i__64975_65035,number_65078,player_65079,system_65077,seq__64972_65071__$1,temp__4657__auto___65070,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__64910_SHARP_){
+return cljs.core._EQ_.call(null,number_65078,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__64910_SHARP_));
+});})(seq__64972_65032,chunk__64973_65033,count__64974_65034,i__64975_65035,number_65078,player_65079,system_65077,seq__64972_65071__$1,temp__4657__auto___65070,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56423 = cljs.core.nth.call(null,vec__56331_56422,(0),null);
-var seq__56334_56424 = cljs.core.seq.call(null,player_56421);
-var chunk__56335_56425 = null;
-var count__56336_56426 = (0);
-var i__56337_56427 = (0);
+var filtered_system_65081 = cljs.core.nth.call(null,vec__64989_65080,(0),null);
+var seq__64992_65082 = cljs.core.seq.call(null,player_65079);
+var chunk__64993_65083 = null;
+var count__64994_65084 = (0);
+var i__64995_65085 = (0);
 while(true){
-if((i__56337_56427 < count__56336_56426)){
-var vec__56338_56428 = cljs.core._nth.call(null,chunk__56335_56425,i__56337_56427);
-var the_key_56429 = cljs.core.nth.call(null,vec__56338_56428,(0),null);
-var place_56430 = cljs.core.nth.call(null,vec__56338_56428,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56430),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_56430),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56430)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56430)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56430)))], null));
+if((i__64995_65085 < count__64994_65084)){
+var vec__64996_65086 = cljs.core._nth.call(null,chunk__64993_65083,i__64995_65085);
+var the_key_65087 = cljs.core.nth.call(null,vec__64996_65086,(0),null);
+var place_65088 = cljs.core.nth.call(null,vec__64996_65086,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65088),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_65088),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65088)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65088)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65088)))], null));
 
-var G__56431 = seq__56334_56424;
-var G__56432 = chunk__56335_56425;
-var G__56433 = count__56336_56426;
-var G__56434 = (i__56337_56427 + (1));
-seq__56334_56424 = G__56431;
-chunk__56335_56425 = G__56432;
-count__56336_56426 = G__56433;
-i__56337_56427 = G__56434;
+var G__65089 = seq__64992_65082;
+var G__65090 = chunk__64993_65083;
+var G__65091 = count__64994_65084;
+var G__65092 = (i__64995_65085 + (1));
+seq__64992_65082 = G__65089;
+chunk__64993_65083 = G__65090;
+count__64994_65084 = G__65091;
+i__64995_65085 = G__65092;
 continue;
 } else {
-var temp__4657__auto___56435__$1 = cljs.core.seq.call(null,seq__56334_56424);
-if(temp__4657__auto___56435__$1){
-var seq__56334_56436__$1 = temp__4657__auto___56435__$1;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56334_56436__$1)){
-var c__37615__auto___56437 = cljs.core.chunk_first.call(null,seq__56334_56436__$1);
-var G__56438 = cljs.core.chunk_rest.call(null,seq__56334_56436__$1);
-var G__56439 = c__37615__auto___56437;
-var G__56440 = cljs.core.count.call(null,c__37615__auto___56437);
-var G__56441 = (0);
-seq__56334_56424 = G__56438;
-chunk__56335_56425 = G__56439;
-count__56336_56426 = G__56440;
-i__56337_56427 = G__56441;
+var temp__4657__auto___65093__$1 = cljs.core.seq.call(null,seq__64992_65082);
+if(temp__4657__auto___65093__$1){
+var seq__64992_65094__$1 = temp__4657__auto___65093__$1;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__64992_65094__$1)){
+var c__37615__auto___65095 = cljs.core.chunk_first.call(null,seq__64992_65094__$1);
+var G__65096 = cljs.core.chunk_rest.call(null,seq__64992_65094__$1);
+var G__65097 = c__37615__auto___65095;
+var G__65098 = cljs.core.count.call(null,c__37615__auto___65095);
+var G__65099 = (0);
+seq__64992_65082 = G__65096;
+chunk__64993_65083 = G__65097;
+count__64994_65084 = G__65098;
+i__64995_65085 = G__65099;
 continue;
 } else {
-var vec__56341_56442 = cljs.core.first.call(null,seq__56334_56436__$1);
-var the_key_56443 = cljs.core.nth.call(null,vec__56341_56442,(0),null);
-var place_56444 = cljs.core.nth.call(null,vec__56341_56442,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56444),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_56444),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56444)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_56444)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_56444)))], null));
+var vec__64999_65100 = cljs.core.first.call(null,seq__64992_65094__$1);
+var the_key_65101 = cljs.core.nth.call(null,vec__64999_65100,(0),null);
+var place_65102 = cljs.core.nth.call(null,vec__64999_65100,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","add-invoice","dungeon/add-invoice",-1470910835),cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65102),new cljs.core.Keyword(null,"name","name",1843675177),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(place_65102),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id,new cljs.core.Keyword(null,"start","start",-355208981),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65102)),new cljs.core.Keyword(null,"finish","finish",-586688046),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join('')),new cljs.core.Keyword(null,"price","price",22129180),lvlup.crusader.dungeon.minute_to_money.call(null,cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(place_65102)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(place_65102)))], null));
 
-var G__56445 = cljs.core.next.call(null,seq__56334_56436__$1);
-var G__56446 = null;
-var G__56447 = (0);
-var G__56448 = (0);
-seq__56334_56424 = G__56445;
-chunk__56335_56425 = G__56446;
-count__56336_56426 = G__56447;
-i__56337_56427 = G__56448;
+var G__65103 = cljs.core.next.call(null,seq__64992_65094__$1);
+var G__65104 = null;
+var G__65105 = (0);
+var G__65106 = (0);
+seq__64992_65082 = G__65103;
+chunk__64993_65083 = G__65104;
+count__64994_65084 = G__65105;
+i__64995_65085 = G__65106;
 continue;
 }
 } else {
@@ -299,14 +299,14 @@ continue;
 break;
 }
 
-var G__56449 = cljs.core.next.call(null,seq__56314_56413__$1);
-var G__56450 = null;
-var G__56451 = (0);
-var G__56452 = (0);
-seq__56314_56374 = G__56449;
-chunk__56315_56375 = G__56450;
-count__56316_56376 = G__56451;
-i__56317_56377 = G__56452;
+var G__65107 = cljs.core.next.call(null,seq__64972_65071__$1);
+var G__65108 = null;
+var G__65109 = (0);
+var G__65110 = (0);
+seq__64972_65032 = G__65107;
+chunk__64973_65033 = G__65108;
+count__64974_65034 = G__65109;
+i__64975_65035 = G__65110;
 continue;
 }
 } else {
@@ -317,70 +317,70 @@ break;
 
 lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-members-with-id","dungeon/get-members-with-id",-1097562328),cljs.core.vec.call(null,player_id)], null));
 
-var seq__56344 = cljs.core.seq.call(null,this_player_all_systems);
-var chunk__56345 = null;
-var count__56346 = (0);
-var i__56347 = (0);
+var seq__65002 = cljs.core.seq.call(null,this_player_all_systems);
+var chunk__65003 = null;
+var count__65004 = (0);
+var i__65005 = (0);
 while(true){
-if((i__56347 < count__56346)){
-var system = cljs.core._nth.call(null,chunk__56345,i__56347);
-var number_56453 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
-var player_56454 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
-var vec__56348_56455 = cljs.core.filter.call(null,((function (seq__56344,chunk__56345,count__56346,i__56347,number_56453,player_56454,system,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56253_SHARP_){
-return cljs.core._EQ_.call(null,number_56453,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56253_SHARP_));
-});})(seq__56344,chunk__56345,count__56346,i__56347,number_56453,player_56454,system,all_systems,all_players,this_player_all_systems,this_player_systems))
+if((i__65005 < count__65004)){
+var system = cljs.core._nth.call(null,chunk__65003,i__65005);
+var number_65111 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
+var player_65112 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
+var vec__65006_65113 = cljs.core.filter.call(null,((function (seq__65002,chunk__65003,count__65004,i__65005,number_65111,player_65112,system,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__64911_SHARP_){
+return cljs.core._EQ_.call(null,number_65111,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__64911_SHARP_));
+});})(seq__65002,chunk__65003,count__65004,i__65005,number_65111,player_65112,system,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56456 = cljs.core.nth.call(null,vec__56348_56455,(0),null);
-var seq__56351_56457 = cljs.core.seq.call(null,player_56454);
-var chunk__56352_56458 = null;
-var count__56353_56459 = (0);
-var i__56354_56460 = (0);
+var filtered_system_65114 = cljs.core.nth.call(null,vec__65006_65113,(0),null);
+var seq__65009_65115 = cljs.core.seq.call(null,player_65112);
+var chunk__65010_65116 = null;
+var count__65011_65117 = (0);
+var i__65012_65118 = (0);
 while(true){
-if((i__56354_56460 < count__56353_56459)){
-var vec__56355_56461 = cljs.core._nth.call(null,chunk__56352_56458,i__56354_56460);
-var the_key_56462 = cljs.core.nth.call(null,vec__56355_56461,(0),null);
-var place_56463 = cljs.core.nth.call(null,vec__56355_56461,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56456,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56456),the_key_56462))], null));
+if((i__65012_65118 < count__65011_65117)){
+var vec__65013_65119 = cljs.core._nth.call(null,chunk__65010_65116,i__65012_65118);
+var the_key_65120 = cljs.core.nth.call(null,vec__65013_65119,(0),null);
+var place_65121 = cljs.core.nth.call(null,vec__65013_65119,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65114,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65114),the_key_65120))], null));
 
-var G__56464 = seq__56351_56457;
-var G__56465 = chunk__56352_56458;
-var G__56466 = count__56353_56459;
-var G__56467 = (i__56354_56460 + (1));
-seq__56351_56457 = G__56464;
-chunk__56352_56458 = G__56465;
-count__56353_56459 = G__56466;
-i__56354_56460 = G__56467;
+var G__65122 = seq__65009_65115;
+var G__65123 = chunk__65010_65116;
+var G__65124 = count__65011_65117;
+var G__65125 = (i__65012_65118 + (1));
+seq__65009_65115 = G__65122;
+chunk__65010_65116 = G__65123;
+count__65011_65117 = G__65124;
+i__65012_65118 = G__65125;
 continue;
 } else {
-var temp__4657__auto___56468 = cljs.core.seq.call(null,seq__56351_56457);
-if(temp__4657__auto___56468){
-var seq__56351_56469__$1 = temp__4657__auto___56468;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56351_56469__$1)){
-var c__37615__auto___56470 = cljs.core.chunk_first.call(null,seq__56351_56469__$1);
-var G__56471 = cljs.core.chunk_rest.call(null,seq__56351_56469__$1);
-var G__56472 = c__37615__auto___56470;
-var G__56473 = cljs.core.count.call(null,c__37615__auto___56470);
-var G__56474 = (0);
-seq__56351_56457 = G__56471;
-chunk__56352_56458 = G__56472;
-count__56353_56459 = G__56473;
-i__56354_56460 = G__56474;
+var temp__4657__auto___65126 = cljs.core.seq.call(null,seq__65009_65115);
+if(temp__4657__auto___65126){
+var seq__65009_65127__$1 = temp__4657__auto___65126;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65009_65127__$1)){
+var c__37615__auto___65128 = cljs.core.chunk_first.call(null,seq__65009_65127__$1);
+var G__65129 = cljs.core.chunk_rest.call(null,seq__65009_65127__$1);
+var G__65130 = c__37615__auto___65128;
+var G__65131 = cljs.core.count.call(null,c__37615__auto___65128);
+var G__65132 = (0);
+seq__65009_65115 = G__65129;
+chunk__65010_65116 = G__65130;
+count__65011_65117 = G__65131;
+i__65012_65118 = G__65132;
 continue;
 } else {
-var vec__56358_56475 = cljs.core.first.call(null,seq__56351_56469__$1);
-var the_key_56476 = cljs.core.nth.call(null,vec__56358_56475,(0),null);
-var place_56477 = cljs.core.nth.call(null,vec__56358_56475,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56456,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56456),the_key_56476))], null));
+var vec__65016_65133 = cljs.core.first.call(null,seq__65009_65127__$1);
+var the_key_65134 = cljs.core.nth.call(null,vec__65016_65133,(0),null);
+var place_65135 = cljs.core.nth.call(null,vec__65016_65133,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65114,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65114),the_key_65134))], null));
 
-var G__56478 = cljs.core.next.call(null,seq__56351_56469__$1);
-var G__56479 = null;
-var G__56480 = (0);
-var G__56481 = (0);
-seq__56351_56457 = G__56478;
-chunk__56352_56458 = G__56479;
-count__56353_56459 = G__56480;
-i__56354_56460 = G__56481;
+var G__65136 = cljs.core.next.call(null,seq__65009_65127__$1);
+var G__65137 = null;
+var G__65138 = (0);
+var G__65139 = (0);
+seq__65009_65115 = G__65136;
+chunk__65010_65116 = G__65137;
+count__65011_65117 = G__65138;
+i__65012_65118 = G__65139;
 continue;
 }
 } else {
@@ -389,89 +389,89 @@ continue;
 break;
 }
 
-var G__56482 = seq__56344;
-var G__56483 = chunk__56345;
-var G__56484 = count__56346;
-var G__56485 = (i__56347 + (1));
-seq__56344 = G__56482;
-chunk__56345 = G__56483;
-count__56346 = G__56484;
-i__56347 = G__56485;
+var G__65140 = seq__65002;
+var G__65141 = chunk__65003;
+var G__65142 = count__65004;
+var G__65143 = (i__65005 + (1));
+seq__65002 = G__65140;
+chunk__65003 = G__65141;
+count__65004 = G__65142;
+i__65005 = G__65143;
 continue;
 } else {
-var temp__4657__auto__ = cljs.core.seq.call(null,seq__56344);
+var temp__4657__auto__ = cljs.core.seq.call(null,seq__65002);
 if(temp__4657__auto__){
-var seq__56344__$1 = temp__4657__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56344__$1)){
-var c__37615__auto__ = cljs.core.chunk_first.call(null,seq__56344__$1);
-var G__56486 = cljs.core.chunk_rest.call(null,seq__56344__$1);
-var G__56487 = c__37615__auto__;
-var G__56488 = cljs.core.count.call(null,c__37615__auto__);
-var G__56489 = (0);
-seq__56344 = G__56486;
-chunk__56345 = G__56487;
-count__56346 = G__56488;
-i__56347 = G__56489;
+var seq__65002__$1 = temp__4657__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65002__$1)){
+var c__37615__auto__ = cljs.core.chunk_first.call(null,seq__65002__$1);
+var G__65144 = cljs.core.chunk_rest.call(null,seq__65002__$1);
+var G__65145 = c__37615__auto__;
+var G__65146 = cljs.core.count.call(null,c__37615__auto__);
+var G__65147 = (0);
+seq__65002 = G__65144;
+chunk__65003 = G__65145;
+count__65004 = G__65146;
+i__65005 = G__65147;
 continue;
 } else {
-var system = cljs.core.first.call(null,seq__56344__$1);
-var number_56490 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
-var player_56491 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
-var vec__56361_56492 = cljs.core.filter.call(null,((function (seq__56344,chunk__56345,count__56346,i__56347,number_56490,player_56491,system,seq__56344__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56253_SHARP_){
-return cljs.core._EQ_.call(null,number_56490,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56253_SHARP_));
-});})(seq__56344,chunk__56345,count__56346,i__56347,number_56490,player_56491,system,seq__56344__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
+var system = cljs.core.first.call(null,seq__65002__$1);
+var number_65148 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
+var player_65149 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
+var vec__65019_65150 = cljs.core.filter.call(null,((function (seq__65002,chunk__65003,count__65004,i__65005,number_65148,player_65149,system,seq__65002__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__64911_SHARP_){
+return cljs.core._EQ_.call(null,number_65148,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__64911_SHARP_));
+});})(seq__65002,chunk__65003,count__65004,i__65005,number_65148,player_65149,system,seq__65002__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56493 = cljs.core.nth.call(null,vec__56361_56492,(0),null);
-var seq__56364_56494 = cljs.core.seq.call(null,player_56491);
-var chunk__56365_56495 = null;
-var count__56366_56496 = (0);
-var i__56367_56497 = (0);
+var filtered_system_65151 = cljs.core.nth.call(null,vec__65019_65150,(0),null);
+var seq__65022_65152 = cljs.core.seq.call(null,player_65149);
+var chunk__65023_65153 = null;
+var count__65024_65154 = (0);
+var i__65025_65155 = (0);
 while(true){
-if((i__56367_56497 < count__56366_56496)){
-var vec__56368_56498 = cljs.core._nth.call(null,chunk__56365_56495,i__56367_56497);
-var the_key_56499 = cljs.core.nth.call(null,vec__56368_56498,(0),null);
-var place_56500 = cljs.core.nth.call(null,vec__56368_56498,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56493,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56493),the_key_56499))], null));
+if((i__65025_65155 < count__65024_65154)){
+var vec__65026_65156 = cljs.core._nth.call(null,chunk__65023_65153,i__65025_65155);
+var the_key_65157 = cljs.core.nth.call(null,vec__65026_65156,(0),null);
+var place_65158 = cljs.core.nth.call(null,vec__65026_65156,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65151,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65151),the_key_65157))], null));
 
-var G__56501 = seq__56364_56494;
-var G__56502 = chunk__56365_56495;
-var G__56503 = count__56366_56496;
-var G__56504 = (i__56367_56497 + (1));
-seq__56364_56494 = G__56501;
-chunk__56365_56495 = G__56502;
-count__56366_56496 = G__56503;
-i__56367_56497 = G__56504;
+var G__65159 = seq__65022_65152;
+var G__65160 = chunk__65023_65153;
+var G__65161 = count__65024_65154;
+var G__65162 = (i__65025_65155 + (1));
+seq__65022_65152 = G__65159;
+chunk__65023_65153 = G__65160;
+count__65024_65154 = G__65161;
+i__65025_65155 = G__65162;
 continue;
 } else {
-var temp__4657__auto___56505__$1 = cljs.core.seq.call(null,seq__56364_56494);
-if(temp__4657__auto___56505__$1){
-var seq__56364_56506__$1 = temp__4657__auto___56505__$1;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56364_56506__$1)){
-var c__37615__auto___56507 = cljs.core.chunk_first.call(null,seq__56364_56506__$1);
-var G__56508 = cljs.core.chunk_rest.call(null,seq__56364_56506__$1);
-var G__56509 = c__37615__auto___56507;
-var G__56510 = cljs.core.count.call(null,c__37615__auto___56507);
-var G__56511 = (0);
-seq__56364_56494 = G__56508;
-chunk__56365_56495 = G__56509;
-count__56366_56496 = G__56510;
-i__56367_56497 = G__56511;
+var temp__4657__auto___65163__$1 = cljs.core.seq.call(null,seq__65022_65152);
+if(temp__4657__auto___65163__$1){
+var seq__65022_65164__$1 = temp__4657__auto___65163__$1;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65022_65164__$1)){
+var c__37615__auto___65165 = cljs.core.chunk_first.call(null,seq__65022_65164__$1);
+var G__65166 = cljs.core.chunk_rest.call(null,seq__65022_65164__$1);
+var G__65167 = c__37615__auto___65165;
+var G__65168 = cljs.core.count.call(null,c__37615__auto___65165);
+var G__65169 = (0);
+seq__65022_65152 = G__65166;
+chunk__65023_65153 = G__65167;
+count__65024_65154 = G__65168;
+i__65025_65155 = G__65169;
 continue;
 } else {
-var vec__56371_56512 = cljs.core.first.call(null,seq__56364_56506__$1);
-var the_key_56513 = cljs.core.nth.call(null,vec__56371_56512,(0),null);
-var place_56514 = cljs.core.nth.call(null,vec__56371_56512,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56493,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56493),the_key_56513))], null));
+var vec__65029_65170 = cljs.core.first.call(null,seq__65022_65164__$1);
+var the_key_65171 = cljs.core.nth.call(null,vec__65029_65170,(0),null);
+var place_65172 = cljs.core.nth.call(null,vec__65029_65170,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65151,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65151),the_key_65171))], null));
 
-var G__56515 = cljs.core.next.call(null,seq__56364_56506__$1);
-var G__56516 = null;
-var G__56517 = (0);
-var G__56518 = (0);
-seq__56364_56494 = G__56515;
-chunk__56365_56495 = G__56516;
-count__56366_56496 = G__56517;
-i__56367_56497 = G__56518;
+var G__65173 = cljs.core.next.call(null,seq__65022_65164__$1);
+var G__65174 = null;
+var G__65175 = (0);
+var G__65176 = (0);
+seq__65022_65152 = G__65173;
+chunk__65023_65153 = G__65174;
+count__65024_65154 = G__65175;
+i__65025_65155 = G__65176;
 continue;
 }
 } else {
@@ -480,14 +480,14 @@ continue;
 break;
 }
 
-var G__56519 = cljs.core.next.call(null,seq__56344__$1);
-var G__56520 = null;
-var G__56521 = (0);
-var G__56522 = (0);
-seq__56344 = G__56519;
-chunk__56345 = G__56520;
-count__56346 = G__56521;
-i__56347 = G__56522;
+var G__65177 = cljs.core.next.call(null,seq__65002__$1);
+var G__65178 = null;
+var G__65179 = (0);
+var G__65180 = (0);
+seq__65002 = G__65177;
+chunk__65003 = G__65178;
+count__65004 = G__65179;
+i__65005 = G__65180;
 continue;
 }
 } else {
@@ -504,26 +504,26 @@ return (function (a){
 return (cljs.core.not_EQ_.call(null,a,cljs.core.PersistentArrayMap.EMPTY)) && (cljs.core.not_EQ_.call(null,a,null));
 });})(all_systems))
 ,cljs.core.map.call(null,((function (all_systems){
-return (function (p1__56523_SHARP_){
-return new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56523_SHARP_);
+return (function (p1__65181_SHARP_){
+return new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__65181_SHARP_);
 });})(all_systems))
 ,cljs.core.deref.call(null,all_systems)));
 var this_player_systems = cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
-return (function (p1__56524_SHARP_){
-return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(p1__56524_SHARP_));
+return (function (p1__65182_SHARP_){
+return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(p1__65182_SHARP_));
 });})(all_systems,all_players))
 ,cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
 return (function (a){
 return cljs.core.contains_QMARK_.call(null,a,new cljs.core.Keyword(null,"start","start",-355208981));
 });})(all_systems,all_players))
 ,cljs.core.map.call(null,((function (all_systems,all_players){
-return (function (p1__56525_SHARP_){
-return cljs.core.second.call(null,cljs.core.first.call(null,p1__56525_SHARP_));
+return (function (p1__65183_SHARP_){
+return cljs.core.second.call(null,cljs.core.first.call(null,p1__65183_SHARP_));
 });})(all_systems,all_players))
 ,all_players)))));
 var total_price = cljs.core.reduce.call(null,cljs.core._PLUS_,cljs.core.map.call(null,((function (all_systems,all_players,this_player_systems){
-return (function (p1__56526_SHARP_){
-return lvlup.crusader.dungeon.count_time_halves.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(p1__56526_SHARP_)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))));
+return (function (p1__65184_SHARP_){
+return lvlup.crusader.dungeon.count_time_halves.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(p1__65184_SHARP_)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))));
 });})(all_systems,all_players,this_player_systems))
 ,this_player_systems));
 return total_price;
@@ -535,13 +535,13 @@ return (function (a){
 return (cljs.core.not_EQ_.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(a),cljs.core.PersistentArrayMap.EMPTY)) && (cljs.core.not_EQ_.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(a),null));
 });})(all_systems))
 ,cljs.core.map.call(null,((function (all_systems){
-return (function (p1__56527_SHARP_){
-return cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"number","number",1570378438),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56527_SHARP_),new cljs.core.Keyword(null,"players","players",-1361554569),new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56527_SHARP_));
+return (function (p1__65185_SHARP_){
+return cljs.core.assoc.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"number","number",1570378438),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65185_SHARP_),new cljs.core.Keyword(null,"players","players",-1361554569),new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__65185_SHARP_));
 });})(all_systems))
 ,cljs.core.deref.call(null,all_systems)));
 var this_player_all_systems = cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
-return (function (p1__56528_SHARP_){
-return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56528_SHARP_)))));
+return (function (p1__65186_SHARP_){
+return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__65186_SHARP_)))));
 });})(all_systems,all_players))
 ,cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
 return (function (a){
@@ -549,8 +549,8 @@ return cljs.core.contains_QMARK_.call(null,cljs.core.second.call(null,cljs.core.
 });})(all_systems,all_players))
 ,all_players))));
 var this_player_systems = cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players,this_player_all_systems){
-return (function (p1__56529_SHARP_){
-return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56529_SHARP_)))));
+return (function (p1__65187_SHARP_){
+return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(cljs.core.second.call(null,cljs.core.first.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__65187_SHARP_)))));
 });})(all_systems,all_players,this_player_all_systems))
 ,cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players,this_player_all_systems){
 return (function (a){
@@ -559,70 +559,70 @@ return cljs.core.contains_QMARK_.call(null,cljs.core.second.call(null,cljs.core.
 ,all_players))));
 console.log([cljs.core.str("wtf: "),cljs.core.str(all_players)].join(''));
 
-var seq__56622 = cljs.core.seq.call(null,this_player_systems);
-var chunk__56623 = null;
-var count__56624 = (0);
-var i__56625 = (0);
+var seq__65280 = cljs.core.seq.call(null,this_player_systems);
+var chunk__65281 = null;
+var count__65282 = (0);
+var i__65283 = (0);
 while(true){
-if((i__56625 < count__56624)){
-var system = cljs.core._nth.call(null,chunk__56623,i__56625);
-var number_56712 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
-var player_56713 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
-var vec__56626_56714 = cljs.core.filter.call(null,((function (seq__56622,chunk__56623,count__56624,i__56625,number_56712,player_56713,system,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56530_SHARP_){
-return cljs.core._EQ_.call(null,number_56712,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56530_SHARP_));
-});})(seq__56622,chunk__56623,count__56624,i__56625,number_56712,player_56713,system,all_systems,all_players,this_player_all_systems,this_player_systems))
+if((i__65283 < count__65282)){
+var system = cljs.core._nth.call(null,chunk__65281,i__65283);
+var number_65370 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
+var player_65371 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
+var vec__65284_65372 = cljs.core.filter.call(null,((function (seq__65280,chunk__65281,count__65282,i__65283,number_65370,player_65371,system,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__65188_SHARP_){
+return cljs.core._EQ_.call(null,number_65370,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65188_SHARP_));
+});})(seq__65280,chunk__65281,count__65282,i__65283,number_65370,player_65371,system,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56715 = cljs.core.nth.call(null,vec__56626_56714,(0),null);
-var seq__56629_56716 = cljs.core.seq.call(null,player_56713);
-var chunk__56630_56717 = null;
-var count__56631_56718 = (0);
-var i__56632_56719 = (0);
+var filtered_system_65373 = cljs.core.nth.call(null,vec__65284_65372,(0),null);
+var seq__65287_65374 = cljs.core.seq.call(null,player_65371);
+var chunk__65288_65375 = null;
+var count__65289_65376 = (0);
+var i__65290_65377 = (0);
 while(true){
-if((i__56632_56719 < count__56631_56718)){
-var vec__56633_56720 = cljs.core._nth.call(null,chunk__56630_56717,i__56632_56719);
-var the_key_56721 = cljs.core.nth.call(null,vec__56633_56720,(0),null);
-var place_56722 = cljs.core.nth.call(null,vec__56633_56720,(1),null);
+if((i__65290_65377 < count__65289_65376)){
+var vec__65291_65378 = cljs.core._nth.call(null,chunk__65288_65375,i__65290_65377);
+var the_key_65379 = cljs.core.nth.call(null,vec__65291_65378,(0),null);
+var place_65380 = cljs.core.nth.call(null,vec__65291_65378,(1),null);
 lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","season-pass","dungeon/season-pass",-766369009),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"quantity","quantity",-1929050694),((-1) * lvlup.crusader.dungeon.all_items_to_hours.call(null,player_id)),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id], null)], null));
 
-var G__56723 = seq__56629_56716;
-var G__56724 = chunk__56630_56717;
-var G__56725 = count__56631_56718;
-var G__56726 = (i__56632_56719 + (1));
-seq__56629_56716 = G__56723;
-chunk__56630_56717 = G__56724;
-count__56631_56718 = G__56725;
-i__56632_56719 = G__56726;
+var G__65381 = seq__65287_65374;
+var G__65382 = chunk__65288_65375;
+var G__65383 = count__65289_65376;
+var G__65384 = (i__65290_65377 + (1));
+seq__65287_65374 = G__65381;
+chunk__65288_65375 = G__65382;
+count__65289_65376 = G__65383;
+i__65290_65377 = G__65384;
 continue;
 } else {
-var temp__4657__auto___56727 = cljs.core.seq.call(null,seq__56629_56716);
-if(temp__4657__auto___56727){
-var seq__56629_56728__$1 = temp__4657__auto___56727;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56629_56728__$1)){
-var c__37615__auto___56729 = cljs.core.chunk_first.call(null,seq__56629_56728__$1);
-var G__56730 = cljs.core.chunk_rest.call(null,seq__56629_56728__$1);
-var G__56731 = c__37615__auto___56729;
-var G__56732 = cljs.core.count.call(null,c__37615__auto___56729);
-var G__56733 = (0);
-seq__56629_56716 = G__56730;
-chunk__56630_56717 = G__56731;
-count__56631_56718 = G__56732;
-i__56632_56719 = G__56733;
+var temp__4657__auto___65385 = cljs.core.seq.call(null,seq__65287_65374);
+if(temp__4657__auto___65385){
+var seq__65287_65386__$1 = temp__4657__auto___65385;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65287_65386__$1)){
+var c__37615__auto___65387 = cljs.core.chunk_first.call(null,seq__65287_65386__$1);
+var G__65388 = cljs.core.chunk_rest.call(null,seq__65287_65386__$1);
+var G__65389 = c__37615__auto___65387;
+var G__65390 = cljs.core.count.call(null,c__37615__auto___65387);
+var G__65391 = (0);
+seq__65287_65374 = G__65388;
+chunk__65288_65375 = G__65389;
+count__65289_65376 = G__65390;
+i__65290_65377 = G__65391;
 continue;
 } else {
-var vec__56636_56734 = cljs.core.first.call(null,seq__56629_56728__$1);
-var the_key_56735 = cljs.core.nth.call(null,vec__56636_56734,(0),null);
-var place_56736 = cljs.core.nth.call(null,vec__56636_56734,(1),null);
+var vec__65294_65392 = cljs.core.first.call(null,seq__65287_65386__$1);
+var the_key_65393 = cljs.core.nth.call(null,vec__65294_65392,(0),null);
+var place_65394 = cljs.core.nth.call(null,vec__65294_65392,(1),null);
 lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","season-pass","dungeon/season-pass",-766369009),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"quantity","quantity",-1929050694),((-1) * lvlup.crusader.dungeon.all_items_to_hours.call(null,player_id)),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id], null)], null));
 
-var G__56737 = cljs.core.next.call(null,seq__56629_56728__$1);
-var G__56738 = null;
-var G__56739 = (0);
-var G__56740 = (0);
-seq__56629_56716 = G__56737;
-chunk__56630_56717 = G__56738;
-count__56631_56718 = G__56739;
-i__56632_56719 = G__56740;
+var G__65395 = cljs.core.next.call(null,seq__65287_65386__$1);
+var G__65396 = null;
+var G__65397 = (0);
+var G__65398 = (0);
+seq__65287_65374 = G__65395;
+chunk__65288_65375 = G__65396;
+count__65289_65376 = G__65397;
+i__65290_65377 = G__65398;
 continue;
 }
 } else {
@@ -631,70 +631,70 @@ continue;
 break;
 }
 
-var seq__56639_56741 = cljs.core.seq.call(null,this_player_all_systems);
-var chunk__56640_56742 = null;
-var count__56641_56743 = (0);
-var i__56642_56744 = (0);
+var seq__65297_65399 = cljs.core.seq.call(null,this_player_all_systems);
+var chunk__65298_65400 = null;
+var count__65299_65401 = (0);
+var i__65300_65402 = (0);
 while(true){
-if((i__56642_56744 < count__56641_56743)){
-var system_56745__$1 = cljs.core._nth.call(null,chunk__56640_56742,i__56642_56744);
-var number_56746__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_56745__$1);
-var player_56747__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_56745__$1);
-var vec__56643_56748 = cljs.core.filter.call(null,((function (seq__56639_56741,chunk__56640_56742,count__56641_56743,i__56642_56744,seq__56622,chunk__56623,count__56624,i__56625,number_56746__$1,player_56747__$1,system_56745__$1,number_56712,player_56713,vec__56626_56714,filtered_system_56715,system,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56531_SHARP_){
-return cljs.core._EQ_.call(null,number_56746__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56531_SHARP_));
-});})(seq__56639_56741,chunk__56640_56742,count__56641_56743,i__56642_56744,seq__56622,chunk__56623,count__56624,i__56625,number_56746__$1,player_56747__$1,system_56745__$1,number_56712,player_56713,vec__56626_56714,filtered_system_56715,system,all_systems,all_players,this_player_all_systems,this_player_systems))
+if((i__65300_65402 < count__65299_65401)){
+var system_65403__$1 = cljs.core._nth.call(null,chunk__65298_65400,i__65300_65402);
+var number_65404__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_65403__$1);
+var player_65405__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_65403__$1);
+var vec__65301_65406 = cljs.core.filter.call(null,((function (seq__65297_65399,chunk__65298_65400,count__65299_65401,i__65300_65402,seq__65280,chunk__65281,count__65282,i__65283,number_65404__$1,player_65405__$1,system_65403__$1,number_65370,player_65371,vec__65284_65372,filtered_system_65373,system,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__65189_SHARP_){
+return cljs.core._EQ_.call(null,number_65404__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65189_SHARP_));
+});})(seq__65297_65399,chunk__65298_65400,count__65299_65401,i__65300_65402,seq__65280,chunk__65281,count__65282,i__65283,number_65404__$1,player_65405__$1,system_65403__$1,number_65370,player_65371,vec__65284_65372,filtered_system_65373,system,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56749__$1 = cljs.core.nth.call(null,vec__56643_56748,(0),null);
-var seq__56646_56750 = cljs.core.seq.call(null,player_56747__$1);
-var chunk__56647_56751 = null;
-var count__56648_56752 = (0);
-var i__56649_56753 = (0);
+var filtered_system_65407__$1 = cljs.core.nth.call(null,vec__65301_65406,(0),null);
+var seq__65304_65408 = cljs.core.seq.call(null,player_65405__$1);
+var chunk__65305_65409 = null;
+var count__65306_65410 = (0);
+var i__65307_65411 = (0);
 while(true){
-if((i__56649_56753 < count__56648_56752)){
-var vec__56650_56754 = cljs.core._nth.call(null,chunk__56647_56751,i__56649_56753);
-var the_key_56755 = cljs.core.nth.call(null,vec__56650_56754,(0),null);
-var place_56756 = cljs.core.nth.call(null,vec__56650_56754,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56749__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56749__$1),the_key_56755))], null));
+if((i__65307_65411 < count__65306_65410)){
+var vec__65308_65412 = cljs.core._nth.call(null,chunk__65305_65409,i__65307_65411);
+var the_key_65413 = cljs.core.nth.call(null,vec__65308_65412,(0),null);
+var place_65414 = cljs.core.nth.call(null,vec__65308_65412,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65407__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65407__$1),the_key_65413))], null));
 
-var G__56757 = seq__56646_56750;
-var G__56758 = chunk__56647_56751;
-var G__56759 = count__56648_56752;
-var G__56760 = (i__56649_56753 + (1));
-seq__56646_56750 = G__56757;
-chunk__56647_56751 = G__56758;
-count__56648_56752 = G__56759;
-i__56649_56753 = G__56760;
+var G__65415 = seq__65304_65408;
+var G__65416 = chunk__65305_65409;
+var G__65417 = count__65306_65410;
+var G__65418 = (i__65307_65411 + (1));
+seq__65304_65408 = G__65415;
+chunk__65305_65409 = G__65416;
+count__65306_65410 = G__65417;
+i__65307_65411 = G__65418;
 continue;
 } else {
-var temp__4657__auto___56761 = cljs.core.seq.call(null,seq__56646_56750);
-if(temp__4657__auto___56761){
-var seq__56646_56762__$1 = temp__4657__auto___56761;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56646_56762__$1)){
-var c__37615__auto___56763 = cljs.core.chunk_first.call(null,seq__56646_56762__$1);
-var G__56764 = cljs.core.chunk_rest.call(null,seq__56646_56762__$1);
-var G__56765 = c__37615__auto___56763;
-var G__56766 = cljs.core.count.call(null,c__37615__auto___56763);
-var G__56767 = (0);
-seq__56646_56750 = G__56764;
-chunk__56647_56751 = G__56765;
-count__56648_56752 = G__56766;
-i__56649_56753 = G__56767;
+var temp__4657__auto___65419 = cljs.core.seq.call(null,seq__65304_65408);
+if(temp__4657__auto___65419){
+var seq__65304_65420__$1 = temp__4657__auto___65419;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65304_65420__$1)){
+var c__37615__auto___65421 = cljs.core.chunk_first.call(null,seq__65304_65420__$1);
+var G__65422 = cljs.core.chunk_rest.call(null,seq__65304_65420__$1);
+var G__65423 = c__37615__auto___65421;
+var G__65424 = cljs.core.count.call(null,c__37615__auto___65421);
+var G__65425 = (0);
+seq__65304_65408 = G__65422;
+chunk__65305_65409 = G__65423;
+count__65306_65410 = G__65424;
+i__65307_65411 = G__65425;
 continue;
 } else {
-var vec__56653_56768 = cljs.core.first.call(null,seq__56646_56762__$1);
-var the_key_56769 = cljs.core.nth.call(null,vec__56653_56768,(0),null);
-var place_56770 = cljs.core.nth.call(null,vec__56653_56768,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56749__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56749__$1),the_key_56769))], null));
+var vec__65311_65426 = cljs.core.first.call(null,seq__65304_65420__$1);
+var the_key_65427 = cljs.core.nth.call(null,vec__65311_65426,(0),null);
+var place_65428 = cljs.core.nth.call(null,vec__65311_65426,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65407__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65407__$1),the_key_65427))], null));
 
-var G__56771 = cljs.core.next.call(null,seq__56646_56762__$1);
-var G__56772 = null;
-var G__56773 = (0);
-var G__56774 = (0);
-seq__56646_56750 = G__56771;
-chunk__56647_56751 = G__56772;
-count__56648_56752 = G__56773;
-i__56649_56753 = G__56774;
+var G__65429 = cljs.core.next.call(null,seq__65304_65420__$1);
+var G__65430 = null;
+var G__65431 = (0);
+var G__65432 = (0);
+seq__65304_65408 = G__65429;
+chunk__65305_65409 = G__65430;
+count__65306_65410 = G__65431;
+i__65307_65411 = G__65432;
 continue;
 }
 } else {
@@ -703,89 +703,89 @@ continue;
 break;
 }
 
-var G__56775 = seq__56639_56741;
-var G__56776 = chunk__56640_56742;
-var G__56777 = count__56641_56743;
-var G__56778 = (i__56642_56744 + (1));
-seq__56639_56741 = G__56775;
-chunk__56640_56742 = G__56776;
-count__56641_56743 = G__56777;
-i__56642_56744 = G__56778;
+var G__65433 = seq__65297_65399;
+var G__65434 = chunk__65298_65400;
+var G__65435 = count__65299_65401;
+var G__65436 = (i__65300_65402 + (1));
+seq__65297_65399 = G__65433;
+chunk__65298_65400 = G__65434;
+count__65299_65401 = G__65435;
+i__65300_65402 = G__65436;
 continue;
 } else {
-var temp__4657__auto___56779 = cljs.core.seq.call(null,seq__56639_56741);
-if(temp__4657__auto___56779){
-var seq__56639_56780__$1 = temp__4657__auto___56779;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56639_56780__$1)){
-var c__37615__auto___56781 = cljs.core.chunk_first.call(null,seq__56639_56780__$1);
-var G__56782 = cljs.core.chunk_rest.call(null,seq__56639_56780__$1);
-var G__56783 = c__37615__auto___56781;
-var G__56784 = cljs.core.count.call(null,c__37615__auto___56781);
-var G__56785 = (0);
-seq__56639_56741 = G__56782;
-chunk__56640_56742 = G__56783;
-count__56641_56743 = G__56784;
-i__56642_56744 = G__56785;
+var temp__4657__auto___65437 = cljs.core.seq.call(null,seq__65297_65399);
+if(temp__4657__auto___65437){
+var seq__65297_65438__$1 = temp__4657__auto___65437;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65297_65438__$1)){
+var c__37615__auto___65439 = cljs.core.chunk_first.call(null,seq__65297_65438__$1);
+var G__65440 = cljs.core.chunk_rest.call(null,seq__65297_65438__$1);
+var G__65441 = c__37615__auto___65439;
+var G__65442 = cljs.core.count.call(null,c__37615__auto___65439);
+var G__65443 = (0);
+seq__65297_65399 = G__65440;
+chunk__65298_65400 = G__65441;
+count__65299_65401 = G__65442;
+i__65300_65402 = G__65443;
 continue;
 } else {
-var system_56786__$1 = cljs.core.first.call(null,seq__56639_56780__$1);
-var number_56787__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_56786__$1);
-var player_56788__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_56786__$1);
-var vec__56656_56789 = cljs.core.filter.call(null,((function (seq__56639_56741,chunk__56640_56742,count__56641_56743,i__56642_56744,seq__56622,chunk__56623,count__56624,i__56625,number_56787__$1,player_56788__$1,system_56786__$1,seq__56639_56780__$1,temp__4657__auto___56779,number_56712,player_56713,vec__56626_56714,filtered_system_56715,system,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56531_SHARP_){
-return cljs.core._EQ_.call(null,number_56787__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56531_SHARP_));
-});})(seq__56639_56741,chunk__56640_56742,count__56641_56743,i__56642_56744,seq__56622,chunk__56623,count__56624,i__56625,number_56787__$1,player_56788__$1,system_56786__$1,seq__56639_56780__$1,temp__4657__auto___56779,number_56712,player_56713,vec__56626_56714,filtered_system_56715,system,all_systems,all_players,this_player_all_systems,this_player_systems))
+var system_65444__$1 = cljs.core.first.call(null,seq__65297_65438__$1);
+var number_65445__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_65444__$1);
+var player_65446__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_65444__$1);
+var vec__65314_65447 = cljs.core.filter.call(null,((function (seq__65297_65399,chunk__65298_65400,count__65299_65401,i__65300_65402,seq__65280,chunk__65281,count__65282,i__65283,number_65445__$1,player_65446__$1,system_65444__$1,seq__65297_65438__$1,temp__4657__auto___65437,number_65370,player_65371,vec__65284_65372,filtered_system_65373,system,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__65189_SHARP_){
+return cljs.core._EQ_.call(null,number_65445__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65189_SHARP_));
+});})(seq__65297_65399,chunk__65298_65400,count__65299_65401,i__65300_65402,seq__65280,chunk__65281,count__65282,i__65283,number_65445__$1,player_65446__$1,system_65444__$1,seq__65297_65438__$1,temp__4657__auto___65437,number_65370,player_65371,vec__65284_65372,filtered_system_65373,system,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56790__$1 = cljs.core.nth.call(null,vec__56656_56789,(0),null);
-var seq__56659_56791 = cljs.core.seq.call(null,player_56788__$1);
-var chunk__56660_56792 = null;
-var count__56661_56793 = (0);
-var i__56662_56794 = (0);
+var filtered_system_65448__$1 = cljs.core.nth.call(null,vec__65314_65447,(0),null);
+var seq__65317_65449 = cljs.core.seq.call(null,player_65446__$1);
+var chunk__65318_65450 = null;
+var count__65319_65451 = (0);
+var i__65320_65452 = (0);
 while(true){
-if((i__56662_56794 < count__56661_56793)){
-var vec__56663_56795 = cljs.core._nth.call(null,chunk__56660_56792,i__56662_56794);
-var the_key_56796 = cljs.core.nth.call(null,vec__56663_56795,(0),null);
-var place_56797 = cljs.core.nth.call(null,vec__56663_56795,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56790__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56790__$1),the_key_56796))], null));
+if((i__65320_65452 < count__65319_65451)){
+var vec__65321_65453 = cljs.core._nth.call(null,chunk__65318_65450,i__65320_65452);
+var the_key_65454 = cljs.core.nth.call(null,vec__65321_65453,(0),null);
+var place_65455 = cljs.core.nth.call(null,vec__65321_65453,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65448__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65448__$1),the_key_65454))], null));
 
-var G__56798 = seq__56659_56791;
-var G__56799 = chunk__56660_56792;
-var G__56800 = count__56661_56793;
-var G__56801 = (i__56662_56794 + (1));
-seq__56659_56791 = G__56798;
-chunk__56660_56792 = G__56799;
-count__56661_56793 = G__56800;
-i__56662_56794 = G__56801;
+var G__65456 = seq__65317_65449;
+var G__65457 = chunk__65318_65450;
+var G__65458 = count__65319_65451;
+var G__65459 = (i__65320_65452 + (1));
+seq__65317_65449 = G__65456;
+chunk__65318_65450 = G__65457;
+count__65319_65451 = G__65458;
+i__65320_65452 = G__65459;
 continue;
 } else {
-var temp__4657__auto___56802__$1 = cljs.core.seq.call(null,seq__56659_56791);
-if(temp__4657__auto___56802__$1){
-var seq__56659_56803__$1 = temp__4657__auto___56802__$1;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56659_56803__$1)){
-var c__37615__auto___56804 = cljs.core.chunk_first.call(null,seq__56659_56803__$1);
-var G__56805 = cljs.core.chunk_rest.call(null,seq__56659_56803__$1);
-var G__56806 = c__37615__auto___56804;
-var G__56807 = cljs.core.count.call(null,c__37615__auto___56804);
-var G__56808 = (0);
-seq__56659_56791 = G__56805;
-chunk__56660_56792 = G__56806;
-count__56661_56793 = G__56807;
-i__56662_56794 = G__56808;
+var temp__4657__auto___65460__$1 = cljs.core.seq.call(null,seq__65317_65449);
+if(temp__4657__auto___65460__$1){
+var seq__65317_65461__$1 = temp__4657__auto___65460__$1;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65317_65461__$1)){
+var c__37615__auto___65462 = cljs.core.chunk_first.call(null,seq__65317_65461__$1);
+var G__65463 = cljs.core.chunk_rest.call(null,seq__65317_65461__$1);
+var G__65464 = c__37615__auto___65462;
+var G__65465 = cljs.core.count.call(null,c__37615__auto___65462);
+var G__65466 = (0);
+seq__65317_65449 = G__65463;
+chunk__65318_65450 = G__65464;
+count__65319_65451 = G__65465;
+i__65320_65452 = G__65466;
 continue;
 } else {
-var vec__56666_56809 = cljs.core.first.call(null,seq__56659_56803__$1);
-var the_key_56810 = cljs.core.nth.call(null,vec__56666_56809,(0),null);
-var place_56811 = cljs.core.nth.call(null,vec__56666_56809,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56790__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56790__$1),the_key_56810))], null));
+var vec__65324_65467 = cljs.core.first.call(null,seq__65317_65461__$1);
+var the_key_65468 = cljs.core.nth.call(null,vec__65324_65467,(0),null);
+var place_65469 = cljs.core.nth.call(null,vec__65324_65467,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65448__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65448__$1),the_key_65468))], null));
 
-var G__56812 = cljs.core.next.call(null,seq__56659_56803__$1);
-var G__56813 = null;
-var G__56814 = (0);
-var G__56815 = (0);
-seq__56659_56791 = G__56812;
-chunk__56660_56792 = G__56813;
-count__56661_56793 = G__56814;
-i__56662_56794 = G__56815;
+var G__65470 = cljs.core.next.call(null,seq__65317_65461__$1);
+var G__65471 = null;
+var G__65472 = (0);
+var G__65473 = (0);
+seq__65317_65449 = G__65470;
+chunk__65318_65450 = G__65471;
+count__65319_65451 = G__65472;
+i__65320_65452 = G__65473;
 continue;
 }
 } else {
@@ -794,14 +794,14 @@ continue;
 break;
 }
 
-var G__56816 = cljs.core.next.call(null,seq__56639_56780__$1);
-var G__56817 = null;
-var G__56818 = (0);
-var G__56819 = (0);
-seq__56639_56741 = G__56816;
-chunk__56640_56742 = G__56817;
-count__56641_56743 = G__56818;
-i__56642_56744 = G__56819;
+var G__65474 = cljs.core.next.call(null,seq__65297_65438__$1);
+var G__65475 = null;
+var G__65476 = (0);
+var G__65477 = (0);
+seq__65297_65399 = G__65474;
+chunk__65298_65400 = G__65475;
+count__65299_65401 = G__65476;
+i__65300_65402 = G__65477;
 continue;
 }
 } else {
@@ -810,89 +810,89 @@ continue;
 break;
 }
 
-var G__56820 = seq__56622;
-var G__56821 = chunk__56623;
-var G__56822 = count__56624;
-var G__56823 = (i__56625 + (1));
-seq__56622 = G__56820;
-chunk__56623 = G__56821;
-count__56624 = G__56822;
-i__56625 = G__56823;
+var G__65478 = seq__65280;
+var G__65479 = chunk__65281;
+var G__65480 = count__65282;
+var G__65481 = (i__65283 + (1));
+seq__65280 = G__65478;
+chunk__65281 = G__65479;
+count__65282 = G__65480;
+i__65283 = G__65481;
 continue;
 } else {
-var temp__4657__auto__ = cljs.core.seq.call(null,seq__56622);
+var temp__4657__auto__ = cljs.core.seq.call(null,seq__65280);
 if(temp__4657__auto__){
-var seq__56622__$1 = temp__4657__auto__;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56622__$1)){
-var c__37615__auto__ = cljs.core.chunk_first.call(null,seq__56622__$1);
-var G__56824 = cljs.core.chunk_rest.call(null,seq__56622__$1);
-var G__56825 = c__37615__auto__;
-var G__56826 = cljs.core.count.call(null,c__37615__auto__);
-var G__56827 = (0);
-seq__56622 = G__56824;
-chunk__56623 = G__56825;
-count__56624 = G__56826;
-i__56625 = G__56827;
+var seq__65280__$1 = temp__4657__auto__;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65280__$1)){
+var c__37615__auto__ = cljs.core.chunk_first.call(null,seq__65280__$1);
+var G__65482 = cljs.core.chunk_rest.call(null,seq__65280__$1);
+var G__65483 = c__37615__auto__;
+var G__65484 = cljs.core.count.call(null,c__37615__auto__);
+var G__65485 = (0);
+seq__65280 = G__65482;
+chunk__65281 = G__65483;
+count__65282 = G__65484;
+i__65283 = G__65485;
 continue;
 } else {
-var system = cljs.core.first.call(null,seq__56622__$1);
-var number_56828 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
-var player_56829 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
-var vec__56669_56830 = cljs.core.filter.call(null,((function (seq__56622,chunk__56623,count__56624,i__56625,number_56828,player_56829,system,seq__56622__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56530_SHARP_){
-return cljs.core._EQ_.call(null,number_56828,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56530_SHARP_));
-});})(seq__56622,chunk__56623,count__56624,i__56625,number_56828,player_56829,system,seq__56622__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
+var system = cljs.core.first.call(null,seq__65280__$1);
+var number_65486 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system);
+var player_65487 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system);
+var vec__65327_65488 = cljs.core.filter.call(null,((function (seq__65280,chunk__65281,count__65282,i__65283,number_65486,player_65487,system,seq__65280__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__65188_SHARP_){
+return cljs.core._EQ_.call(null,number_65486,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65188_SHARP_));
+});})(seq__65280,chunk__65281,count__65282,i__65283,number_65486,player_65487,system,seq__65280__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56831 = cljs.core.nth.call(null,vec__56669_56830,(0),null);
-var seq__56672_56832 = cljs.core.seq.call(null,player_56829);
-var chunk__56673_56833 = null;
-var count__56674_56834 = (0);
-var i__56675_56835 = (0);
+var filtered_system_65489 = cljs.core.nth.call(null,vec__65327_65488,(0),null);
+var seq__65330_65490 = cljs.core.seq.call(null,player_65487);
+var chunk__65331_65491 = null;
+var count__65332_65492 = (0);
+var i__65333_65493 = (0);
 while(true){
-if((i__56675_56835 < count__56674_56834)){
-var vec__56676_56836 = cljs.core._nth.call(null,chunk__56673_56833,i__56675_56835);
-var the_key_56837 = cljs.core.nth.call(null,vec__56676_56836,(0),null);
-var place_56838 = cljs.core.nth.call(null,vec__56676_56836,(1),null);
+if((i__65333_65493 < count__65332_65492)){
+var vec__65334_65494 = cljs.core._nth.call(null,chunk__65331_65491,i__65333_65493);
+var the_key_65495 = cljs.core.nth.call(null,vec__65334_65494,(0),null);
+var place_65496 = cljs.core.nth.call(null,vec__65334_65494,(1),null);
 lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","season-pass","dungeon/season-pass",-766369009),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"quantity","quantity",-1929050694),((-1) * lvlup.crusader.dungeon.all_items_to_hours.call(null,player_id)),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id], null)], null));
 
-var G__56839 = seq__56672_56832;
-var G__56840 = chunk__56673_56833;
-var G__56841 = count__56674_56834;
-var G__56842 = (i__56675_56835 + (1));
-seq__56672_56832 = G__56839;
-chunk__56673_56833 = G__56840;
-count__56674_56834 = G__56841;
-i__56675_56835 = G__56842;
+var G__65497 = seq__65330_65490;
+var G__65498 = chunk__65331_65491;
+var G__65499 = count__65332_65492;
+var G__65500 = (i__65333_65493 + (1));
+seq__65330_65490 = G__65497;
+chunk__65331_65491 = G__65498;
+count__65332_65492 = G__65499;
+i__65333_65493 = G__65500;
 continue;
 } else {
-var temp__4657__auto___56843__$1 = cljs.core.seq.call(null,seq__56672_56832);
-if(temp__4657__auto___56843__$1){
-var seq__56672_56844__$1 = temp__4657__auto___56843__$1;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56672_56844__$1)){
-var c__37615__auto___56845 = cljs.core.chunk_first.call(null,seq__56672_56844__$1);
-var G__56846 = cljs.core.chunk_rest.call(null,seq__56672_56844__$1);
-var G__56847 = c__37615__auto___56845;
-var G__56848 = cljs.core.count.call(null,c__37615__auto___56845);
-var G__56849 = (0);
-seq__56672_56832 = G__56846;
-chunk__56673_56833 = G__56847;
-count__56674_56834 = G__56848;
-i__56675_56835 = G__56849;
+var temp__4657__auto___65501__$1 = cljs.core.seq.call(null,seq__65330_65490);
+if(temp__4657__auto___65501__$1){
+var seq__65330_65502__$1 = temp__4657__auto___65501__$1;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65330_65502__$1)){
+var c__37615__auto___65503 = cljs.core.chunk_first.call(null,seq__65330_65502__$1);
+var G__65504 = cljs.core.chunk_rest.call(null,seq__65330_65502__$1);
+var G__65505 = c__37615__auto___65503;
+var G__65506 = cljs.core.count.call(null,c__37615__auto___65503);
+var G__65507 = (0);
+seq__65330_65490 = G__65504;
+chunk__65331_65491 = G__65505;
+count__65332_65492 = G__65506;
+i__65333_65493 = G__65507;
 continue;
 } else {
-var vec__56679_56850 = cljs.core.first.call(null,seq__56672_56844__$1);
-var the_key_56851 = cljs.core.nth.call(null,vec__56679_56850,(0),null);
-var place_56852 = cljs.core.nth.call(null,vec__56679_56850,(1),null);
+var vec__65337_65508 = cljs.core.first.call(null,seq__65330_65502__$1);
+var the_key_65509 = cljs.core.nth.call(null,vec__65337_65508,(0),null);
+var place_65510 = cljs.core.nth.call(null,vec__65337_65508,(1),null);
 lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","season-pass","dungeon/season-pass",-766369009),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"quantity","quantity",-1929050694),((-1) * lvlup.crusader.dungeon.all_items_to_hours.call(null,player_id)),new cljs.core.Keyword(null,"member-id","member-id",606659713),player_id], null)], null));
 
-var G__56853 = cljs.core.next.call(null,seq__56672_56844__$1);
-var G__56854 = null;
-var G__56855 = (0);
-var G__56856 = (0);
-seq__56672_56832 = G__56853;
-chunk__56673_56833 = G__56854;
-count__56674_56834 = G__56855;
-i__56675_56835 = G__56856;
+var G__65511 = cljs.core.next.call(null,seq__65330_65502__$1);
+var G__65512 = null;
+var G__65513 = (0);
+var G__65514 = (0);
+seq__65330_65490 = G__65511;
+chunk__65331_65491 = G__65512;
+count__65332_65492 = G__65513;
+i__65333_65493 = G__65514;
 continue;
 }
 } else {
@@ -901,70 +901,70 @@ continue;
 break;
 }
 
-var seq__56682_56857 = cljs.core.seq.call(null,this_player_all_systems);
-var chunk__56683_56858 = null;
-var count__56684_56859 = (0);
-var i__56685_56860 = (0);
+var seq__65340_65515 = cljs.core.seq.call(null,this_player_all_systems);
+var chunk__65341_65516 = null;
+var count__65342_65517 = (0);
+var i__65343_65518 = (0);
 while(true){
-if((i__56685_56860 < count__56684_56859)){
-var system_56861__$1 = cljs.core._nth.call(null,chunk__56683_56858,i__56685_56860);
-var number_56862__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_56861__$1);
-var player_56863__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_56861__$1);
-var vec__56686_56864 = cljs.core.filter.call(null,((function (seq__56682_56857,chunk__56683_56858,count__56684_56859,i__56685_56860,seq__56622,chunk__56623,count__56624,i__56625,number_56862__$1,player_56863__$1,system_56861__$1,number_56828,player_56829,vec__56669_56830,filtered_system_56831,system,seq__56622__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56531_SHARP_){
-return cljs.core._EQ_.call(null,number_56862__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56531_SHARP_));
-});})(seq__56682_56857,chunk__56683_56858,count__56684_56859,i__56685_56860,seq__56622,chunk__56623,count__56624,i__56625,number_56862__$1,player_56863__$1,system_56861__$1,number_56828,player_56829,vec__56669_56830,filtered_system_56831,system,seq__56622__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
+if((i__65343_65518 < count__65342_65517)){
+var system_65519__$1 = cljs.core._nth.call(null,chunk__65341_65516,i__65343_65518);
+var number_65520__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_65519__$1);
+var player_65521__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_65519__$1);
+var vec__65344_65522 = cljs.core.filter.call(null,((function (seq__65340_65515,chunk__65341_65516,count__65342_65517,i__65343_65518,seq__65280,chunk__65281,count__65282,i__65283,number_65520__$1,player_65521__$1,system_65519__$1,number_65486,player_65487,vec__65327_65488,filtered_system_65489,system,seq__65280__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__65189_SHARP_){
+return cljs.core._EQ_.call(null,number_65520__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65189_SHARP_));
+});})(seq__65340_65515,chunk__65341_65516,count__65342_65517,i__65343_65518,seq__65280,chunk__65281,count__65282,i__65283,number_65520__$1,player_65521__$1,system_65519__$1,number_65486,player_65487,vec__65327_65488,filtered_system_65489,system,seq__65280__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56865__$1 = cljs.core.nth.call(null,vec__56686_56864,(0),null);
-var seq__56689_56866 = cljs.core.seq.call(null,player_56863__$1);
-var chunk__56690_56867 = null;
-var count__56691_56868 = (0);
-var i__56692_56869 = (0);
+var filtered_system_65523__$1 = cljs.core.nth.call(null,vec__65344_65522,(0),null);
+var seq__65347_65524 = cljs.core.seq.call(null,player_65521__$1);
+var chunk__65348_65525 = null;
+var count__65349_65526 = (0);
+var i__65350_65527 = (0);
 while(true){
-if((i__56692_56869 < count__56691_56868)){
-var vec__56693_56870 = cljs.core._nth.call(null,chunk__56690_56867,i__56692_56869);
-var the_key_56871 = cljs.core.nth.call(null,vec__56693_56870,(0),null);
-var place_56872 = cljs.core.nth.call(null,vec__56693_56870,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56865__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56865__$1),the_key_56871))], null));
+if((i__65350_65527 < count__65349_65526)){
+var vec__65351_65528 = cljs.core._nth.call(null,chunk__65348_65525,i__65350_65527);
+var the_key_65529 = cljs.core.nth.call(null,vec__65351_65528,(0),null);
+var place_65530 = cljs.core.nth.call(null,vec__65351_65528,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65523__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65523__$1),the_key_65529))], null));
 
-var G__56873 = seq__56689_56866;
-var G__56874 = chunk__56690_56867;
-var G__56875 = count__56691_56868;
-var G__56876 = (i__56692_56869 + (1));
-seq__56689_56866 = G__56873;
-chunk__56690_56867 = G__56874;
-count__56691_56868 = G__56875;
-i__56692_56869 = G__56876;
+var G__65531 = seq__65347_65524;
+var G__65532 = chunk__65348_65525;
+var G__65533 = count__65349_65526;
+var G__65534 = (i__65350_65527 + (1));
+seq__65347_65524 = G__65531;
+chunk__65348_65525 = G__65532;
+count__65349_65526 = G__65533;
+i__65350_65527 = G__65534;
 continue;
 } else {
-var temp__4657__auto___56877__$1 = cljs.core.seq.call(null,seq__56689_56866);
-if(temp__4657__auto___56877__$1){
-var seq__56689_56878__$1 = temp__4657__auto___56877__$1;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56689_56878__$1)){
-var c__37615__auto___56879 = cljs.core.chunk_first.call(null,seq__56689_56878__$1);
-var G__56880 = cljs.core.chunk_rest.call(null,seq__56689_56878__$1);
-var G__56881 = c__37615__auto___56879;
-var G__56882 = cljs.core.count.call(null,c__37615__auto___56879);
-var G__56883 = (0);
-seq__56689_56866 = G__56880;
-chunk__56690_56867 = G__56881;
-count__56691_56868 = G__56882;
-i__56692_56869 = G__56883;
+var temp__4657__auto___65535__$1 = cljs.core.seq.call(null,seq__65347_65524);
+if(temp__4657__auto___65535__$1){
+var seq__65347_65536__$1 = temp__4657__auto___65535__$1;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65347_65536__$1)){
+var c__37615__auto___65537 = cljs.core.chunk_first.call(null,seq__65347_65536__$1);
+var G__65538 = cljs.core.chunk_rest.call(null,seq__65347_65536__$1);
+var G__65539 = c__37615__auto___65537;
+var G__65540 = cljs.core.count.call(null,c__37615__auto___65537);
+var G__65541 = (0);
+seq__65347_65524 = G__65538;
+chunk__65348_65525 = G__65539;
+count__65349_65526 = G__65540;
+i__65350_65527 = G__65541;
 continue;
 } else {
-var vec__56696_56884 = cljs.core.first.call(null,seq__56689_56878__$1);
-var the_key_56885 = cljs.core.nth.call(null,vec__56696_56884,(0),null);
-var place_56886 = cljs.core.nth.call(null,vec__56696_56884,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56865__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56865__$1),the_key_56885))], null));
+var vec__65354_65542 = cljs.core.first.call(null,seq__65347_65536__$1);
+var the_key_65543 = cljs.core.nth.call(null,vec__65354_65542,(0),null);
+var place_65544 = cljs.core.nth.call(null,vec__65354_65542,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65523__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65523__$1),the_key_65543))], null));
 
-var G__56887 = cljs.core.next.call(null,seq__56689_56878__$1);
-var G__56888 = null;
-var G__56889 = (0);
-var G__56890 = (0);
-seq__56689_56866 = G__56887;
-chunk__56690_56867 = G__56888;
-count__56691_56868 = G__56889;
-i__56692_56869 = G__56890;
+var G__65545 = cljs.core.next.call(null,seq__65347_65536__$1);
+var G__65546 = null;
+var G__65547 = (0);
+var G__65548 = (0);
+seq__65347_65524 = G__65545;
+chunk__65348_65525 = G__65546;
+count__65349_65526 = G__65547;
+i__65350_65527 = G__65548;
 continue;
 }
 } else {
@@ -973,105 +973,89 @@ continue;
 break;
 }
 
-var G__56891 = seq__56682_56857;
-var G__56892 = chunk__56683_56858;
-var G__56893 = count__56684_56859;
-var G__56894 = (i__56685_56860 + (1));
-seq__56682_56857 = G__56891;
-chunk__56683_56858 = G__56892;
-count__56684_56859 = G__56893;
-i__56685_56860 = G__56894;
+var G__65549 = seq__65340_65515;
+var G__65550 = chunk__65341_65516;
+var G__65551 = count__65342_65517;
+var G__65552 = (i__65343_65518 + (1));
+seq__65340_65515 = G__65549;
+chunk__65341_65516 = G__65550;
+count__65342_65517 = G__65551;
+i__65343_65518 = G__65552;
 continue;
 } else {
-var temp__4657__auto___56895__$1 = cljs.core.seq.call(null,seq__56682_56857);
-if(temp__4657__auto___56895__$1){
-var seq__56682_56896__$1 = temp__4657__auto___56895__$1;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56682_56896__$1)){
-var c__37615__auto___56897 = cljs.core.chunk_first.call(null,seq__56682_56896__$1);
-var G__56898 = cljs.core.chunk_rest.call(null,seq__56682_56896__$1);
-var G__56899 = c__37615__auto___56897;
-var G__56900 = cljs.core.count.call(null,c__37615__auto___56897);
-var G__56901 = (0);
-seq__56682_56857 = G__56898;
-chunk__56683_56858 = G__56899;
-count__56684_56859 = G__56900;
-i__56685_56860 = G__56901;
+var temp__4657__auto___65553__$1 = cljs.core.seq.call(null,seq__65340_65515);
+if(temp__4657__auto___65553__$1){
+var seq__65340_65554__$1 = temp__4657__auto___65553__$1;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65340_65554__$1)){
+var c__37615__auto___65555 = cljs.core.chunk_first.call(null,seq__65340_65554__$1);
+var G__65556 = cljs.core.chunk_rest.call(null,seq__65340_65554__$1);
+var G__65557 = c__37615__auto___65555;
+var G__65558 = cljs.core.count.call(null,c__37615__auto___65555);
+var G__65559 = (0);
+seq__65340_65515 = G__65556;
+chunk__65341_65516 = G__65557;
+count__65342_65517 = G__65558;
+i__65343_65518 = G__65559;
 continue;
 } else {
-var system_56902__$1 = cljs.core.first.call(null,seq__56682_56896__$1);
-var number_56903__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_56902__$1);
-var player_56904__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_56902__$1);
-var vec__56699_56905 = cljs.core.filter.call(null,((function (seq__56682_56857,chunk__56683_56858,count__56684_56859,i__56685_56860,seq__56622,chunk__56623,count__56624,i__56625,number_56903__$1,player_56904__$1,system_56902__$1,seq__56682_56896__$1,temp__4657__auto___56895__$1,number_56828,player_56829,vec__56669_56830,filtered_system_56831,system,seq__56622__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
-return (function (p1__56531_SHARP_){
-return cljs.core._EQ_.call(null,number_56903__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56531_SHARP_));
-});})(seq__56682_56857,chunk__56683_56858,count__56684_56859,i__56685_56860,seq__56622,chunk__56623,count__56624,i__56625,number_56903__$1,player_56904__$1,system_56902__$1,seq__56682_56896__$1,temp__4657__auto___56895__$1,number_56828,player_56829,vec__56669_56830,filtered_system_56831,system,seq__56622__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
+var system_65560__$1 = cljs.core.first.call(null,seq__65340_65554__$1);
+var number_65561__$1 = new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(system_65560__$1);
+var player_65562__$1 = new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(system_65560__$1);
+var vec__65357_65563 = cljs.core.filter.call(null,((function (seq__65340_65515,chunk__65341_65516,count__65342_65517,i__65343_65518,seq__65280,chunk__65281,count__65282,i__65283,number_65561__$1,player_65562__$1,system_65560__$1,seq__65340_65554__$1,temp__4657__auto___65553__$1,number_65486,player_65487,vec__65327_65488,filtered_system_65489,system,seq__65280__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems){
+return (function (p1__65189_SHARP_){
+return cljs.core._EQ_.call(null,number_65561__$1,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65189_SHARP_));
+});})(seq__65340_65515,chunk__65341_65516,count__65342_65517,i__65343_65518,seq__65280,chunk__65281,count__65282,i__65283,number_65561__$1,player_65562__$1,system_65560__$1,seq__65340_65554__$1,temp__4657__auto___65553__$1,number_65486,player_65487,vec__65327_65488,filtered_system_65489,system,seq__65280__$1,temp__4657__auto__,all_systems,all_players,this_player_all_systems,this_player_systems))
 ,cljs.core.deref.call(null,all_systems));
-var filtered_system_56906__$1 = cljs.core.nth.call(null,vec__56699_56905,(0),null);
-var seq__56702_56907 = cljs.core.seq.call(null,player_56904__$1);
-var chunk__56703_56908 = null;
-var count__56704_56909 = (0);
-var i__56705_56910 = (0);
+var filtered_system_65564__$1 = cljs.core.nth.call(null,vec__65357_65563,(0),null);
+var seq__65360_65565 = cljs.core.seq.call(null,player_65562__$1);
+var chunk__65361_65566 = null;
+var count__65362_65567 = (0);
+var i__65363_65568 = (0);
 while(true){
-if((i__56705_56910 < count__56704_56909)){
-var vec__56706_56911 = cljs.core._nth.call(null,chunk__56703_56908,i__56705_56910);
-var the_key_56912 = cljs.core.nth.call(null,vec__56706_56911,(0),null);
-var place_56913 = cljs.core.nth.call(null,vec__56706_56911,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56906__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56906__$1),the_key_56912))], null));
+if((i__65363_65568 < count__65362_65567)){
+var vec__65364_65569 = cljs.core._nth.call(null,chunk__65361_65566,i__65363_65568);
+var the_key_65570 = cljs.core.nth.call(null,vec__65364_65569,(0),null);
+var place_65571 = cljs.core.nth.call(null,vec__65364_65569,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65564__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65564__$1),the_key_65570))], null));
 
-var G__56914 = seq__56702_56907;
-var G__56915 = chunk__56703_56908;
-var G__56916 = count__56704_56909;
-var G__56917 = (i__56705_56910 + (1));
-seq__56702_56907 = G__56914;
-chunk__56703_56908 = G__56915;
-count__56704_56909 = G__56916;
-i__56705_56910 = G__56917;
+var G__65572 = seq__65360_65565;
+var G__65573 = chunk__65361_65566;
+var G__65574 = count__65362_65567;
+var G__65575 = (i__65363_65568 + (1));
+seq__65360_65565 = G__65572;
+chunk__65361_65566 = G__65573;
+count__65362_65567 = G__65574;
+i__65363_65568 = G__65575;
 continue;
 } else {
-var temp__4657__auto___56918__$2 = cljs.core.seq.call(null,seq__56702_56907);
-if(temp__4657__auto___56918__$2){
-var seq__56702_56919__$1 = temp__4657__auto___56918__$2;
-if(cljs.core.chunked_seq_QMARK_.call(null,seq__56702_56919__$1)){
-var c__37615__auto___56920 = cljs.core.chunk_first.call(null,seq__56702_56919__$1);
-var G__56921 = cljs.core.chunk_rest.call(null,seq__56702_56919__$1);
-var G__56922 = c__37615__auto___56920;
-var G__56923 = cljs.core.count.call(null,c__37615__auto___56920);
-var G__56924 = (0);
-seq__56702_56907 = G__56921;
-chunk__56703_56908 = G__56922;
-count__56704_56909 = G__56923;
-i__56705_56910 = G__56924;
+var temp__4657__auto___65576__$2 = cljs.core.seq.call(null,seq__65360_65565);
+if(temp__4657__auto___65576__$2){
+var seq__65360_65577__$1 = temp__4657__auto___65576__$2;
+if(cljs.core.chunked_seq_QMARK_.call(null,seq__65360_65577__$1)){
+var c__37615__auto___65578 = cljs.core.chunk_first.call(null,seq__65360_65577__$1);
+var G__65579 = cljs.core.chunk_rest.call(null,seq__65360_65577__$1);
+var G__65580 = c__37615__auto___65578;
+var G__65581 = cljs.core.count.call(null,c__37615__auto___65578);
+var G__65582 = (0);
+seq__65360_65565 = G__65579;
+chunk__65361_65566 = G__65580;
+count__65362_65567 = G__65581;
+i__65363_65568 = G__65582;
 continue;
 } else {
-var vec__56709_56925 = cljs.core.first.call(null,seq__56702_56919__$1);
-var the_key_56926 = cljs.core.nth.call(null,vec__56709_56925,(0),null);
-var place_56927 = cljs.core.nth.call(null,vec__56709_56925,(1),null);
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_56906__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_56906__$1),the_key_56926))], null));
+var vec__65367_65583 = cljs.core.first.call(null,seq__65360_65577__$1);
+var the_key_65584 = cljs.core.nth.call(null,vec__65367_65583,(0),null);
+var place_65585 = cljs.core.nth.call(null,vec__65367_65583,(1),null);
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system_65564__$1,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.dissoc.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system_65564__$1),the_key_65584))], null));
 
-var G__56928 = cljs.core.next.call(null,seq__56702_56919__$1);
-var G__56929 = null;
-var G__56930 = (0);
-var G__56931 = (0);
-seq__56702_56907 = G__56928;
-chunk__56703_56908 = G__56929;
-count__56704_56909 = G__56930;
-i__56705_56910 = G__56931;
-continue;
-}
-} else {
-}
-}
-break;
-}
-
-var G__56932 = cljs.core.next.call(null,seq__56682_56896__$1);
-var G__56933 = null;
-var G__56934 = (0);
-var G__56935 = (0);
-seq__56682_56857 = G__56932;
-chunk__56683_56858 = G__56933;
-count__56684_56859 = G__56934;
-i__56685_56860 = G__56935;
+var G__65586 = cljs.core.next.call(null,seq__65360_65577__$1);
+var G__65587 = null;
+var G__65588 = (0);
+var G__65589 = (0);
+seq__65360_65565 = G__65586;
+chunk__65361_65566 = G__65587;
+count__65362_65567 = G__65588;
+i__65363_65568 = G__65589;
 continue;
 }
 } else {
@@ -1080,14 +1064,30 @@ continue;
 break;
 }
 
-var G__56936 = cljs.core.next.call(null,seq__56622__$1);
-var G__56937 = null;
-var G__56938 = (0);
-var G__56939 = (0);
-seq__56622 = G__56936;
-chunk__56623 = G__56937;
-count__56624 = G__56938;
-i__56625 = G__56939;
+var G__65590 = cljs.core.next.call(null,seq__65340_65554__$1);
+var G__65591 = null;
+var G__65592 = (0);
+var G__65593 = (0);
+seq__65340_65515 = G__65590;
+chunk__65341_65516 = G__65591;
+count__65342_65517 = G__65592;
+i__65343_65518 = G__65593;
+continue;
+}
+} else {
+}
+}
+break;
+}
+
+var G__65594 = cljs.core.next.call(null,seq__65280__$1);
+var G__65595 = null;
+var G__65596 = (0);
+var G__65597 = (0);
+seq__65280 = G__65594;
+chunk__65281 = G__65595;
+count__65282 = G__65596;
+i__65283 = G__65597;
 continue;
 }
 } else {
@@ -1104,26 +1104,26 @@ return (function (a){
 return (cljs.core.not_EQ_.call(null,a,cljs.core.PersistentArrayMap.EMPTY)) && (cljs.core.not_EQ_.call(null,a,null));
 });})(all_systems))
 ,cljs.core.map.call(null,((function (all_systems){
-return (function (p1__56940_SHARP_){
-return new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56940_SHARP_);
+return (function (p1__65598_SHARP_){
+return new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__65598_SHARP_);
 });})(all_systems))
 ,cljs.core.deref.call(null,all_systems)));
 var this_player_systems = cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
-return (function (p1__56941_SHARP_){
-return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(p1__56941_SHARP_));
+return (function (p1__65599_SHARP_){
+return cljs.core._EQ_.call(null,parseInt(player_id),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(p1__65599_SHARP_));
 });})(all_systems,all_players))
 ,cljs.core.doall.call(null,cljs.core.filter.call(null,((function (all_systems,all_players){
 return (function (a){
 return cljs.core.contains_QMARK_.call(null,a,new cljs.core.Keyword(null,"start","start",-355208981));
 });})(all_systems,all_players))
 ,cljs.core.map.call(null,((function (all_systems,all_players){
-return (function (p1__56942_SHARP_){
-return cljs.core.second.call(null,cljs.core.first.call(null,p1__56942_SHARP_));
+return (function (p1__65600_SHARP_){
+return cljs.core.second.call(null,cljs.core.first.call(null,p1__65600_SHARP_));
 });})(all_systems,all_players))
 ,all_players)))));
 var total_price = cljs.core.reduce.call(null,cljs.core._PLUS_,cljs.core.map.call(null,((function (all_systems,all_players,this_player_systems){
-return (function (p1__56943_SHARP_){
-return lvlup.crusader.dungeon.minute_to_money.call(null,(cljs.core.truth_(cljs_time.core.before_QMARK_.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(p1__56943_SHARP_)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1)))))?cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(p1__56943_SHARP_)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))):(0)),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(p1__56943_SHARP_));
+return (function (p1__65601_SHARP_){
+return lvlup.crusader.dungeon.minute_to_money.call(null,(cljs.core.truth_(cljs_time.core.before_QMARK_.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(p1__65601_SHARP_)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1)))))?cljs_time.core.in_seconds.call(null,cljs_time.core.interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(p1__65601_SHARP_)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))):(0)),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(p1__65601_SHARP_));
 });})(all_systems,all_players,this_player_systems))
 ,this_player_systems));
 return total_price;
@@ -1199,41 +1199,41 @@ cljs.core.reset_BANG_.call(null,the_atom,(0));
 return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,item,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.assoc_in.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(item),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [player_number,new cljs.core.Keyword(null,"start","start",-355208981)], null),lvlup.crusader.dungeon.convert_to_clojurescript_time.call(null,[cljs.core.str(cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1))))].join(''))))], null));
 })], null)], null);
 });
-lvlup.crusader.dungeon.player_playing = (function lvlup$crusader$dungeon$player_playing(system,p__56945){
-var vec__56953 = p__56945;
-var player_number = cljs.core.nth.call(null,vec__56953,(0),null);
-var data = cljs.core.nth.call(null,vec__56953,(1),null);
+lvlup.crusader.dungeon.player_playing = (function lvlup$crusader$dungeon$player_playing(system,p__65603){
+var vec__65611 = p__65603;
+var player_number = cljs.core.nth.call(null,vec__65611,(0),null);
+var data = cljs.core.nth.call(null,vec__65611,(1),null);
 var active_member = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"active-member"], null));
 var loading = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"loading"], null));
 var time_elapsed = reagent.core.atom.call(null,(cljs.core.truth_(new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(data))?lvlup.crusader.dungeon.calculate_time_interval.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(data)),cljs_time.core.plus.call(null,cljs_time.core.now.call(null),cljs_time.core.hours.call(null,(1)))):null));
-var valami = reagent.core.atom.call(null,setInterval(((function (active_member,loading,time_elapsed,vec__56953,player_number,data){
+var valami = reagent.core.atom.call(null,setInterval(((function (active_member,loading,time_elapsed,vec__65611,player_number,data){
 return (function (){
 return cljs.core.reset_BANG_.call(null,time_elapsed,(cljs.core.deref.call(null,time_elapsed) + (1)));
-});})(active_member,loading,time_elapsed,vec__56953,player_number,data))
+});})(active_member,loading,time_elapsed,vec__65611,player_number,data))
 ,(1000)));
 var players = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"players"], null));
-var this_player = ((function (active_member,loading,time_elapsed,valami,players,vec__56953,player_number,data){
+var this_player = ((function (active_member,loading,time_elapsed,valami,players,vec__65611,player_number,data){
 return (function (){
-return cljs.core.first.call(null,cljs.core.filter.call(null,((function (active_member,loading,time_elapsed,valami,players,vec__56953,player_number,data){
-return (function (p1__56944_SHARP_){
-return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__56944_SHARP_),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(data));
-});})(active_member,loading,time_elapsed,valami,players,vec__56953,player_number,data))
+return cljs.core.first.call(null,cljs.core.filter.call(null,((function (active_member,loading,time_elapsed,valami,players,vec__65611,player_number,data){
+return (function (p1__65602_SHARP_){
+return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__65602_SHARP_),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(data));
+});})(active_member,loading,time_elapsed,valami,players,vec__65611,player_number,data))
 ,cljs.core.deref.call(null,players)));
-});})(active_member,loading,time_elapsed,valami,players,vec__56953,player_number,data))
+});})(active_member,loading,time_elapsed,valami,players,vec__65611,player_number,data))
 ;
-return ((function (active_member,loading,time_elapsed,valami,players,this_player,vec__56953,player_number,data){
-return (function (system__$1,p__56956){
-var vec__56957 = p__56956;
-var player_number__$1 = cljs.core.nth.call(null,vec__56957,(0),null);
-var data__$1 = cljs.core.nth.call(null,vec__56957,(1),null);
+return ((function (active_member,loading,time_elapsed,valami,players,this_player,vec__65611,player_number,data){
+return (function (system__$1,p__65614){
+var vec__65615 = p__65614;
+var player_number__$1 = cljs.core.nth.call(null,vec__65615,(0),null);
+var data__$1 = cljs.core.nth.call(null,vec__65615,(1),null);
 return new cljs.core.PersistentVector(null, 9, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-padding-remove.uk-animation-fade","div.uk-padding-remove.uk-animation-fade",1654815180),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"border-top","border-top",-158897573),"1px solid white"], null),new cljs.core.Keyword(null,"class","class",-2030961996),((cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(data__$1),cljs.core.deref.call(null,active_member)))?"uk-card-primary":"uk-card-secondary")], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-padding-small.uk-padding-remove-bottom","div.uk-padding-small.uk-padding-remove-bottom",-1972330897),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),[cljs.core.str(new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(this_player.call(null))),cljs.core.str(" - "),cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(this_player.call(null)))].join('')], null)], null),(cljs.core.truth_(new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(data__$1))?new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-text-center","div.uk-text-center",-1334382774),[cljs.core.str(lvlup.crusader.dungeon.convert_time.call(null,cljs_time.format.parse.call(null,new cljs.core.Keyword(null,"start","start",-355208981).cljs$core$IFn$_invoke$arity$1(data__$1)))),cljs.core.str(" - "),cljs.core.str(lvlup.crusader.dungeon.minute_to_money.call(null,cljs.core.deref.call(null,time_elapsed),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(data__$1))),cljs.core.str(" Ft")].join('')], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h3.uk-text-center.uk-padding-remove.uk-margin-remove","h3.uk-text-center.uk-padding-remove.uk-margin-remove",-1159920840),lvlup.crusader.dungeon.elapsing_time.call(null,cljs.core.deref.call(null,time_elapsed))], null)], null):new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.start_button,player_number__$1,system__$1,time_elapsed,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(this_player.call(null))], null)),new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.modify_time,player_number__$1,system__$1,"-",time_elapsed,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(this_player.call(null))], null),new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.modify_time,player_number__$1,system__$1,"+",time_elapsed,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(this_player.call(null))], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.cancel,player_number__$1,system__$1,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(this_player.call(null))], null),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.pay_with_season_pass,player_number__$1,system__$1,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(this_player.call(null)),cljs.core.deref.call(null,loading)], null),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.pay,player_number__$1,system__$1,new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(this_player.call(null)),cljs.core.deref.call(null,loading)], null)], null);
 });
-;})(active_member,loading,time_elapsed,valami,players,this_player,vec__56953,player_number,data))
+;})(active_member,loading,time_elapsed,valami,players,this_player,vec__65611,player_number,data))
 });
 lvlup.crusader.dungeon.system = (function lvlup$crusader$dungeon$system(item){
 return reagent.core.create_class.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),(function (item__$1){
-return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"li.uk-width-1-5.valami.dropzone.dropzone2","li.uk-width-1-5.valami.dropzone.dropzone2",-1746359548),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(item__$1),new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"opacity","opacity",397153780),0.91], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-card.uk-card-secondary","div.uk-card.uk-card-secondary",725560384),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"border-radius","border-radius",419594011),"5px"], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-card-header.uk-padding-small","div.uk-card-header.uk-padding-small",-1952210389),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-grid-small.uk-flex-middle","div.uk-grid-small.uk-flex-middle",-831865867),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-uk-grid","data-uk-grid",-1215416447),true], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-auto","div.uk-width-auto",-1506646300),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img","img",1442687358),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"src","src",-1651076051),(function (){var G__56963 = new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(item__$1);
-switch (G__56963) {
+return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"li.uk-width-1-5.valami.dropzone.dropzone2","li.uk-width-1-5.valami.dropzone.dropzone2",-1746359548),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(item__$1),new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"opacity","opacity",397153780),0.91], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-card.uk-card-secondary","div.uk-card.uk-card-secondary",725560384),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"border-radius","border-radius",419594011),"5px"], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-card-header.uk-padding-small","div.uk-card-header.uk-padding-small",-1952210389),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-grid-small.uk-flex-middle","div.uk-grid-small.uk-flex-middle",-831865867),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-uk-grid","data-uk-grid",-1215416447),true], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-auto","div.uk-width-auto",-1506646300),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img","img",1442687358),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"src","src",-1651076051),(function (){var G__65621 = new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(item__$1);
+switch (G__65621) {
 case "ps":
 return "/Icons/ps.svg";
 
@@ -1250,16 +1250,16 @@ default:
 return "hmm";
 
 }
-})(),new cljs.core.Keyword(null,"height","height",1025178622),"40",new cljs.core.Keyword(null,"width","width",-384071477),"40"], null)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-expand","div.uk-width-expand",2031751938),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h3.uk-card-title.uk-margin-remove-bottom.uk-text-truncate","h3.uk-card-title.uk-margin-remove-bottom.uk-text-truncate",-1609379787),[cljs.core.str(new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(item__$1)),cljs.core.str(" - "),cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(item__$1))].join('')], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p.uk-text-meta.uk-margin-remove-top","p.uk-text-meta.uk-margin-remove-top",-506306409),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(item__$1)], null)], null)], null)], null),((cljs.core._EQ_.call(null,(0),cljs.core.count.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(item__$1))))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h3.uk-heading.uk-text-center","h3.uk-heading.uk-text-center",391565416),"Foglal\u00E1sok m\u00E1ra... Soon"], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.masvalami.draggable","div.masvalami.draggable",829437924),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(item__$1),new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"move"], null)], null),cljs.core.map_indexed.call(null,(function (p1__56961_SHARP_,p2__56960_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player_playing,item__$1,p2__56960_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),cljs.core.first.call(null,p2__56960_SHARP_)], null));
+})(),new cljs.core.Keyword(null,"height","height",1025178622),"40",new cljs.core.Keyword(null,"width","width",-384071477),"40"], null)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-expand","div.uk-width-expand",2031751938),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h3.uk-card-title.uk-margin-remove-bottom.uk-text-truncate","h3.uk-card-title.uk-margin-remove-bottom.uk-text-truncate",-1609379787),[cljs.core.str(new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(item__$1)),cljs.core.str(" - "),cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(item__$1))].join('')], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p.uk-text-meta.uk-margin-remove-top","p.uk-text-meta.uk-margin-remove-top",-506306409),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(item__$1)], null)], null)], null)], null),((cljs.core._EQ_.call(null,(0),cljs.core.count.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(item__$1))))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h3.uk-heading.uk-text-center","h3.uk-heading.uk-text-center",391565416),"Foglal\u00E1sok m\u00E1ra... Soon"], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.masvalami.draggable","div.masvalami.draggable",829437924),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"id","id",-1388402092),new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(item__$1),new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"move"], null)], null),cljs.core.map_indexed.call(null,(function (p1__65619_SHARP_,p2__65618_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player_playing,item__$1,p2__65618_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),cljs.core.first.call(null,p2__65618_SHARP_)], null));
 }),new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(item__$1))], null))], null)], null);
 })], null));
 });
 lvlup.crusader.dungeon.get_member_systems = (function lvlup$crusader$dungeon$get_member_systems(player){
 var systems = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"system-map"], null));
 return cljs.core.filter.call(null,((function (systems){
-return (function (p1__56965_SHARP_){
-return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(player),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(p1__56965_SHARP_));
+return (function (p1__65623_SHARP_){
+return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(player),new cljs.core.Keyword(null,"member-id","member-id",606659713).cljs$core$IFn$_invoke$arity$1(p1__65623_SHARP_));
 });})(systems))
 ,cljs.core.deref.call(null,systems));
 });
@@ -1274,8 +1274,8 @@ return (function (a){
 return cljs.core.second.call(null,cljs.core.first.call(null,a));
 });})(systems))
 ,cljs.core.map.call(null,new cljs.core.Keyword(null,"players","players",-1361554569),cljs.core.filter.call(null,((function (systems){
-return (function (p1__56966_SHARP_){
-return (cljs.core.not_EQ_.call(null,null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56966_SHARP_))) && (cljs.core.not_EQ_.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__56966_SHARP_)));
+return (function (p1__65624_SHARP_){
+return (cljs.core.not_EQ_.call(null,null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__65624_SHARP_))) && (cljs.core.not_EQ_.call(null,cljs.core.PersistentArrayMap.EMPTY,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(p1__65624_SHARP_)));
 });})(systems))
 ,cljs.core.deref.call(null,systems)))))))){
 return true;
@@ -1295,8 +1295,8 @@ return (function (){
 return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-active-member","set-active-member",-1587885058),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(data__$1)], null));
 });})(invoices,pool,sidenav_state,active_member))
 ,new cljs.core.Keyword(null,"id","id",-1388402092),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(data__$1)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-3","div.uk-width-1-3",-68418982),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-inline","div.uk-inline",-2089757713),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img.uk-border-circle","img.uk-border-circle",1982878954),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"src","src",-1651076051),"/img/logos/unnamed.png"], null)], null),((cljs.core.not.call(null,cljs.core.some.call(null,((function (invoices,pool,sidenav_state,active_member){
-return (function (p1__56967_SHARP_){
-return cljs.core._EQ_.call(null,p1__56967_SHARP_,data__$1);
+return (function (p1__65625_SHARP_){
+return cljs.core._EQ_.call(null,p1__65625_SHARP_,data__$1);
 });})(invoices,pool,sidenav_state,active_member))
 ,cljs.core.deref.call(null,pool))))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-position-bottom-right","div.uk-position-bottom-right",-1068712487),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button.uk-button.uk-padding-remove.to-the-waiting-pool","button.uk-button.uk-padding-remove.to-the-waiting-pool",210619391),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (invoices,pool,sidenav_state,active_member){
 return (function (){
@@ -1319,8 +1319,8 @@ return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null
 ,new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (pool){
 return (function (){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),cljs.core.map_indexed.call(null,((function (pool){
-return (function (p1__56969_SHARP_,p2__56968_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__56968_SHARP_,p1__56969_SHARP_,(4)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__56968_SHARP_)], null));
+return (function (p1__65627_SHARP_,p2__65626_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__65626_SHARP_,p1__65627_SHARP_,(4)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__65626_SHARP_)], null));
 });})(pool))
 ,cljs.core.deref.call(null,pool))], null);
 });})(pool))
@@ -1338,10 +1338,10 @@ return cljs.core.vec.call(null,cljs.core.set.call(null,cljs.core.map.call(null,n
 var the_players_playing = ((function (players,systems,invoices,get_member_data){
 return (function (){
 return cljs.core.doall.call(null,cljs.core.filter.call(null,((function (players,systems,invoices,get_member_data){
-return (function (p1__56970_SHARP_){
+return (function (p1__65628_SHARP_){
 return cljs.core.some.call(null,((function (players,systems,invoices,get_member_data){
 return (function (a){
-return cljs.core._EQ_.call(null,a,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__56970_SHARP_));
+return cljs.core._EQ_.call(null,a,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__65628_SHARP_));
 });})(players,systems,invoices,get_member_data))
 ,cljs.core.vec.call(null,cljs.core.set.call(null,cljs.core.map.call(null,new cljs.core.Keyword(null,"member-id","member-id",606659713),cljs.core.deref.call(null,invoices)))));
 });})(players,systems,invoices,get_member_data))
@@ -1355,8 +1355,8 @@ return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null
 ,new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (players,systems,invoices,get_member_data,the_players_playing){
 return (function (){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),cljs.core.map_indexed.call(null,((function (players,systems,invoices,get_member_data,the_players_playing){
-return (function (p1__56972_SHARP_,p2__56971_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__56971_SHARP_,p1__56972_SHARP_,(3)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__56971_SHARP_)], null));
+return (function (p1__65630_SHARP_,p2__65629_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__65629_SHARP_,p1__65630_SHARP_,(3)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__65629_SHARP_)], null));
 });})(players,systems,invoices,get_member_data,the_players_playing))
 ,the_players_playing.call(null))], null);
 });})(players,systems,invoices,get_member_data,the_players_playing))
@@ -1381,10 +1381,10 @@ return cljs.core.conj.call(null,cljs.core.PersistentVector.EMPTY,cljs.core.get_i
 var the_players_playing = ((function (players,systems,get_players_playing){
 return (function (){
 return cljs.core.doall.call(null,cljs.core.filter.call(null,((function (players,systems,get_players_playing){
-return (function (p1__56973_SHARP_){
+return (function (p1__65631_SHARP_){
 return cljs.core.some.call(null,((function (players,systems,get_players_playing){
 return (function (a){
-return cljs.core._EQ_.call(null,a,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__56973_SHARP_));
+return cljs.core._EQ_.call(null,a,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__65631_SHARP_));
 });})(players,systems,get_players_playing))
 ,get_players_playing.call(null));
 });})(players,systems,get_players_playing))
@@ -1398,8 +1398,8 @@ return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null
 ,new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (players,systems,get_players_playing,the_players_playing){
 return (function (){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),cljs.core.map_indexed.call(null,((function (players,systems,get_players_playing,the_players_playing){
-return (function (p1__56975_SHARP_,p2__56974_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__56974_SHARP_,p1__56975_SHARP_,(2)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__56974_SHARP_)], null));
+return (function (p1__65633_SHARP_,p2__65632_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__65632_SHARP_,p1__65633_SHARP_,(2)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__65632_SHARP_)], null));
 });})(players,systems,get_players_playing,the_players_playing))
 ,the_players_playing.call(null))], null);
 });})(players,systems,get_players_playing,the_players_playing))
@@ -1413,12 +1413,12 @@ var switched_member = reagent.core.atom.call(null,null);
 return reagent.core.create_class.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (players,systems,search,switched_member){
 return (function (){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),cljs.core.map_indexed.call(null,((function (players,systems,search,switched_member){
-return (function (p1__56977_SHARP_,p2__56976_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__56976_SHARP_,p1__56977_SHARP_,(1)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__56976_SHARP_)], null));
+return (function (p1__65635_SHARP_,p2__65634_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.player,p2__65634_SHARP_,p1__65635_SHARP_,(1)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__65634_SHARP_)], null));
 });})(players,systems,search,switched_member))
 ,cljs.core.sort_by.call(null,new cljs.core.Keyword(null,"id","id",-1388402092),((function (players,systems,search,switched_member){
-return (function (p1__56978_SHARP_,p2__56979_SHARP_){
-return (p1__56978_SHARP_ > p2__56979_SHARP_);
+return (function (p1__65636_SHARP_,p2__65637_SHARP_){
+return (p1__65636_SHARP_ > p2__65637_SHARP_);
 });})(players,systems,search,switched_member))
 ,lvlup.crusader.dungeon.filter_by_name_and_id.call(null,cljs.core.deref.call(null,players),search,true)))], null);
 });})(players,systems,search,switched_member))
@@ -1443,10 +1443,10 @@ return cljs.core.conj.call(null,cljs.core.PersistentVector.EMPTY,cljs.core.get_i
 var the_players_playing = ((function (systems,players,get_players_playing){
 return (function (){
 return cljs.core.doall.call(null,cljs.core.filter.call(null,((function (systems,players,get_players_playing){
-return (function (p1__56980_SHARP_){
+return (function (p1__65638_SHARP_){
 return cljs.core.some.call(null,((function (systems,players,get_players_playing){
 return (function (a){
-return cljs.core._EQ_.call(null,a,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__56980_SHARP_));
+return cljs.core._EQ_.call(null,a,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__65638_SHARP_));
 });})(systems,players,get_players_playing))
 ,get_players_playing.call(null));
 });})(systems,players,get_players_playing))
@@ -1460,8 +1460,8 @@ return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null
 ,new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (systems,players,get_players_playing,the_players_playing){
 return (function (){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-1","div.uk-width-1-1",-1131177597),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-grid-match.uk-grid-small.uk-animation-slide-right","div.uk-grid-match.uk-grid-small.uk-animation-slide-right",129594924),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-uk-grid","data-uk-grid",-1215416447),true], null),cljs.core.map_indexed.call(null,((function (systems,players,get_players_playing,the_players_playing){
-return (function (p1__56982_SHARP_,p2__56981_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.system,p2__56981_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(p2__56981_SHARP_)], null));
+return (function (p1__65640_SHARP_,p2__65639_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.system,p2__65639_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(p2__65639_SHARP_)], null));
 });})(systems,players,get_players_playing,the_players_playing))
 ,cljs.core.sort_by.call(null,new cljs.core.Keyword(null,"number","number",1570378438),cljs.core.deref.call(null,systems)))], null)], null);
 });})(systems,players,get_players_playing,the_players_playing))
@@ -1490,16 +1490,16 @@ lvlup.crusader.dungeon.change = (function lvlup$crusader$dungeon$change(e){
 var systems = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"system-map"], null));
 var system_name = parseInt(e.target.id);
 var member_id = e.relatedTarget.id;
-var vec__56988 = cljs.core.filter.call(null,((function (systems,system_name,member_id){
-return (function (p1__56983_SHARP_){
-return cljs.core._EQ_.call(null,system_name,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56983_SHARP_));
+var vec__65646 = cljs.core.filter.call(null,((function (systems,system_name,member_id){
+return (function (p1__65641_SHARP_){
+return cljs.core._EQ_.call(null,system_name,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65641_SHARP_));
 });})(systems,system_name,member_id))
 ,cljs.core.deref.call(null,systems));
-var filtered_system = cljs.core.nth.call(null,vec__56988,(0),null);
+var filtered_system = cljs.core.nth.call(null,vec__65646,(0),null);
 lvlup.crusader.dungeon.notification.call(null,[cljs.core.str(member_id),cljs.core.str(". -> "),cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(filtered_system))].join(''));
 
-var G__56991 = new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system);
-switch (G__56991) {
+var G__65649 = new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system);
+switch (G__65649) {
 case "pc":
 if((cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system),"pc")) && (cljs.core._EQ_.call(null,(0),cljs.core.count.call(null,new cljs.core.Keyword(null,"players","players",-1361554569).cljs$core$IFn$_invoke$arity$1(filtered_system))))){
 return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","change","dungeon/change",848358116),cljs.core.assoc.call(null,filtered_system,new cljs.core.Keyword(null,"players","players",-1361554569),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"one","one",935007904),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"type","type",1174270348),new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system),new cljs.core.Keyword(null,"member-id","member-id",606659713),parseInt(member_id)], null)], null))], null));
@@ -1521,18 +1521,18 @@ lvlup.crusader.dungeon.transfer = (function lvlup$crusader$dungeon$transfer(e){
 var systems = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"data","data",-232669377),"system-map"], null));
 var system_name = parseInt(e.relatedTarget.id);
 var other_system = parseInt(e.target.id);
-var vec__57001 = cljs.core.filter.call(null,((function (systems,system_name,other_system){
-return (function (p1__56993_SHARP_){
-return cljs.core._EQ_.call(null,system_name,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56993_SHARP_));
+var vec__65659 = cljs.core.filter.call(null,((function (systems,system_name,other_system){
+return (function (p1__65651_SHARP_){
+return cljs.core._EQ_.call(null,system_name,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65651_SHARP_));
 });})(systems,system_name,other_system))
 ,cljs.core.deref.call(null,systems));
-var filtered_system = cljs.core.nth.call(null,vec__57001,(0),null);
-var vec__57004 = cljs.core.filter.call(null,((function (systems,system_name,other_system,vec__57001,filtered_system){
-return (function (p1__56994_SHARP_){
-return cljs.core._EQ_.call(null,other_system,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__56994_SHARP_));
-});})(systems,system_name,other_system,vec__57001,filtered_system))
+var filtered_system = cljs.core.nth.call(null,vec__65659,(0),null);
+var vec__65662 = cljs.core.filter.call(null,((function (systems,system_name,other_system,vec__65659,filtered_system){
+return (function (p1__65652_SHARP_){
+return cljs.core._EQ_.call(null,other_system,new cljs.core.Keyword(null,"number","number",1570378438).cljs$core$IFn$_invoke$arity$1(p1__65652_SHARP_));
+});})(systems,system_name,other_system,vec__65659,filtered_system))
 ,cljs.core.deref.call(null,systems));
-var filtered_system2 = cljs.core.nth.call(null,vec__57004,(0),null);
+var filtered_system2 = cljs.core.nth.call(null,vec__65662,(0),null);
 lvlup.crusader.dungeon.notification.call(null,[cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(filtered_system)),cljs.core.str(" <-> "),cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(filtered_system2))].join(''));
 
 if(((cljs.core._EQ_.call(null,"pc",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system))) && (cljs.core._EQ_.call(null,"pc",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system2)))) || ((cljs.core._EQ_.call(null,"xbox",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system))) && (cljs.core._EQ_.call(null,"xbox",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system2)))) || ((cljs.core._EQ_.call(null,"ps",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system))) && (cljs.core._EQ_.call(null,"ps",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system2)))) || ((cljs.core._EQ_.call(null,"xbox",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system))) && (cljs.core._EQ_.call(null,"ps",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system2)))) || ((cljs.core._EQ_.call(null,"ps",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system))) && (cljs.core._EQ_.call(null,"xbox",new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(filtered_system2))))){
@@ -1544,8 +1544,8 @@ return lvlup.crusader.dungeon.notification.call(null,"Csak k\u00E9t azonos t\u00
 }
 });
 lvlup.crusader.dungeon.one_item = (function lvlup$crusader$dungeon$one_item(item,member){
-return new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img","img",1442687358),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"height","height",1025178622),(30),new cljs.core.Keyword(null,"width","width",-384071477),(30),new cljs.core.Keyword(null,"src","src",-1651076051),(function (){var G__57008 = new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(item);
-switch (G__57008) {
+return new cljs.core.PersistentVector(null, 6, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tr","tr",-1424774646),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"td","td",1479933353),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img","img",1442687358),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"height","height",1025178622),(30),new cljs.core.Keyword(null,"width","width",-384071477),(30),new cljs.core.Keyword(null,"src","src",-1651076051),(function (){var G__65666 = new cljs.core.Keyword(null,"type","type",1174270348).cljs$core$IFn$_invoke$arity$1(item);
+switch (G__65666) {
 case "ps":
 return "/Icons/ps.svg";
 
@@ -1580,8 +1580,8 @@ var systems = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(n
 var member = ((function (members,systems){
 return (function (){
 return cljs.core.first.call(null,cljs.core.doall.call(null,cljs.core.filter.call(null,((function (members,systems){
-return (function (p1__57010_SHARP_){
-return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__57010_SHARP_),cljs.core.first.call(null,item));
+return (function (p1__65668_SHARP_){
+return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p1__65668_SHARP_),cljs.core.first.call(null,item));
 });})(members,systems))
 ,cljs.core.deref.call(null,members))));
 });})(members,systems))
@@ -1589,8 +1589,8 @@ return cljs.core._EQ_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092
 return ((function (members,systems,member){
 return (function (item__$1){
 return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",-2030961996),"uk-width-1-2@s uk-width-1-2@m uk-width-1-3@l"], null),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark","div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark",-928433420),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"opacity","opacity",397153780),0.87,new cljs.core.Keyword(null,"border-radius","border-radius",419594011),"10px"], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-padding-small","div.uk-padding-small",1857323497),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-float-right","div.uk-float-right",446370919),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h3.uk-margin-remove.uk-padding-remove.uk-text-right","h3.uk-margin-remove.uk-padding-remove.uk-text-right",-403492373),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"color","color",1011675173),"red"], null)], null),[cljs.core.str(cljs.core.reduce.call(null,cljs.core._PLUS_,cljs.core.map.call(null,new cljs.core.Keyword(null,"price","price",22129180),cljs.core.second.call(null,item__$1)))),cljs.core.str(" Ft ")].join('')], null),(cljs.core.truth_(lvlup.crusader.dungeon.plays_QMARK_.call(null,new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(member.call(null))))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h5.uk-padding-remove.uk-margin-remove.uk-float-right","h5.uk-padding-remove.uk-margin-remove.uk-float-right",-1121405685),"NEM J\u00C1TSZIK"], null):new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h5.uk-margin-remove.uk-padding-remove.uk-float-right","h5.uk-margin-remove.uk-padding-remove.uk-float-right",-739768631),"J\u00C1TSZIK M\u00C9G"], null))], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h4.uk-margin-remove.uk-text-truncate","h4.uk-margin-remove.uk-text-truncate",-813948027),[cljs.core.str(new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(member.call(null))),cljs.core.str(".- "),cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(member.call(null)))].join('')], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h5.uk-margin-remove","h5.uk-margin-remove",1940144770),[cljs.core.str("B\u00E9rlet \u00F3r\u00E1k: "),cljs.core.str(new cljs.core.Keyword(null,"season-pass","season-pass",1518775969).cljs$core$IFn$_invoke$arity$1(member.call(null)))].join('')], null)], null),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-divider-icon.uk-margin-small.uk-margin-remove-top","div.uk-divider-icon.uk-margin-small.uk-margin-remove-top",-1810725832)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-overflow-auto.uk-width-1-1","div.uk-overflow-auto.uk-width-1-1",-467337532),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"height","height",1025178622),"180px"], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"table.uk-width-1-1.uk-table-striped.uk-table.uk-table-middle","table.uk-width-1-1.uk-table-striped.uk-table.uk-table-middle",293470447),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"tbody","tbody",-80678300),cljs.core.doall.call(null,cljs.core.map_indexed.call(null,((function (members,systems,member){
-return (function (p1__57012_SHARP_,p2__57011_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.one_item,p2__57011_SHARP_,member.call(null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),p2__57011_SHARP_], null));
+return (function (p1__65670_SHARP_,p2__65669_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.one_item,p2__65669_SHARP_,member.call(null)], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),p2__65669_SHARP_], null));
 });})(members,systems,member))
 ,cljs.core.second.call(null,item__$1)))], null)], null)], null)], null)], null);
 });
@@ -1615,8 +1615,8 @@ return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null
 ,new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (invoices,members,get_member_data){
 return (function (){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1","div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1",974873195),((cljs.core._EQ_.call(null,cljs.core.deref.call(null,invoices),cljs.core.PersistentVector.EMPTY))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-inline","div.uk-inline",-2089757713),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img","img",1442687358),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"src","src",-1651076051),"/img/pipboy-gangster.png"], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h1.uk-overlay.uk-overlay-primary.uk-position-top-left","h1.uk-overlay.uk-overlay-primary.uk-position-top-left",-1152169278),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"border-radius","border-radius",419594011),"20px"], null)], null),"Senkinek sincs fizetetlen sz\u00E1ml\u00E1ja! :)"], null)], null)], null):new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-grid.uk-grid-small.uk-margin-top","div.uk-grid.uk-grid-small.uk-margin-top",2098034051),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-uk-grid","data-uk-grid",-1215416447),true], null),cljs.core.map_indexed.call(null,((function (invoices,members,get_member_data){
-return (function (p1__57014_SHARP_,p2__57013_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.invoice,p2__57013_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),p2__57013_SHARP_], null));
+return (function (p1__65672_SHARP_,p2__65671_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.invoice,p2__65671_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),p2__65671_SHARP_], null));
 });})(invoices,members,get_member_data))
 ,cljs.core.sort_by.call(null,cljs.core.first,cljs.core.group_by.call(null,new cljs.core.Keyword(null,"member-id","member-id",606659713),cljs.core.deref.call(null,invoices))))], null))], null);
 });})(invoices,members,get_member_data))
@@ -1641,7 +1641,7 @@ return null;
 });})(modify_atom,scrollspy))
 ,new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (modify_atom,scrollspy){
 return (function (member__$1,index__$1){
-return new cljs.core.PersistentVector(null, 9, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-2","div.uk-width-1-2",-985513944),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"id","id",-1388402092),[cljs.core.str("user-"),cljs.core.str(index__$1)].join('')], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-card.uk-card-secondary","div.uk-card.uk-card-secondary",725560384),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"opacity","opacity",397153780),0.85], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-1.uk-padding-remove.uk-inline","div.uk-width-1-1.uk-padding-remove.uk-inline",-964084036),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove","h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove",1256829395),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"color","color",1011675173),"white !important"], null)], null),[cljs.core.str("Id: "),cljs.core.str(new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(member__$1)),cljs.core.str("  - B\u00E9rlet: "),cljs.core.str(new cljs.core.Keyword(null,"season-pass","season-pass",1518775969).cljs$core$IFn$_invoke$arity$1(member__$1))].join('')], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-position-top-right","div.uk-position-top-right",1203574573),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer"], null),new cljs.core.Keyword(null,"data-uk-icon","data-uk-icon",1809176669),"icon: check; ratio: 2.5",new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (modify_atom,scrollspy){
+return new cljs.core.PersistentVector(null, 9, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-2","div.uk-width-1-2",-985513944),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"id","id",-1388402092),[cljs.core.str("user-"),cljs.core.str(index__$1)].join('')], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-card.uk-card-secondary","div.uk-card.uk-card-secondary",725560384),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-1.uk-padding-remove.uk-inline","div.uk-width-1-1.uk-padding-remove.uk-inline",-964084036),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove","h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove",1256829395),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"color","color",1011675173),"white !important"], null)], null),[cljs.core.str("Id: "),cljs.core.str(new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(member__$1)),cljs.core.str("  - B\u00E9rlet: "),cljs.core.str(new cljs.core.Keyword(null,"season-pass","season-pass",1518775969).cljs$core$IFn$_invoke$arity$1(member__$1))].join('')], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-position-top-right","div.uk-position-top-right",1203574573),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span","span",1394872991),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"style","style",-496642736),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"cursor","cursor",1011937484),"pointer"], null),new cljs.core.Keyword(null,"data-uk-icon","data-uk-icon",1809176669),"icon: check; ratio: 2.5",new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (modify_atom,scrollspy){
 return (function (){
 lvlup.crusader.dungeon.notification.call(null,"N\u00E9v friss\u00EDtve!");
 
@@ -1657,7 +1657,7 @@ return lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null
 });})(modify_atom,scrollspy))
 ], null)], null)], null)], null)], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove","button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove",-1385383208),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (modify_atom,scrollspy){
 return (function (){
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","update-member","dungeon/update-member",380816955)], null),cljs.core.assoc.call(null,cljs.core.deref.call(null,modify_atom),new cljs.core.Keyword(null,"season-pass","season-pass",1518775969),(new cljs.core.Keyword(null,"season-pass","season-pass",1518775969).cljs$core$IFn$_invoke$arity$1(member__$1) - (1))));
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","update-member","dungeon/update-member",380816955),cljs.core.assoc.call(null,cljs.core.deref.call(null,modify_atom),new cljs.core.Keyword(null,"season-pass","season-pass",1518775969),(new cljs.core.Keyword(null,"season-pass","season-pass",1518775969).cljs$core$IFn$_invoke$arity$1(member__$1) - (1)))], null));
 
 return lvlup.crusader.dungeon.notification.call(null,[cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,modify_atom))),cljs.core.str(" - b\u00E9rlete 1-gyel cs\u00F6kkent")].join(''));
 });})(modify_atom,scrollspy))
@@ -1680,8 +1680,8 @@ lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5,
 return lvlup.crusader.dungeon.notification.call(null,[cljs.core.str(new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,modify_atom)))),cljs.core.str(" - b\u00E9rlete 1-gyel n\u0151tt")].join(''));
 });})(modify_atom,scrollspy))
 ], null),"+ 1"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-1.uk-padding-remove.uk-margin-remove","div.uk-width-1-1.uk-padding-remove.uk-margin-remove",-786170666),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input.uk-input.uk-text-center","input.uk-input.uk-text-center",1779317614),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"on-change","on-change",-732046149),((function (modify_atom,scrollspy){
-return (function (p1__57015_SHARP_){
-return cljs.core.swap_BANG_.call(null,modify_atom,cljs.core.assoc,new cljs.core.Keyword(null,"name","name",1843675177),p1__57015_SHARP_.target.value);
+return (function (p1__65673_SHARP_){
+return cljs.core.swap_BANG_.call(null,modify_atom,cljs.core.assoc,new cljs.core.Keyword(null,"name","name",1843675177),p1__65673_SHARP_.target.value);
 });})(modify_atom,scrollspy))
 ,new cljs.core.Keyword(null,"value","value",305978217),new cljs.core.Keyword(null,"name","name",1843675177).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,modify_atom))], null)], null)], null),new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-grid.uk-child-width-1-3.uk-margin-remove.uk-width-1-1.uk-padding-remove","div.uk-grid.uk-child-width-1-3.uk-margin-remove.uk-width-1-1.uk-padding-remove",-875820281),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-uk-grid","data-uk-grid",-1215416447),true], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button.uk-button.uk-button-default","button.uk-button.uk-button-default",161862613),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (modify_atom,scrollspy){
 return (function (){
@@ -1711,10 +1711,10 @@ var search = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(nu
 return ((function (max_id,search){
 return (function (members__$1){
 return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-width-1-1.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove","div.uk-width-1-1.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove",-900224372),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"data-uk-grid","data-uk-grid",-1215416447),"true",new cljs.core.Keyword(null,"data-uk-sticky","data-uk-sticky",1691370808),"true"], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column","input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column",-904509676),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"on-change","on-change",-732046149),((function (max_id,search){
-return (function (p1__57016_SHARP_){
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-members","dungeon/get-members",188408482),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(0),new cljs.core.Keyword(null,"search","search",1564939822),p1__57016_SHARP_.target.value], null)], null));
+return (function (p1__65674_SHARP_){
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-members","dungeon/get-members",188408482),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(0),new cljs.core.Keyword(null,"search","search",1564939822),p1__65674_SHARP_.target.value], null)], null));
 
-return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-search-member","set-search-member",-293591708),p1__57016_SHARP_.target.value], null));
+return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-search-member","set-search-member",-293591708),p1__65674_SHARP_.target.value], null));
 });})(max_id,search))
 ,new cljs.core.Keyword(null,"placeholder","placeholder",-104873083),"Regisztr\u00E1ci\u00F3/Keres\u00E9s",new cljs.core.Keyword(null,"type","type",1174270348),"text",new cljs.core.Keyword(null,"value","value",305978217),cljs.core.deref.call(null,search)], null)], null),new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column","button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column",-1299134742),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (max_id,search){
 return (function (){
@@ -1732,12 +1732,12 @@ var search = re_frame.core.subscribe.call(null,new cljs.core.PersistentVector(nu
 return reagent.core.create_class.call(null,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"reagent-render","reagent-render",-985383853),((function (members,search){
 return (function (){
 return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-container","div.uk-container",-1148299242),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.registration_input,members], null),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.uk-grid.uk-margin-remove.uk-padding-small","div.uk-grid.uk-margin-remove.uk-padding-small",1683256741),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"id","id",-1388402092),"member",new cljs.core.Keyword(null,"class","class",-2030961996),"uk-child-width-1-3@m member",new cljs.core.Keyword(null,"data-uk-grid","data-uk-grid",-1215416447),true], null),cljs.core.map_indexed.call(null,((function (members,search){
-return (function (p1__57018_SHARP_,p2__57017_SHARP_){
-return cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.modify_member,p2__57017_SHARP_,p1__57018_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__57017_SHARP_)], null));
+return (function (p1__65676_SHARP_,p2__65675_SHARP_){
+return cljs.core.with_meta(new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.modify_member,p2__65675_SHARP_,p1__65676_SHARP_], null),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"key","key",-1516042587),new cljs.core.Keyword(null,"id","id",-1388402092).cljs$core$IFn$_invoke$arity$1(p2__65675_SHARP_)], null));
 });})(members,search))
 ,cljs.core.sort_by.call(null,new cljs.core.Keyword(null,"id","id",-1388402092),((function (members,search){
-return (function (p1__57019_SHARP_,p2__57020_SHARP_){
-return (p1__57019_SHARP_ > p2__57020_SHARP_);
+return (function (p1__65677_SHARP_,p2__65678_SHARP_){
+return (p1__65677_SHARP_ > p2__65678_SHARP_);
 });})(members,search))
 ,lvlup.crusader.dungeon.filter_by_name_and_id.call(null,cljs.core.deref.call(null,members),search,true)))], null)], null);
 });})(members,search))
@@ -1779,17 +1779,17 @@ return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 
 return (function (){
 return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-sidenav-state","set-sidenav-state",-670452979),(4)], null));
 });})(sidenav_state,number,search))
-], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img","img",1442687358),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"src","src",-1651076051),((cljs.core.not_EQ_.call(null,cljs.core.deref.call(null,sidenav_state),(4)))?"/Icons/waiting.svg":"/Icons/waiting-active.svg")], null)], null)], null)], null),(function (){var G__57023 = cljs.core.deref.call(null,sidenav_state);
-switch (G__57023) {
+], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"img","img",1442687358),new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"src","src",-1651076051),((cljs.core.not_EQ_.call(null,cljs.core.deref.call(null,sidenav_state),(4)))?"/Icons/waiting.svg":"/Icons/waiting-active.svg")], null)], null)], null)], null),(function (){var G__65681 = cljs.core.deref.call(null,sidenav_state);
+switch (G__65681) {
 case (1):
-return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical","form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical",-488520674),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input.uk-search-input.uk-animation-slide-top","input.uk-search-input.uk-animation-slide-top",-386031068),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"on-change","on-change",-732046149),((function (G__57023,sidenav_state,number,search){
-return (function (p1__57021_SHARP_){
+return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical","form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical",-488520674),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input.uk-search-input.uk-animation-slide-top","input.uk-search-input.uk-animation-slide-top",-386031068),new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null,"on-change","on-change",-732046149),((function (G__65681,sidenav_state,number,search){
+return (function (p1__65679_SHARP_){
 cljs.core.reset_BANG_.call(null,number,(20));
 
-lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-members","dungeon/get-members",188408482),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(0),new cljs.core.Keyword(null,"search","search",1564939822),p1__57021_SHARP_.target.value], null)], null));
+lvlup.sente.chsk_send_BANG_.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword("dungeon","get-members","dungeon/get-members",188408482),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"number","number",1570378438),(0),new cljs.core.Keyword(null,"search","search",1564939822),p1__65679_SHARP_.target.value], null)], null));
 
-return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-search-member","set-search-member",-293591708),p1__57021_SHARP_.target.value], null));
-});})(G__57023,sidenav_state,number,search))
+return re_frame.core.dispatch.call(null,new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"set-search-member","set-search-member",-293591708),p1__65679_SHARP_.target.value], null));
+});})(G__65681,sidenav_state,number,search))
 ,new cljs.core.Keyword(null,"value","value",305978217),cljs.core.deref.call(null,search),new cljs.core.Keyword(null,"placeholder","placeholder",-104873083),"Keres\u00E9s",new cljs.core.Keyword(null,"type","type",1174270348),"search"], null)], null)], null),new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.gamers], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [lvlup.crusader.dungeon.show_20_more,number], null)], null);
 
 break;

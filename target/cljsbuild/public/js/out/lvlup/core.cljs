@@ -469,14 +469,14 @@
 
 (secretary/defroute "/crusader" []
                     (start-router!)
-                    (dispatch [:set-actual-page "crusader"])
-                    (chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
+                    (dispatch [:set-actual-page "crusader"]))
+                    ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
 
 (secretary/defroute "/crusader/reservation" []
                     (start-router!)
 
                     (dispatch [:set-actual-page "reservation"])
-                    (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
+                    ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
                     (chsk-send! [:dungeon/get-dungeon]))
 
 (secretary/defroute "/crusader/checkout" []
@@ -489,14 +489,14 @@
 (secretary/defroute "/crusader/registration" []
                     (start-router!)
                     (dispatch [:set-actual-page "registration"])
-                    (chsk-send! [:dungeon/get-max-id])
+                    (chsk-send! [:dungeon/get-max-id]))
 
-                    (chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
+                    ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
 
 (secretary/defroute "/crusader/dungeon" []
                     (start-router!)
                     (chsk-send! [:dungeon/get-dungeon])
-                    (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
+                    ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
                     (chsk-send! [:dungeon/get-invoices])
                     (dispatch [:set-actual-page "dungeon"]))
 

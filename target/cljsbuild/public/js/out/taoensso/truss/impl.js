@@ -43,8 +43,8 @@ return clojure.set.superset_QMARK_.call(null,cljs.core.set.call(null,cljs.core.k
 });
 
 taoensso.truss.impl.ks_nnil_QMARK_ = (function taoensso$truss$impl$ks_nnil_QMARK_(ks,m){
-return taoensso.truss.impl.revery_QMARK_.call(null,(function (p1__44597_SHARP_){
-return taoensso.truss.impl.some_QMARK_.call(null,cljs.core.get.call(null,m,p1__44597_SHARP_));
+return taoensso.truss.impl.revery_QMARK_.call(null,(function (p1__44598_SHARP_){
+return taoensso.truss.impl.some_QMARK_.call(null,cljs.core.get.call(null,m,p1__44598_SHARP_));
 }),ks);
 });
 taoensso.truss.impl.default_error_fn = (function taoensso$truss$impl$default_error_fn(data_){
@@ -56,11 +56,11 @@ taoensso.truss.impl._STAR_error_fn_STAR_ = taoensso.truss.impl.default_error_fn;
 taoensso.truss.impl.non_throwing = (function taoensso$truss$impl$non_throwing(pred){
 return (function (x){
 try{return pred.call(null,x);
-}catch (e44599){if((e44599 instanceof Error)){
-var _ = e44599;
+}catch (e44600){if((e44600 instanceof Error)){
+var _ = e44600;
 return null;
 } else {
-throw e44599;
+throw e44600;
 
 }
 }});
@@ -78,18 +78,18 @@ taoensso.truss.impl._xpred = (function taoensso$truss$impl$_xpred(pred){
 if(!(cljs.core.vector_QMARK_.call(null,pred))){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [pred,taoensso.truss.impl.non_throwing_QMARK_.call(null,pred)], null);
 } else {
-var vec__44617 = pred;
-var type = cljs.core.nth.call(null,vec__44617,(0),null);
-var a1 = cljs.core.nth.call(null,vec__44617,(1),null);
-var a2 = cljs.core.nth.call(null,vec__44617,(2),null);
-var a3 = cljs.core.nth.call(null,vec__44617,(3),null);
+var vec__44618 = pred;
+var type = cljs.core.nth.call(null,vec__44618,(0),null);
+var a1 = cljs.core.nth.call(null,vec__44618,(1),null);
+var a2 = cljs.core.nth.call(null,vec__44618,(2),null);
+var a3 = cljs.core.nth.call(null,vec__44618,(3),null);
 if(cljs.core.truth_(a1)){
 } else {
 throw (new Error([cljs.core.str("Assert failed: "),cljs.core.str("Special predicate [<special-type> <arg>] form w/o <arg>"),cljs.core.str("\n"),cljs.core.str("a1")].join('')));
 }
 
-var G__44620 = (((type instanceof cljs.core.Keyword))?type.fqn:null);
-switch (G__44620) {
+var G__44621 = (((type instanceof cljs.core.Keyword))?type.fqn:null);
+switch (G__44621) {
 case "el":
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.sequence.call(null,cljs.core.seq.call(null,cljs.core.concat.call(null,cljs.core._conj.call(null,cljs.core.List.EMPTY,new cljs.core.Symbol("cljs.core","fn","cljs.core/fn",-1065745098,null)),(function (){var x__37638__auto__ = cljs.core.vec.call(null,cljs.core.sequence.call(null,cljs.core.seq.call(null,cljs.core.concat.call(null,cljs.core._conj.call(null,cljs.core.List.EMPTY,new cljs.core.Symbol(null,"x","x",-555367584,null))))));
 return cljs.core._conj.call(null,cljs.core.List.EMPTY,x__37638__auto__);
@@ -225,25 +225,25 @@ return cljs.core._conj.call(null,cljs.core.List.EMPTY,x__37638__auto__);
 
 break;
 default:
-var self = ((function (G__44620,vec__44617,type,a1,a2,a3){
+var self = ((function (G__44621,vec__44618,type,a1,a2,a3){
 return (function (_QMARK_pred){
 if(cljs.core.truth_(_QMARK_pred)){
 return taoensso$truss$impl$_xpred.call(null,_QMARK_pred);
 } else {
 return null;
 }
-});})(G__44620,vec__44617,type,a1,a2,a3))
+});})(G__44621,vec__44618,type,a1,a2,a3))
 ;
-var vec__44621 = new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [self.call(null,a1),self.call(null,a2),self.call(null,a3)], null);
-var vec__44624 = cljs.core.nth.call(null,vec__44621,(0),null);
-var a1__$1 = cljs.core.nth.call(null,vec__44624,(0),null);
-var nt_a1_QMARK_ = cljs.core.nth.call(null,vec__44624,(1),null);
-var vec__44627 = cljs.core.nth.call(null,vec__44621,(1),null);
-var a2__$1 = cljs.core.nth.call(null,vec__44627,(0),null);
-var nt_a2_QMARK_ = cljs.core.nth.call(null,vec__44627,(1),null);
-var vec__44630 = cljs.core.nth.call(null,vec__44621,(2),null);
-var a3__$1 = cljs.core.nth.call(null,vec__44630,(0),null);
-var nt_a3_QMARK_ = cljs.core.nth.call(null,vec__44630,(1),null);
+var vec__44622 = new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [self.call(null,a1),self.call(null,a2),self.call(null,a3)], null);
+var vec__44625 = cljs.core.nth.call(null,vec__44622,(0),null);
+var a1__$1 = cljs.core.nth.call(null,vec__44625,(0),null);
+var nt_a1_QMARK_ = cljs.core.nth.call(null,vec__44625,(1),null);
+var vec__44628 = cljs.core.nth.call(null,vec__44622,(1),null);
+var a2__$1 = cljs.core.nth.call(null,vec__44628,(0),null);
+var nt_a2_QMARK_ = cljs.core.nth.call(null,vec__44628,(1),null);
+var vec__44631 = cljs.core.nth.call(null,vec__44622,(2),null);
+var a3__$1 = cljs.core.nth.call(null,vec__44631,(0),null);
+var nt_a3_QMARK_ = cljs.core.nth.call(null,vec__44631,(1),null);
 var nt_a1 = (cljs.core.truth_(a1__$1)?(cljs.core.truth_(nt_a1_QMARK_)?a1__$1:cljs.core.sequence.call(null,cljs.core.seq.call(null,cljs.core.concat.call(null,cljs.core._conj.call(null,cljs.core.List.EMPTY,new cljs.core.Symbol("taoensso.truss.impl","non-throwing","taoensso.truss.impl/non-throwing",-1408931246,null)),(function (){var x__37638__auto__ = a1__$1;
 return cljs.core._conj.call(null,cljs.core.List.EMPTY,x__37638__auto__);
 })())))):null);
@@ -271,8 +271,8 @@ return nt_a2_QMARK_;
 return and__36792__auto__;
 }
 })():(cljs.core.truth_(a1__$1)?nt_a1_QMARK_:null)));
-var G__44633 = (((type instanceof cljs.core.Keyword))?type.fqn:null);
-switch (G__44633) {
+var G__44634 = (((type instanceof cljs.core.Keyword))?type.fqn:null);
+switch (G__44634) {
 case "and":
 if(cljs.core.truth_(a3__$1)){
 return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [cljs.core.sequence.call(null,cljs.core.seq.call(null,cljs.core.concat.call(null,cljs.core._conj.call(null,cljs.core.List.EMPTY,new cljs.core.Symbol("cljs.core","fn","cljs.core/fn",-1065745098,null)),(function (){var x__37638__auto__ = cljs.core.vec.call(null,cljs.core.sequence.call(null,cljs.core.seq.call(null,cljs.core.concat.call(null,cljs.core._conj.call(null,cljs.core.List.EMPTY,new cljs.core.Symbol(null,"x","x",-555367584,null))))));
@@ -504,11 +504,11 @@ var _QMARK_data = (function (){var temp__4657__auto____$1 = _QMARK_data_fn;
 if(cljs.core.truth_(temp__4657__auto____$1)){
 var data_fn = temp__4657__auto____$1;
 try{return data_fn.call(null);
-}catch (e44641){if((e44641 instanceof Error)){
-var e = e44641;
+}catch (e44642){if((e44642 instanceof Error)){
+var e = e44642;
 return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"data-error","data-error",-1058016301),e], null);
 } else {
-throw e44641;
+throw e44642;
 
 }
 }} else {
