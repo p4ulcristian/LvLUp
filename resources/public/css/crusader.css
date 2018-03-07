@@ -120,6 +120,11 @@
 
 }
 
+.reserve-system.uk-button-default:disabled{
+  background: black !important;
+  border-radius: 10px;
+}
+
 .reserve-system:hover{
   background: #00117F !important;
   border-radius: 10px;

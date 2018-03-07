@@ -26,6 +26,22 @@
      (map #(assoc {} :type "table" :number % :reservation-type "tavern")
           numbers))))
 
+(defn systems-to-reservations [systems]
+  (map #(assoc
+         (dissoc % :players :name)
+         :reservation-type "dungeon")
+       systems))
+
+(defn reservation-systems [system-map]
+
+  (sort-by
+   (juxt :reservation-type :number)
+   (concat
+    (map (fn [a]
+           (assoc (dissoc a :name :players) :reservation-type "dungeon"))
+         (systems-to-reservations @system-map))
+    (szeged-tables))))
+
 (def slider-atom (atom nil))
 
 (def szeged-opening-hours
@@ -138,6 +154,14 @@
 
       ;[:span.uk-badge.uk-position-bottom-left (:number item)]]]]])
 
+(defn to-monogram [name]
+  (str
+   (clojure.string/upper-case
+    (clojure.string/join
+     ". "
+     (map first
+          (clojure.string/split name #" "))))
+   "."))
 
 (defn one-reservation [reservation]
   (let [date (subscribe [:data "date"])]
@@ -169,9 +193,12 @@
                            "px")
                   :width "100%"}};}
          ;(str (* 18 (- (:start reservation) (:from (opening-hours)))))
-         [:div.uk-position-center {:data-uk-tooltip "title: Morvai Viktor; pos: bottom" :style {:color "white"}} "M. V."]
+         [:div.uk-position-center.uk-text-center
+          {:data-uk-tooltip (str "title: " (:name reservation) "; pos: bottom")
+           :style {:color "white" :width "100%" :padding-bottom "10px" :padding-top "10px"}}
+          (to-monogram (:name reservation))]
          [:span.uk-label.uk-label-success.uk-position-top
-          {:data-uk-tooltip (str "title: " (quarter-to-time (:start reservation)) "; pos: top") :style {:height "20px" :opacity 0}}]
+          {:data-uk-tooltip (str "title: " (quarter-to-time (:start reservation)) "; pos: top") :style {:height "25px" :opacity 0}}]
          [:span.uk-label.uk-label-success.uk-position-bottom
           {:data-uk-tooltip (str "title: " (quarter-to-time (:finish reservation)) "; pos: bottom") :style {:height "25px" :opacity 0}}]])})))
 
@@ -206,42 +233,85 @@
             [:span.uk-badge.uk-position-bottom-left (:number item)]]]
           [:div.uk-grid.uk-margin-remove.uk-height-1-1 {:data-uk-grid true :style {:height "calc(100% - 60px)"}} ;:style {:height "100%"}}
            [:div.uk-width-1-1.dropzone.uk-padding-remove {:style {:position "relative"}}
+            ;(str (str (:reservation-type item) (:number item)))
+            ;(str (map #(:places %) @reservations))
+
             (map-indexed
              #(-> ^{:key %1} [one-reservation %2])
-             @reservations)]]]])})))
+             (filter #(some
+                       (fn [a]
+                         (= (str (:reservation-type a) (:number a))
+                            (str (:reservation-type item) (:number item))))
+                       (:places %))
+                     @reservations))]]]])})))
                  ;[:div (:number item)]]]])
 
 
 (defn add-or-remove [item array]
   (if (some #(= item %) array)
-    (remove #(= item %) array)
-    (conj array item)))
+    (vec (remove #(= item %) array))
+    (vec (conj array item))))
 
-(defn one-system [item details]
-  [:div
-   {:on-click #(dispatch [:set-reservation-modal :places (add-or-remove item (:places @details))])}
-   [:div.uk-padding-small
-    {:class (if (some #(= item %) (:places @details))
-              "reserve-system chosen-system"
-              "reserve-system")}
-    (:place @details)
-    [:img.uk-align-center.uk-margin-remove-vertical
-     {:src (case (:type item)
-             "ps" "/Icons/ps.svg"
-             "xbox" "/Icons/xbox.svg"
-             "pc" "/Icons/pc.svg"
-             "table" "/Icons/table.svg"
-             "hmm")
-      :height "50"
-      :width "50"}]]])
+(defn get-column-reservations [one-reservation item id-name]
+  (if (some
+       (fn [a] (and
+                (and
+                 (= (:number item) (:number a))
+                 (= (:reservation-type item) (:reservation-type a)))
+                (not= id-name (str (:id one-reservation) (:name one-reservation)))))
+       (:places one-reservation))
+    (conj [] (:start one-reservation) (:finish one-reservation))))
+
+(defn get-column-ranges [reservations item id-name]
+  (remove nil?
+          (map
+           #(get-column-reservations % item id-name)
+           @reservations)))
+
+(defn decide-fade [ranges this-start this-finish]
+  (some #(or
+          (and
+           (>= (first %) this-start)
+           (<= (first %) this-finish))
+          (and
+           (>= (second %) this-start)
+           (<= (second %) this-finish)))
+        ranges))
+
+(defn one-system [item details reservations]
+  (let [reservation-details (subscribe [:data "reservation-modal"])]
+    (fn []
+      [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small-top
+
+       [:button.uk-padding-small.uk-button.uk-button-default
+        {:style {:border-radius "10px"}
+         :class (if (some #(= item %) (:places @details))
+                  "reserve-system chosen-system"
+                  "reserve-system")
+         :on-click #(dispatch [:set-reservation-modal :places (add-or-remove item (:places @details))])
+         :disabled (decide-fade
+                    (get-column-ranges reservations item (str (:id @reservation-details) (:name @reservation-details)))
+                    (:start @reservation-details)
+                    (:finish @reservation-details))}
+        [:img.uk-align-center.uk-margin-remove-vertical
+         {:src (case (:type item)
+                 "ps" "/Icons/ps.svg"
+                 "xbox" "/Icons/xbox.svg"
+                 "pc" "/Icons/pc.svg"
+                 "table" "/Icons/table.svg"
+                 "hmm")
+          :height "50"
+          :width "50"}]]])))
 
 (defn choose-systems [details]
-  (let [system-map (subscribe [:data "system-map"])]
+  (let [system-map (subscribe [:data "system-map"])
+        reservations (subscribe [:data "reservations"])]
     (fn [details]
-      [:div.uk-flex-center.uk-margin-remove.uk-width-1-1.uk-padding-small {:data-uk-grid true}
-       (for [item @system-map]
-         (-> ^{:key (:number item)}
-          [one-system item details]))])))
+      [:div.uk-margin-remove.uk-width-1-1.uk-child-width-1-5.uk-grid {:data-uk-grid true}
+
+       (for [item (reservation-systems system-map)]
+         (-> ^{:key (str (:reservation-type item) (:number item))}
+          [one-system item details reservations]))])))
 
 (defn display-time [[from to]]
   (let []
@@ -250,13 +320,21 @@
           " - "
           (quarter-to-time to))]))
 
+(defn all-data? [details]
+  (cond
+    (= 0 (:start @details)) false
+    (= 0 (:finish @details)) false
+    (= [] (:places @details)) false
+    (= "" (:name @details)) false
+    :else true))
+
 (defn reservation-modal []
   (let [date (subscribe [:data "date"])
 
         flatpickr (atom nil)
 
         reservation-details (subscribe [:data "reservation-modal"])
-
+        reservations (subscribe [:data "reservations"])
         slider-values (atom nil)]
     (reagent/create-class
      {:component-did-update #(.setDate @flatpickr
@@ -294,29 +372,44 @@
                                  (clj->js
                                   {:range {"min" (:from (opening-hours (js/Date. b)))
                                            "max" (:to (opening-hours (js/Date. b)))}})
+
                                  true)))})))
          (.on @slider-atom "update" (fn [e] (do
                                               (dispatch [:set-reservation-modal :start (js/parseInt (first (js->clj e)))])
                                               (dispatch [:set-reservation-modal :finish (js/parseInt (second (js->clj e)))])
-
+                                              (dispatch [:set-reservation-modal :places (remove
+                                                                                         (fn [d]
+                                                                                           (decide-fade
+                                                                                            (get-column-ranges
+                                                                                             reservations
+                                                                                             d
+                                                                                             (str (:id @reservation-details) (:name @reservation-details)))
+                                                                                            (js/parseInt (first (js->clj e)))
+                                                                                            (js/parseInt (second (js->clj e)))))
+                                                                                         (:places @reservation-details))])
                                               (reset! slider-values (js->clj e))))))
                               ;
 
       :reagent-render
       (fn []
 
-        [:div#my-id.uk-modal-container
+        [:div#my-id;.uk-modal-container
 
-         {:data-uk-modal "bg-close:	false" :style {:opacity 0.95}}
+         {:data-uk-modal "" :style {:opacity 0.95}}
          [:div.uk-modal-dialog
-          [:button.uk-modal-close-default
-           {:data-uk-close true :type "button"}]
+          ;[:button.uk-modal-close-default
+          ; {:data-uk-close true :type "button"}
           ;[:div (str @reservation-details)]
-          [:div.uk-modal-header
-           [:div.uk-text-truncate {:style {:font-size "2em"}}
+          [:div.uk-modal-header.uk-grid.uk-margin-remove.uk-padding-small {:data-uk-grid true}
+           [:div.uk-text-truncate.uk-width-4-5 {:style {:font-size "2em"}}
             (if (= "" (:name @reservation-details))
               "Foglalás"
-              (str  (:name @reservation-details) " foglalása"))]]
+              (str  (:name @reservation-details) " foglalása"))]
+           (if (all-data? reservation-details)
+             [:button.uk-button.uk-button-primary.uk-float-right.uk-width-1-5
+              {:on-click #(chsk-send! [:dungeon/add-reservations @reservation-details])
+               :type "button"}
+              "Mentés"])]
           [:div.uk-modal-body.uk-padding-remove-vertical
            [:div.uk-form.uk-padding-small.remove-padding-vertical
             [:div.uk-child-width-expand.uk-margin-remove {:data-uk-grid true}
@@ -335,16 +428,7 @@
            [display-time @slider-values]
 
            [:div#no-ui-slider.uk-margin-small]; [:div (str range-config)]
-           [choose-systems reservation-details]
-           [:div.uk-modal-footer.uk-text-right
-            [:button.uk-button.uk-button-default.uk-modal-close
-             {:type "button"}
-             "Mégsem"]
-
-            [:button.uk-button.uk-button-primary
-             {:on-click #(chsk-send! [:dungeon/add-reservations @reservation-details])
-              :type "button"}
-             "Mentés"]]]]])})))
+           [choose-systems reservation-details]]]])})))
 
 (defn display-date [date]
   (get days (.getDay date)))
@@ -388,29 +472,23 @@
           [:input#choose-date.uk-text-center.uk-padding-remove {:placeholder "Válassz dátumot"}]
           [reservation-categories]]])})))
 
-(defn systems-to-reservations [systems]
-  (map #(assoc
-         (dissoc % :players :name)
-         :reservation-type "dungeon")
-       systems))
-
 (defn reservation []
   (let [system-map (subscribe [:data "system-map"])]
-    [:div {:style {:opacity 0.8}}
-     [choose-date-panel]
-     ;[:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-width-auto {:placeholder "Id"}]
-     [:div.uk-grid
-      {:data-uk-grid true}
+    (reagent/create-class
+     {:component-did-mount #()
+      :reagent-render
+      (fn []
+        [:div {:style {:opacity 0.8}}
+         [choose-date-panel]
+             ;[:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-width-auto {:placeholder "Id"}]
+         [:div.uk-grid
+          {:data-uk-grid true}
 
-      [reservation-modal]
-      [reservation-dates]
-      [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 80px)" :overflow-x "scroll" :overflow-y "visible"}}
-       [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict
-        {:data-uk-grid true :style {:min-width "calc(100vw - 80px)" :width "max-content" :height "100%"}};}}
-        ;(str (systems-to-reservations @system-map))
-        (for [item (sort-by
-                    (juxt :reservation-type :number)
-                    (concat
-                     (map #(assoc (dissoc % :name :players) :reservation-type "dungeon") (systems-to-reservations @system-map))
-                     (szeged-tables)))]
-          (-> ^{:key (str "h" item)} [reservation-column item]))]]]]))
+          [reservation-modal]
+          [reservation-dates]
+          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 80px)" :overflow-x "scroll" :overflow-y "visible"}}
+           [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict
+            {:data-uk-grid true :style {:min-width "calc(100vw - 80px)" :width "max-content" :height "100%"}};}}
+                ;(str (systems-to-reservations @system-map))
+            (for [item (reservation-systems system-map)]
+              (-> ^{:key (str "h" item)} [reservation-column item]))]]]])})))
