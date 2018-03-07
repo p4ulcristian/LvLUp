@@ -156,6 +156,7 @@
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.8/interact.min.js")
       (include-js "https://cdn.jsdelivr.net/npm/flatpickr")
       (include-js "/externaljs/timetable.min.js")
+      (include-js "/externaljs/emergence.min.js")
       (include-js "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js")
       (include-js "/externaljs/dragging.js")
       (include-js "/externaljs/reservationInteract.js")

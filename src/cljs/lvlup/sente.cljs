@@ -92,8 +92,8 @@
                                                      {:number 9 :name "9. Fenti asztal"}
                                                      {:number 10 :name "10. Lenti asztal"}
                                                      {:number 11 :name "11. Lenti asztal"}
-                                                     {:number 12 :name "12. Lenti asztal"}]])
-                                         (dispatch [:get-reservations]))
+                                                     {:number 12 :name "12. Lenti asztal"}]]))
+                                         ;(dispatch [:get-reservations]))
                                "system" (do
                                           (dispatch [:set-systems (read-string data)])
                                           (dispatch [:get-reservations]))

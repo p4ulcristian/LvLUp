@@ -516,9 +516,9 @@
 
           [reservation-modal]
           [reservation-dates]
-          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 80px)" :overflow-x "scroll" :overflow-y "visible"}}
+          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 100px)" :overflow-x "scroll"}}
            [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict
-            {:data-uk-grid true :style {:min-width "calc(100vw - 80px)" :width "max-content" :height "100%"}};}}
+            {:data-uk-grid true :style {:min-width "calc(100vw - 100px)" :width "max-content" :height "100%"}};}}
                 ;(str (systems-to-reservations @system-map))
             (for [item (reservation-systems system-map)]
               (-> ^{:key (str "h" item)} [reservation-column item]))]]]])})))
