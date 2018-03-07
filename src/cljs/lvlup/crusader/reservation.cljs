@@ -26,6 +26,8 @@
      (map #(assoc {} :type "table" :number % :reservation-type "tavern")
           numbers))))
 
+(def reservation-type (atom "dungeon"))
+
 (defn systems-to-reservations [systems]
   (map #(assoc
          (dissoc % :players :name)
@@ -33,14 +35,12 @@
        systems))
 
 (defn reservation-systems [system-map]
-
-  (sort-by
-   (juxt :reservation-type :number)
-   (concat
-    (map (fn [a]
-           (assoc (dissoc a :name :players) :reservation-type "dungeon"))
-         (systems-to-reservations @system-map))
-    (szeged-tables))))
+  (sort-by :number
+           (case @reservation-type
+             "tavern" (szeged-tables)
+             "dungeon" (map (fn [a]
+                              (assoc (dissoc a :name :players) :reservation-type "dungeon"))
+                            (systems-to-reservations @system-map)))))
 
 (def slider-atom (atom nil))
 
@@ -56,6 +56,13 @@
 
 (defn opening-hours [a]
   (get szeged-opening-hours (.getDay a)))
+
+(defn convert-iso-to-read [time]
+  (str (gstring/format "%04d" (.getFullYear time))
+       "-"
+       (gstring/format "%02d" (inc (.getMonth time)))
+       "-"
+       (gstring/format "%02d" (.getDate time))))
 
 (def timeformat (tformat/formatter "HH:mm"))
 (def dateformat (tformat/formatter "yyyy MM dd"))
@@ -169,7 +176,7 @@
     (reagent/create-class
      {:component-did-mount #()
       :reagent-render
-      (fn []
+      (fn [reservation]
         [:div.uk-card.uk-card-default.uk-padding-small.uk-inline.one-reservation
          {:data-uk-toggle "target: #my-id"
           :on-click #(do
@@ -182,7 +189,8 @@
                         true)
 
                        (dispatch [:set-reservation-modal "replace" reservation]))
-          :style {:position "absolute"
+          :style {:cursor "pointer"
+                  :position "absolute"
                   :transition "transform .05s ease-in-out"
                   :top (str
                         (* 18 (- (:start reservation) (:from (opening-hours @date))))
@@ -195,7 +203,7 @@
          ;(str (* 18 (- (:start reservation) (:from (opening-hours)))))
          [:div.uk-position-center.uk-text-center
           {:data-uk-tooltip (str "title: " (:name reservation) "; pos: bottom")
-           :style {:color "white" :width "100%" :padding-bottom "10px" :padding-top "10px"}}
+           :style {:color "white" :width "100%" :padding-bottom "20px" :padding-top "20px"}}
           (to-monogram (:name reservation))]
          [:span.uk-label.uk-label-success.uk-position-top
           {:data-uk-tooltip (str "title: " (quarter-to-time (:start reservation)) "; pos: top") :style {:height "25px" :opacity 0}}]
@@ -365,15 +373,17 @@
                             "onChange"
                             (fn [a b c]
                               (do
-                                (dispatch [:set-reservation-modal :date (str b)])
-                                (dispatch [:set-date b])
-                                (.updateOptions
-                                 @slider-atom
-                                 (clj->js
-                                  {:range {"min" (:from (opening-hours (js/Date. b)))
-                                           "max" (:to (opening-hours (js/Date. b)))}})
 
-                                 true)))})))
+                                (dispatch [:set-reservation-modal :date a])
+                                (dispatch [:set-date a])
+                                (chsk-send! [:dungeon/get-reservations b]))
+                              (.updateOptions
+                               @slider-atom
+                               (clj->js
+                                {:range {"min" (:from (opening-hours (js/Date. b)))
+                                         "max" (:to (opening-hours (js/Date. b)))}})
+
+                               true))})))
          (.on @slider-atom "update" (fn [e] (do
                                               (dispatch [:set-reservation-modal :start (js/parseInt (first (js->clj e)))])
                                               (dispatch [:set-reservation-modal :finish (js/parseInt (second (js->clj e)))])
@@ -404,65 +414,78 @@
            [:div.uk-text-truncate.uk-width-4-5 {:style {:font-size "2em"}}
             (if (= "" (:name @reservation-details))
               "Foglalás"
-              (str  (:name @reservation-details) " foglalása"))]
+              (str  (:name @reservation-details)))]
+
            (if (all-data? reservation-details)
-             [:button.uk-button.uk-button-primary.uk-float-right.uk-width-1-5
-              {:on-click #(chsk-send! [:dungeon/add-reservations @reservation-details])
+             [:button.uk-button.uk-button-primary.uk-float-right.uk-width-1-5.uk-modal-close
+              {:on-click #(chsk-send! [:dungeon/add-reservations
+                                       (assoc @reservation-details
+                                              :date (convert-iso-to-read (:date @reservation-details)))])
                :type "button"}
               "Mentés"])]
+
           [:div.uk-modal-body.uk-padding-remove-vertical
            [:div.uk-form.uk-padding-small.remove-padding-vertical
             [:div.uk-child-width-expand.uk-margin-remove {:data-uk-grid true}
              ;[:button {:on-click #} "Hello"]
-             [:input.uk-margin-small.uk-text-center.uk-form-small.uk-margin-remove.uk-input
+             [:input.uk-margin-small.uk-text-center.uk-form-medium.uk-margin-remove.uk-input.uk-padding-remove
               {:placeholder "Id"
                :type "number"
                :on-change #(dispatch [:set-reservation-modal :id (-> % .-target .-value)])
                :value (:id @reservation-details)}]
-             [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-small.uk-text-center
+             [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-medium.uk-text-center.uk-padding-remove
               {:placeholder "Dátum"}]
-             [:input.uk-margin-small.uk-text-center.uk-form-small.uk-margin-remove.uk-input
+             [:input.uk-margin-small.uk-text-center.uk-form-medium.uk-margin-remove.uk-input.uk-padding-remove
               {:placeholder "Teljes név"
                :on-change #(dispatch [:set-reservation-modal :name (-> % .-target .-value)])
                :value (:name @reservation-details)}]]]
            [display-time @slider-values]
-
+           ;(str (convert-iso-to-read @date))
            [:div#no-ui-slider.uk-margin-small]; [:div (str range-config)]
            [choose-systems reservation-details]]]])})))
 
 (defn display-date [date]
   (get days (.getDay date)))
 
-(defn panel-img [item]
-  [:div
-   [:img {:src (str "/Icons/" item ".svg")
-          :height "35"
-          :width "35"}]])
+(defn panel-img [item img]
+  [:div {:style {:cursor "pointer"}
+         :on-click #(reset! reservation-type item)} [:img
+                                                     {:src (str "/Icons/" img ".svg")
+                                                      :class (if (= item @reservation-type) "active-category")
+                                                      :style {:padding "5px"}
+                                                      :height "40"
+                                                      :width "40"}]])
 
 (defn reservation-categories []
   [:div.uk-grid.uk-margin-remove.uk-float-right.uk-child-width-expand {:data-uk-grid true}
-   [panel-img "pc"]
-   [panel-img "console"]
-   [panel-img "table"]])
+   [panel-img "dungeon" "console"]
+   [panel-img "tavern" "table"]])
 
 (defn choose-date-panel []
-  (let [date (subscribe [:data "date"])]
+  (let [flatpickr (atom nil)
+        date (subscribe [:data "date"])]
     (reagent/create-class
-     {:component-did-mount
+     {:component-did-update #(do
+                               (.setDate @flatpickr
+                                         (js/Date. @date))
+                               (chsk-send! [:dungeon/get-reservations (convert-iso-to-read @date)]))
+      :component-did-mount
       #(do
-         (chsk-send! [:dungeon/get-reservations])
-         (.flatpickr
-          js/window
-          "#choose-date"
-          (clj->js {"altInput" true
-                    "altFormat" "F j, Y"
-                    "dateFormat" "Y-m-d"
-                    "defaultDate" (js/Date.)
-                    "locale" "hu"
-                    "minDate" (.fp_incr (js/Date.) -1)
-                    "onChange"
-                    (fn [a b c]
-                      (dispatch [:set-date b]))})))
+
+         (reset! flatpickr
+                 (.flatpickr
+                  js/window
+                  "#choose-date"
+                  (clj->js {"altInput" true
+                            "altFormat" "F j, Y"
+                            "dateFormat" "Y-m-d"
+                      ;"defaultDate" (js/Date.)
+                            "locale" "hu"
+                            "minDate" (.fp_incr (js/Date.) -1)
+                            "onChange"
+                            (fn [a b c]
+                              (dispatch [:set-date a])
+                              (chsk-send! [:dungeon/get-reservations b]))}))))
       :reagent-render
       (fn []
         [:div.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove.uk-width-1-1
@@ -473,9 +496,10 @@
           [reservation-categories]]])})))
 
 (defn reservation []
-  (let [system-map (subscribe [:data "system-map"])]
+  (let [date (subscribe [:data "date"])
+        system-map (subscribe [:data "system-map"])]
     (reagent/create-class
-     {:component-did-mount #()
+     {:component-did-mount #(chsk-send! [:dungeon/get-reservations (convert-iso-to-read @date)])
       :reagent-render
       (fn []
         [:div {:style {:opacity 0.8}}

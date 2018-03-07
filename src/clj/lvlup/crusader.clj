@@ -232,20 +232,24 @@
                  (str
                   (vec
                    (map
-                    #(dissoc % :_id)
+                    #(assoc % :_id (str (:_id %)))
                     (with-collection db "reservations"
-                                     (find {})))))])))
+                                     (find {:date change-map})))))])))
 
   (defn add-reservations [{:keys [event]}]
     (let [[key change-map] event]
-      (mc/insert db "reservations" change-map)
+      (if (:_id change-map)
+        (mc/update-by-id db "reservations"
+                         (ObjectId. (:_id change-map))
+                         (dissoc change-map :_id))
+        (mc/insert db "reservations" change-map))
       (send-all [:dungeon/get-reservations
                  (str
                   (vec
                    (map
-                    #(dissoc % :_id)
+                    #(assoc % :_id (str (:_id %)))
                     (with-collection db "reservations"
-                                     (find {})))))])))
+                                     (find {:date (:date change-map)})))))])))
 
                                                   ;(fields [:id :name :season-pass])
                                                   ;; it is VERY IMPORTANT to use array maps with sort

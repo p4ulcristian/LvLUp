@@ -124,6 +124,16 @@
   background: black !important;
   border-radius: 10px;
 }
+.active-category:hover{
+  background: white !important;
+  border-radius: 10px;
+
+}
+.active-category{
+  background: white !important;
+  border-radius: 10px;
+
+}
 
 .reserve-system:hover{
   background: #00117F !important;

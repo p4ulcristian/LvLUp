@@ -64,7 +64,7 @@
    (.log js/console (str what-key))
    (case what-key
 
-     "replace" (assoc db :reservation-modal the-map)
+     "replace" (assoc db :reservation-modal (assoc the-map :date (js/Date. (:date the-map))))
      "reset" (assoc db :reservation-modal {:name ""
                                            :id ""
                                            :date (:date db)
@@ -72,7 +72,7 @@
                                            :finish 0
                                            :places []})
      :date (assoc db
-                  :reservation-modal (assoc (:reservation-modal db) what-key the-map)
+                  :reservation-modal (assoc (:reservation-modal db) :date (js/Date. the-map))
                   :date (js/Date. the-map))
      (assoc db :reservation-modal (assoc (:reservation-modal db) what-key the-map)))))
 
