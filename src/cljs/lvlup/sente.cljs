@@ -7,8 +7,8 @@
    [taoensso.sente.packers.transit :as sente-transit]
    [cljs.reader :refer [read-string]]
    [re-frame.core :refer [subscribe dispatch dispatch-sync]]
-   [lvlup.events]
-   [lvlup.subs]
+   ;[lvlup.events]
+   ;[lvlup.subs]
    [cljs.core.async :as async :refer (<! >! put! chan)]
    [taoensso.sente  :as sente :refer (cb-success?)]
    [jayq.core :refer [$ css html]])

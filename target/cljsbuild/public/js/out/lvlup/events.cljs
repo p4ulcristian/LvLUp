@@ -3,6 +3,8 @@
    [ajax.core :refer [GET POST]]
    [cljs.reader :refer [read-string]]
    [clojure.string :as str]
+   [taoensso.sente  :as sente :refer (cb-success?)]
+   [lvlup.sente :refer [chsk-send! start-router!]]
    [clojure.set]
    [goog.string :as gstring]
    [goog.string.format]
@@ -36,6 +38,11 @@
     :counter 0}))
 
 (reg-event-db
+ :set-any-data
+ (fn [db [_ the-key the-map]]
+   (assoc db the-key the-map)))
+
+(reg-event-db
  :set-search-member
  (fn [db [_ the-map]] (assoc db :search-member the-map)))
 
@@ -57,6 +64,29 @@
  :set-active-member
  (fn [db [_ the-map]]
    (assoc db :active-member the-map)))
+
+(reg-event-db
+ :dungeon/get-reservations
+ (fn [db [_ the-map]]
+   (chsk-send! [:dungeon/get-reservations the-map]
+               8000 ; Timeout
+               ;; Optional callback:
+               (fn [reply] ; Reply is arbitrary Clojure data
+                 (if (cb-success? reply)
+                   ;(.log js/console (str (first reply)))
+                   (dispatch [:set-any-data :reservations (read-string reply)])))) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+   db))
+
+(reg-event-db
+ :dungeon/add-reservations
+ (fn [db [_ the-map]]
+   (chsk-send! [:dungeon/add-reservations the-map]
+               8000 ; Timeout
+               ;; Optional callback:
+               (fn [reply] ; Reply is arbitrary Clojure data
+                 (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                   (dispatch [:set-any-data :reservations (read-string reply)]))))
+   db))
 
 (reg-event-db
  :set-reservation-modal

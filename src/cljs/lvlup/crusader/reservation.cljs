@@ -5,7 +5,7 @@
             [reagent.session :as session]
             [clojure.string :as str]
             [goog.string :as gstring]
-            [lvlup.sente :refer [chsk-send! start-router!]]
+            ;[lvlup.sente :refer [chsk-send! start-router!]]
             [ajax.core :refer [GET POST]]
             [clojure.set :refer [union]]
             [cljs-time.core :as tcore]
@@ -376,7 +376,7 @@
 
                                 (dispatch [:set-reservation-modal :date a])
                                 (dispatch [:set-date a])
-                                (chsk-send! [:dungeon/get-reservations b]))
+                                (dispatch [:dungeon/get-reservations b]))
                               (.updateOptions
                                @slider-atom
                                (clj->js
@@ -418,9 +418,9 @@
 
            (if (all-data? reservation-details)
              [:button.uk-button.uk-button-primary.uk-float-right.uk-width-1-5.uk-modal-close
-              {:on-click #(chsk-send! [:dungeon/add-reservations
-                                       (assoc @reservation-details
-                                              :date (convert-iso-to-read (:date @reservation-details)))])
+              {:on-click #(dispatch [:dungeon/add-reservations
+                                     (assoc @reservation-details
+                                            :date (convert-iso-to-read (:date @reservation-details)))])
                :type "button"}
               "Mentés"])]
 
@@ -468,8 +468,7 @@
      {:component-did-update #(do
                                (.setDate @flatpickr
                                          (js/Date. @date))
-                               (chsk-send! [:dungeon/get-reservations (convert-iso-to-read @date)]))
-      :component-did-mount
+                               (dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])) :component-did-mount
       #(do
 
          (reset! flatpickr
@@ -485,7 +484,7 @@
                             "onChange"
                             (fn [a b c]
                               (dispatch [:set-date a])
-                              (chsk-send! [:dungeon/get-reservations b]))}))))
+                              (dispatch [:dungeon/get-reservations b]))}))))
       :reagent-render
       (fn []
         [:div.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove.uk-width-1-1
@@ -499,7 +498,7 @@
   (let [date (subscribe [:data "date"])
         system-map (subscribe [:data "system-map"])]
     (reagent/create-class
-     {:component-did-mount #(chsk-send! [:dungeon/get-reservations (convert-iso-to-read @date)])
+     {:component-did-mount #(dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])
       :reagent-render
       (fn []
         [:div {:style {:opacity 0.8}}

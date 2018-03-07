@@ -228,13 +228,12 @@
                                                           (skip (:number change-map))))))])))
   (defn get-reservations [{:keys [event]}]
     (let [[key change-map] event]
-      (send-all [:dungeon/get-reservations
-                 (str
-                  (vec
-                   (map
-                    #(assoc % :_id (str (:_id %)))
-                    (with-collection db "reservations"
-                                     (find {:date change-map})))))])))
+      (str
+       (vec
+        (map
+         #(assoc % :_id (str (:_id %)))
+         (with-collection db "reservations"
+                          (find {:date change-map})))))))
 
   (defn add-reservations [{:keys [event]}]
     (let [[key change-map] event]
@@ -373,7 +372,8 @@
   [ev-msg] (add-reservations ev-msg))
 
 (defmethod -event-msg-handler :dungeon/get-reservations
-  [ev-msg] (get-reservations ev-msg))
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (get-reservations ev-msg)))
 
 (defmethod -event-msg-handler :dungeon/add-member
   [ev-msg] (add-member ev-msg))
