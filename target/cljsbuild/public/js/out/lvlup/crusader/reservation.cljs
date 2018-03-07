@@ -279,11 +279,18 @@
 (defn decide-fade [ranges this-start this-finish]
   (some #(or
           (and
-           (>= (first %) this-start)
-           (<= (first %) this-finish))
+           (>= this-start (first %))
+           (<= this-finish (second %)))
           (and
-           (>= (second %) this-start)
-           (<= (second %) this-finish)))
+           (> this-finish (first %))
+           (< this-finish (second %)))
+          (and
+           (> this-start (first %))
+           (< this-start (second %)))
+          (and
+           (<= this-start (first %))
+           (>= this-finish (second %))))
+
         ranges))
 
 (defn one-system [item details reservations]
