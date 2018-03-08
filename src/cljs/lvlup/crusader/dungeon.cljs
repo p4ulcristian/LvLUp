@@ -878,19 +878,26 @@
 
 (defn registration-input [members]
   (let [max-id (subscribe [:data "max-id"])
-        search (subscribe [:data "search-member"])]
+        search (subscribe [:data "search-member"])
+        the-timeout (atom nil)]
+        ;input-value (atom "")]
     (fn [members]
       [:div.uk-width-1-1.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove
        {:data-uk-grid "true", :data-uk-sticky "true"}
         ;[:div.uk-width-1-1 (str @members)]
        [:input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column
         {:on-change #(do
-                       (chsk-send! [:dungeon/get-members
-                                    {:number 0 :search (-> % .-target .-value)}])
-                       (dispatch [:set-search-member (-> % .-target .-value)]))
+                       ;(reset! input-value %)
+                       (if @the-timeout (.clearTimeout js/window @the-timeout))
+                       (reset! the-timeout
+                               (.setTimeout
+                                js/window
+                                (fn [a] (dispatch [:set-search-member a]))
+                                500
+                                (-> % .-target .-value))))
          :placeholder "Regisztráció/Keresés"
-         :type "text"
-         :value @search}]
+         :type "text"}]
+
        [:button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column
         {:on-click #(do (dispatch [:set-max-id (inc @max-id)])
                         (chsk-send! [:dungeon/add-member {:id @max-id :name @search}]))}
@@ -934,12 +941,8 @@
         search (subscribe [:data "search-member"])]
     (reagent/create-class
      {:component-did-mount #(do
-                              (listen!)
-                              (.init js/emergence
-                                     (clj->js {:reset false
-                                               :callback
-                                               (fn [element state]
-                                                 (js/console.log state))})))
+                              (listen!))
+
       :reagent-render
       (fn []
         [:div.uk-container

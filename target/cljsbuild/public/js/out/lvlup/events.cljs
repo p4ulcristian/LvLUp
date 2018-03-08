@@ -45,7 +45,10 @@
 
 (reg-event-db
  :set-search-member
- (fn [db [_ the-map]] (assoc db :search-member the-map :reservations [])))
+ (fn [db [_ the-map]]
+   (chsk-send! [:dungeon/get-members
+                {:number 0 :search the-map}])
+   (assoc db :search-member the-map :players [])))
 
 (reg-event-db
  :set-connection-state
