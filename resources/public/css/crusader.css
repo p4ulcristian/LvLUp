@@ -12,7 +12,11 @@
     width: 230px;
 }
 
-
+.reservation-grid{
+  width: max-content;
+  width: -moz-max-content;
+  width: -webkit-max-content;
+}
 
 .add-reservation:hover{
   transition: 0.3s ease-in-out;

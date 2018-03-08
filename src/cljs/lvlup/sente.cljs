@@ -90,7 +90,6 @@
                                ;(.log js/console (str "meh-" (read-string data)))
                              ;(dispatch [:remove-member (read-string data)])
                              (js/console.log data)
-                             (chsk-send! [:dungeon/get-max-id])
                              (dispatch [:set-members (read-string data)]))
 
       :dungeon/waiting-pool (dispatch [:set-waiting-pool (read-string data)])

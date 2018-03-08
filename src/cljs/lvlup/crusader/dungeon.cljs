@@ -45,7 +45,7 @@
 ;  ([el event-type] (events->chan el event-type (chan)))
 ;  ([el event-type c] (events/listen el event-type (fn [e] (put! c e))) c))
 (defn notification [valami]
-  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-primary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "top-left" :timeout 700})))
+  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-primary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left" :timeout 700})))
 
 (defn includes? [word text]
   (clojure.string/includes? text word))
@@ -764,14 +764,12 @@
              #(-> ^{:key %2} [invoice %2])
              (sort-by first (group-by :member-id @invoices)))])])})))
 
-(defn modify-member-input [])
-
 (defn modify-member [member index]
   (let [modify-atom (atom member)]
     (reagent/create-class
      {:reagent-render
       (fn [member index]
-        [:div.uk-width-1-2 {}
+        [:div.uk-width-1-2.uk-padding-small.uk-margin-remove {}
 
          [:div.uk-card.uk-card-secondary ;{:style {:opacity 0.85}}
           [:div.uk-width-1-1.uk-padding-remove
@@ -789,9 +787,10 @@
                     :on-click #(do
                                  (notification "Felhasználó törölve!")
                                  (dispatch [:remove-member
-                                            (conj [] {:id (:id member)})])
+                                            (:id member)])
                                  (chsk-send! [:dungeon/remove-member
-                                              (:id member)]))}]]]
+                                              (:id member)])
+                                 (chsk-send! [:dungeon/get-max-id]))}]]]
           [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
            {:on-click #(do
                          (swap! modify-atom assoc :season-pass (- (:season-pass member) 1))
@@ -852,7 +851,7 @@
         the-timeout (atom nil)]
         ;input-value (atom "")]
     (fn [members]
-      [:div.uk-width-1-1.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove
+      [:div.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove
        {:data-uk-grid "true", :data-uk-sticky "true"}
         ;[:div.uk-width-1-1 (str @members)]
        [:input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column
@@ -912,6 +911,7 @@
     (reagent/create-class
      {:component-did-mount #(do
                               (listen!))
+      ;:component-did-unmount #()
 
       :reagent-render
       (fn []

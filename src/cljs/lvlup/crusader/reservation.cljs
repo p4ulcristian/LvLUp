@@ -128,14 +128,7 @@
                             (quot (:to (opening-hours @date)) 4))))]
 
     (reagent/create-class
-     {:component-did-mount #(if-not (<
-                                     (quot
-                                      (:from (opening-hours @date))
-                                      4)
-                                     (.getHours @date))
-                              (dispatch [:set-date (yesterday @date)]))
-                                      ;(get-opening-hours (yesterday @date))))
-      :reagent-render
+     {:reagent-render
       (fn []
         [:div
          [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-margin-remove
@@ -144,7 +137,14 @@
            [:div.uk-inline.uk-margin-small.uk-padding-small.uk-padding-remove-vertical
             {:data-uk-sticky " bottom: #top"
              :data-uk-toggle "target: #my-id"
-             :on-click #(dispatch [:set-reservation-modal "reset" nil])
+             :on-click #(do
+                          (.updateOptions
+                           @slider-atom
+                           (clj->js
+                            {:start [64 84]})
+
+                           true)
+                          (dispatch [:set-reservation-modal "reset" "valami"]))
              :style {:z-index "980"}}
             [:img.add-reservation {:src "/Icons/plus.svg"
                                    :height "50"
@@ -184,8 +184,8 @@
                         @slider-atom
                         (clj->js
                          {:start [(:start reservation) (:finish reservation)]
-                          :range {"min" (:from (opening-hours (js/Date. (:start reservation))))
-                                  "max" (:to (opening-hours (js/Date. (:finish reservation))))}})
+                          :range {"min" (:from (opening-hours (js/Date. (:date reservation))))
+                                  "max" (:to (opening-hours (js/Date. (:date reservation))))}})
                         true)
 
                        (dispatch [:set-reservation-modal "replace" reservation]))
@@ -295,12 +295,12 @@
 
 (defn one-system [item details reservations]
   (let [reservation-details (subscribe [:data "reservation-modal"])]
-    (fn []
+    (fn [item details reservations]
       [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small-top
 
        [:button.uk-padding-small.uk-button.uk-button-default
         {:style {:border-radius "10px"}
-         :class (if (some #(= item %) (:places @details))
+         :class (if (some #(= item %) (:places @reservation-details))
                   "reserve-system chosen-system"
                   "reserve-system")
          :on-click #(dispatch [:set-reservation-modal :places (add-or-remove item (:places @details))])
@@ -345,9 +345,7 @@
 
 (defn reservation-modal []
   (let [date (subscribe [:data "date"])
-
         flatpickr (atom nil)
-
         reservation-details (subscribe [:data "reservation-modal"])
         reservations (subscribe [:data "reservations"])
         slider-values (atom nil)]
@@ -410,10 +408,12 @@
       :reagent-render
       (fn []
 
-        [:div#my-id;.uk-modal-container
+        [:div#my-id
 
          {:data-uk-modal "" :style {:opacity 0.95}}
+
          [:div.uk-modal-dialog
+
           ;[:button.uk-modal-close-default
           ; {:data-uk-close true :type "button"}
           ;[:div (str @reservation-details)]
@@ -424,12 +424,13 @@
               (str  (:name @reservation-details)))]
 
            (if (all-data? reservation-details)
-             [:button.uk-button.uk-button-primary.uk-float-right.uk-width-1-5.uk-modal-close
-              {:on-click #(dispatch [:dungeon/add-reservations
-                                     (assoc @reservation-details
-                                            :date (convert-iso-to-read (:date @reservation-details)))])
-               :type "button"}
-              "Mentés"])]
+             [:div.uk-width-1-5.uk-padding-remove
+              [:button.uk-button.uk-button-primary.uk-modal-close.uk-text-center
+               {:on-click #(dispatch [:dungeon/add-reservations
+                                      (assoc @reservation-details
+                                             :date (convert-iso-to-read (:date @reservation-details)))])
+                :type "button"}
+               "Mentés"]])]
 
           [:div.uk-modal-body.uk-padding-remove-vertical
            [:div.uk-form.uk-padding-small.remove-padding-vertical
@@ -475,23 +476,23 @@
      {:component-did-update #(do
                                (.setDate @flatpickr
                                          (js/Date. @date))
-                               (dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])) :component-did-mount
-      #(do
+                               (dispatch [:dungeon/get-reservations (convert-iso-to-read @date)]))
+      :component-did-mount #(do
 
-         (reset! flatpickr
-                 (.flatpickr
-                  js/window
-                  "#choose-date"
-                  (clj->js {"altInput" true
-                            "altFormat" "F j, Y"
-                            "dateFormat" "Y-m-d"
-                      ;"defaultDate" (js/Date.)
-                            "locale" "hu"
-                            "minDate" (.fp_incr (js/Date.) -1)
-                            "onChange"
-                            (fn [a b c]
-                              (dispatch [:set-date a])
-                              (dispatch [:dungeon/get-reservations b]))}))))
+                              (reset! flatpickr
+                                      (.flatpickr
+                                       js/window
+                                       "#choose-date"
+                                       (clj->js {"altInput" true
+                                                 "altFormat" "F j, Y"
+                                                 "dateFormat" "Y-m-d"
+                                                 "defaultDate" (js/Date.)
+                                                 "locale" "hu"
+                                                 "minDate" (.fp_incr (js/Date.) -1)
+                                                 "onChange"
+                                                 (fn [a b c]
+                                                   (dispatch [:set-date a])
+                                                   (dispatch [:dungeon/get-reservations b]))}))))
       :reagent-render
       (fn []
         [:div.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove.uk-width-1-1
@@ -516,9 +517,9 @@
 
           [reservation-modal]
           [reservation-dates]
-          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 100px)" :overflow-x "scroll" :overflow-y "visible"}}
+          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 80px)" :overflow-x "scroll" :overflow-y "visible"}}
            [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match
-            {:data-uk-grid true :style {:min-width "calc(100vw - 100px)" :width "max-content" :height "100%"}};}}
+            {:data-uk-grid true :style {:min-width "calc(100vw - 80px)"  :height "100%"}};}}
                 ;(str (systems-to-reservations @system-map))
             (for [item (reservation-systems system-map)]
               (-> ^{:key (str "h" item)} [reservation-column item]))]]]])})))

@@ -5,10 +5,7 @@
   (:require
    [clojure.string     :as str]
    [clojure.data     :as data]
-   [ring.middleware.defaults]
-   [compojure.core     :as comp :refer (defroutes GET POST)]
-   [compojure.route    :as route]
-   [clj-time.coerce :as c]
+
    [monger.core :as mg]
    [monger.collection :refer [insert update update-by-id remove-by-id] :as mc]
    [monger.query :refer :all]
@@ -180,10 +177,12 @@
 
   (defn add-member [{:keys [event]}]
     (let [[key change-map] event]
-
       (mc/insert db "members" (assoc change-map :season-pass 0 :total-hours 0))
       (send-all [:dungeon/replace-member
-                 (mc/find-one-as-map db "members" {:id (:id change-map)} (assoc change-map :season-pass 0 :total-hours 0))])))
+                 (dissoc
+                  (mc/find-one-as-map db "members"
+                                      {:id (:id change-map)})
+                  :_id)])))
 
   (defn get-members [{:keys [event]}]
     (let [[key change-map] event]
@@ -243,14 +242,14 @@
                                      (find (if (not= [] change-map)
                                              {$or
                                               (vec (map (fn [a] (assoc {} :id a)) change-map))}
-                                             {:id nil}))))))]))
-    (defn get-dungeon []
-      (doseq [uid (:any @connected-uids)]
-        (chsk-send! uid [:dungeon/get-dungeon (str
-                                               (vec
-                                                (map
-                                                 #(dissoc % :_id)
-                                                 (with-collection db "dungeon"))))])))))
+                                             {:id nil}))))))])))
+  (defn get-dungeon []
+    (doseq [uid (:any @connected-uids)]
+      (chsk-send! uid [:dungeon/get-dungeon (str
+                                             (vec
+                                              (map
+                                               #(dissoc % :_id)
+                                               (with-collection db "dungeon"))))]))))
 
 ;; We can watch this atom for changes if we like
 (add-watch connected-uids :connected-uids

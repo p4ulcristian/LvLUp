@@ -100,12 +100,13 @@
    (case what-key
 
      "replace" (assoc db :reservation-modal (assoc the-map :date (js/Date. (:date the-map))))
-     "reset" (assoc db :reservation-modal {:name ""
+     "reset" (assoc db :reservation-modal {:places []
+                                           :name ""
                                            :id ""
                                            :date (:date db)
-                                           :start 0
-                                           :finish 0
-                                           :places []})
+                                           :start 64
+                                           :finish 84})
+
      :date (assoc db
                   :reservation-modal (assoc (:reservation-modal db) :date (js/Date. the-map))
                   :date (js/Date. the-map))
@@ -163,7 +164,7 @@
  (fn [db [_ the-map]]
    (assoc db :players (vec
                        (remove
-                        #(= (:id %) (:id the-map))
+                        #(= (:id %) the-map)
                         (:players db))))))
 
 (reg-event-db
