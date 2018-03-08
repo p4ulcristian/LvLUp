@@ -323,15 +323,13 @@
                                     "history"
                                     "future"))
       :on-click #(do
-                   (notification (if
-                                  (= "+" elojel)
+                   (notification (if (= "+" elojel)
                                    (str name " + 5 perc")
                                    (str name " - 5 perc")))
                    (chsk-send! [:dungeon/change
                                 (assoc-in item
                                           [:players player-number :start]
-                                          (if
-                                           (= "+" elojel)
+                                          (if (= "+" elojel)
                                             (convert-to-clojurescript-time (str (tcore/minus (tformat/parse (:start (get (:players item) player-number))) (tcore/minutes 5))))
                                             (convert-to-clojurescript-time (str (tcore/plus (tformat/parse (:start (get (:players item) player-number))) (tcore/minutes 5))))))])
                    (reset! the-atom
@@ -756,63 +754,47 @@
 (defn checkout []
   (let [invoices (subscribe [:data "invoices"])
         members (subscribe [:data "players"])
-        get-member-data (fn [] (vec (set (map :member-id @invoices))))] (reagent/create-class
-                                                                         {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
-                                                                          :component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
-                                                                          :reagent-render
-                                                                          (fn []
-                                                                            [:div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1
+        get-member-data (fn [] (vec (set (map :member-id @invoices))))]
+    (reagent/create-class
+     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+      :component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+      :reagent-render
+      (fn []
+        [:div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1
               ;  (str @members)
             ;  [:button {:on-click #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])} "hello"]
 
-                                                                             (if (= @invoices [])
-                                                                               [:div
+         (if (= @invoices [])
+           [:div
 
-                                                                                [:div.uk-inline
-                                                                                 [:img {:src "/img/pipboy-gangster.png"}]
-                                                                                 [:h1.uk-overlay.uk-overlay-primary.uk-position-top-left {:style {:border-radius "20px"}}
-                                                                                  "Senkinek sincs fizetetlen számlája! :)"]]] [:div.uk-grid.uk-grid-small.uk-margin-top {:data-uk-grid true}
+            [:div.uk-inline
+             [:img {:src "/img/pipboy-gangster.png"}]
+             [:h1.uk-overlay.uk-overlay-primary.uk-position-top-left {:style {:border-radius "20px"}}
+              "Senkinek sincs fizetetlen számlája! :)"]
+             [:div.uk-grid.uk-grid-small.uk-margin-top {:data-uk-grid true}
+              (map-indexed
+               #(-> ^{:key %2} [invoice %2])
+               (sort-by first (group-by :member-id @invoices)))]]])])})))
 
-                                                                                                                               (map-indexed
-                                                                                                                                #(-> ^{:key %2} [invoice %2])
-                                                                                                                                (sort-by first (group-by :member-id @invoices)))])])})))
+(defn modify-member-input [])
 
 (defn modify-member [member index]
-  (let [modify-atom (atom member)
-        scrollspy (atom nil)]
-
+  (let [modify-atom (atom member)]
     (reagent/create-class
-     {:component-did-mount
-      #(do
-         (reset!
-          scrollspy
-          (.scrollspy
-           js/UIkit
-           (str "#load-" index)
-           (clj->js {:cls nil
-                     :hidden false})))
-         (if (= 0 (mod (+ 10 index) 20))
-           (.on
-            ($ js/document)
-            "inview"
-            (str "#us-" index)
-            (fn [a] (chsk-send! [:dungeon/get-members {:number (+ 10 index) :search ""}])))))
-      :reagent-render
+     {:reagent-render
       (fn [member index]
-        [:div.uk-width-1-2 {:data-emergence (if (= 0 (mod (+ 10 index) 20))
-                                              "hidden"
-                                              false)
-                            :id (str "load-" index)}
-         ;[:button {:on-click #(js/console.log (lazy-load))} "hello"]
+        [:div.uk-width-1-2 {}
+
          [:div.uk-card.uk-card-secondary ;{:style {:opacity 0.85}}
-          [:div.uk-width-1-1.uk-padding-remove.uk-inline
+          [:div.uk-width-1-1.uk-padding-remove
            [:h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove {:style {:color "white !important"}}
             (str "Id: " (:id member) "  - Bérlet: " (:season-pass member))]
            [:div.uk-position-top-right [:span {:style {:cursor "pointer"}
                                                :data-uk-icon "icon: check; ratio: 2.5"
-                                               :on-click #(do                   (notification "Név frissítve!")
-                                                                                (chsk-send! [:dungeon/update-member
-                                                                                             @modify-atom]))}]
+                                               :on-click #(do
+                                                            (notification "Név frissítve!")
+                                                            (chsk-send! [:dungeon/update-member
+                                                                         @modify-atom]))}]
 
             [:span {:style {:cursor "pointer"}
                     :data-uk-icon "icon: close; ratio: 2.5"
@@ -821,60 +803,60 @@
                                  (dispatch [:remove-member
                                             (conj [] {:id (:id member)})])
                                  (chsk-send! [:dungeon/remove-member
-                                              (:id member)]))}]]]]
-         [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-          {:on-click #(do
+                                              (:id member)]))}]]]
+          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+           {:on-click #(do
+                         (swap! modify-atom assoc :season-pass (- (:season-pass member) 1))
+                         (chsk-send! [:dungeon/update-member
+                                      (assoc @modify-atom :season-pass (- (:season-pass member) 1))])
+                         (notification (str (:name @modify-atom) " - bérlete 1-gyel csökkent")))}
+           "-1"]
+          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+           {:on-click #(do
+                         (swap! modify-atom assoc :season-pass (- (:season-pass member) 0.5))
+                         (chsk-send! [:dungeon/update-member
+                                      (assoc @modify-atom :season-pass (- (:season-pass member) 0.5))])
+                         (notification (str (:name @modify-atom) " - bérlete 0.5-gyel csökkent")))}
+           "-.5"]
+          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+           {:on-click #(do
+                         (swap! modify-atom assoc :season-pass (+ (:season-pass member) 0.5))
+                         (chsk-send! [:dungeon/update-member
+                                      (assoc @modify-atom :season-pass (+ 0.5 (:season-pass member)))])
+                         (notification (str (:name @modify-atom) " - bérlete 0.5-gyel nőtt")))}
+           "+.5"]
+          [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
+           {:on-click #(do
+                         (swap! modify-atom assoc :season-pass (+ (:season-pass member) 1))
+                         (chsk-send! [:dungeon/update-member
+                                      (assoc @modify-atom :season-pass (+ 1 (:season-pass member)))])
+                         (notification (str (:name (:id @modify-atom)) " - bérlete 1-gyel nőtt")))}
+           "+1"]
+                   ;[:h6.uk-heading-bullet.uk-width-1-1.uk-padding-remove]
+          [:div.uk-width-1-1.uk-padding-remove.uk-margin-remove
+           [:input.uk-input.uk-text-center {:on-change #(swap! modify-atom assoc :name (-> % .-target .-value)) :value (:name @modify-atom)}]]
+                   ;[:input.uk-input {:on-change #(swap! modify-atom assoc :season-pass (-> % .-target .-value)) :value (:season-pass member)}]
+                   ;[:input.uk-input {:on-change #(swap! modify-atom assoc :name (-> % .-target .-value)) :value (str (:playing @modify-atom))}]
+          [:div.uk-grid.uk-child-width-1-3.uk-margin-remove.uk-width-1-1.uk-padding-remove {:data-uk-grid true}
+           [:button.uk-button.uk-button-default {:on-click #(do
+                                                              (swap! modify-atom assoc :season-pass (+ (:season-pass member) 6))
+                                                              (chsk-send! [:dungeon/update-member
+                                                                           (assoc @modify-atom :season-pass (+ 6 (:season-pass member)))])
+                                                              (notification (str (:name @modify-atom) " kapott egy Beginner bérletet!")))}
+            "+Beginner"]
+           [:button.uk-button.uk-button-default {:on-click #(do
+                                                              (swap! modify-atom assoc :season-pass (+ (:season-pass member) 13))
+                                                              (chsk-send! [:dungeon/update-member
+                                                                           (assoc @modify-atom :season-pass (+ 13 (:season-pass member)))])
+                                                              (notification (str (:name @modify-atom) " kapott egy Medium bérletet!")))}
+            "+Medium"]
+           [:button.uk-button.uk-button-default {:on-click #(do
+                                                              (swap! modify-atom assoc :season-pass (+ (:season-pass member) 28))
+                                                              (chsk-send! [:dungeon/update-member
+                                                                           (assoc @modify-atom :season-pass (+ 28 (:season-pass member)))])
 
-                        (chsk-send! [:dungeon/update-member
-                                     (assoc @modify-atom :season-pass (- (:season-pass member) 1))])
-                        (notification (str (:name @modify-atom) " - bérlete 1-gyel csökkent")))}
-          "- 1"]
-         [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-          {:on-click #(do
-
-                        (chsk-send! [:dungeon/update-member
-                                     (assoc @modify-atom :season-pass (- (:season-pass member) 0.5))])
-                        (notification (str (:name @modify-atom) " - bérlete 0.5-gyel csökkent")))}
-          "- 0.5"]
-         [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-          {:on-click #(do
-
-                        (chsk-send! [:dungeon/update-member
-                                     (assoc @modify-atom :season-pass (+ 0.5 (:season-pass member)))])
-                        (notification (str (:name @modify-atom) " - bérlete 0.5-gyel nőtt")))}
-          "+ 0.5"]
-         [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
-          {:on-click #(do
-
-                        (chsk-send! [:dungeon/update-member
-                                     (assoc @modify-atom :season-pass (+ 1 (:season-pass member)))])
-                        (notification (str (:name (:id @modify-atom)) " - bérlete 1-gyel nőtt")))}
-          "+ 1"]
-                  ;[:h6.uk-heading-bullet.uk-width-1-1.uk-padding-remove]
-         [:div.uk-width-1-1.uk-padding-remove.uk-margin-remove
-          [:input.uk-input.uk-text-center {:on-change #(swap! modify-atom assoc :name (-> % .-target .-value)) :value (:name @modify-atom)}]]
-                  ;[:input.uk-input {:on-change #(swap! modify-atom assoc :season-pass (-> % .-target .-value)) :value (:season-pass member)}]
-                  ;[:input.uk-input {:on-change #(swap! modify-atom assoc :name (-> % .-target .-value)) :value (str (:playing @modify-atom))}]
-         [:div.uk-grid.uk-child-width-1-3.uk-margin-remove.uk-width-1-1.uk-padding-remove {:data-uk-grid true}
-          [:button.uk-button.uk-button-default {:on-click #(do
-
-                                                             (chsk-send! [:dungeon/update-member
-                                                                          (assoc @modify-atom :season-pass (+ 6 (:season-pass member)))])
-                                                             (notification (str (:name @modify-atom) " kapott egy Beginner bérletet!")))}
-           "+ Beginner"]
-          [:button.uk-button.uk-button-default {:on-click #(do
-
-                                                             (chsk-send! [:dungeon/update-member
-                                                                          (assoc @modify-atom :season-pass (+ 13 (:season-pass member)))])
-                                                             (notification (str (:name @modify-atom) " kapott egy Medium bérletet!")))}
-           "+ Medium"]
-          [:button.uk-button.uk-button-default {:on-click #(do
-
-                                                             (chsk-send! [:dungeon/update-member
-                                                                          (assoc @modify-atom :season-pass (+ 28 (:season-pass member)))])
-
-                                                             (notification (str (:name @modify-atom) " kapott egy Hardcore bérletet!")))}
-           "+ Hardcore"]]])})))
+                                                              (notification (str (:name @modify-atom) " kapott egy Hardcore bérletet!")))}
+            "+Hardcore"]]]])})))
 
 (defn registration-input [members]
   (let [max-id (subscribe [:data "max-id"])
