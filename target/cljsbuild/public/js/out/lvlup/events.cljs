@@ -25,6 +25,7 @@
                         :start 0
                         :finish 0
                         :places []}
+    :lazy-number 20
     :modal-data nil
     :waiting-pool []
     :sidenav-state 1
@@ -44,7 +45,7 @@
 
 (reg-event-db
  :set-search-member
- (fn [db [_ the-map]] (assoc db :search-member the-map)))
+ (fn [db [_ the-map]] (assoc db :search-member the-map :reservations [])))
 
 (reg-event-db
  :set-connection-state
@@ -135,6 +136,11 @@
  :set-sidenav-state
  (fn [db [_ the-map]]
    (assoc db :sidenav-state the-map)))
+
+(reg-event-db
+ :set-lazy-number
+ (fn [db [_ the-map]]
+   (assoc db :lazy-number the-map)))
 
 (reg-event-db
  :set-members

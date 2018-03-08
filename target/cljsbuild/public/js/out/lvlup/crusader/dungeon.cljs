@@ -1,27 +1,31 @@
 (ns lvlup.crusader.dungeon
-  (:require     [reagent.core :as reagent :refer [atom]]
-                [lvlup.sente :refer [chsk-send! start-router! chsk-reconnect! chsk-disconnect!]]
+  ;(:require-macros [cljs.core.async.macros :refer [go]])
+  (:require     ;[cljs.core.async :refer [<! put! chan timeout]]
+   [reagent.core :as reagent :refer [atom]]
+   [lvlup.sente :refer [chsk-send! start-router! chsk-reconnect! chsk-disconnect!]]
 
-                [reagent.session :as session]
-                [clojure.string  :as str]
-                [jayq.core :refer [$]]
+   [reagent.session :as session]
+   [clojure.string  :as str]
+   [jayq.core :refer [$]]
 
-                [cljs.core.async :as async  :refer (<! >! put! chan timeout)]
+   [cljs.core.async :as async  :refer (<! >! put! chan timeout)]
 
                 ;[cljs.core.async :refer [<! timeout]]
                 ;[lvlup.sente :refer [crusader-navbar]]
-                [cljs-time.core :as tcore]
-                [cljs-time.format :as tformat]
-                [cljs-time.coerce :as coerce]
-
-                [cljs-time.core :as tcore]
-                [cljs-time.format :as tformat]
-                [cljs-time.coerce :as tcoerce]
-                [cljs.reader :refer [read-string]]
-                [re-frame.core :refer [subscribe dispatch dispatch-sync]]
-                [lvlup.events]
-                [taoensso.sente  :as sente  :refer (cb-success?)]
-                [lvlup.subs])
+   [cljs-time.core :as tcore]
+   [cljs-time.format :as tformat]
+   [cljs-time.coerce :as coerce]
+   [goog.events :as events]
+   [goog.events.EventType :as EventType]
+   [goog.dom :as dom]
+   [cljs-time.core :as tcore]
+   [cljs-time.format :as tformat]
+   [cljs-time.coerce :as tcoerce]
+   [cljs.reader :refer [read-string]]
+   [re-frame.core :refer [subscribe dispatch dispatch-sync]]
+   [lvlup.events]
+   [taoensso.sente  :as sente  :refer (cb-success?)]
+   [lvlup.subs])
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
@@ -453,40 +457,39 @@
   (let [invoices (subscribe [:data "invoices"])
         pool (subscribe [:data "waiting-pool"])
         sidenav-state (subscribe [:data "sidenav-state"])
-        active-member (subscribe [:data "active-member"])] (reagent/create-class
-                                                            {:reagent-render
-
-                                                             (fn [data index which-tab]
-                                                               [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small.uk-animation-fade
-                                                                {:style {:cursor "pointer"}}
-                                                                [:div.valami.uk-padding-remove.draggable.uk-card.uk-card-default.uk-margin-remove.uk-grid-collapse.uk-margin
-                                                                 {:data-uk-grid true
-                                                                  :style {:border-radius "5px"}
-                                                                  :on-click #(dispatch [:set-active-member (:id data)])
-                                                                  :id (:id data)}
-                                                                 [:div.uk-width-1-3
-                                                                  [:div.uk-inline
-                                                                   [:img.uk-border-circle {:src "/img/logos/unnamed.png"}]
-                                                                   (if
-                                                                    (not (some #(= % data) @pool))
-                                                                     [:div.uk-position-bottom-right
-                                                                      [:button.uk-button.uk-padding-remove.to-the-waiting-pool {:on-click #(chsk-send! [:dungeon/add-to-waiting-pool data])}
-                                                                       [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/time-left.svg"}]]]
-                                                                     [:div.uk-position-bottom-right
-                                                                      [:button.uk-button.uk-padding-remove.to-the-waiting-pool {:on-click #(chsk-send! [:dungeon/remove-from-waiting-pool data])}
-                                                                       [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/remove.svg"}]]])]] [:div.uk-card-body.uk-padding-small.uk-margin-remove.uk-width-2-3.uk-dark
-                                                                                                                                                         {:class (if (= (:id data) @active-member)
-                                                                                                                                                                   "uk-card-primary"
-                                                                                                                                                                   "uk-card-default")}
-                                                                                                                                                         [:div.container {:style {:font-size "1.4em" :padding "3px"}}
-                                                                                                                                                          [:div
-                                                                                                                                                           [:div.name-animated (str (:id data) ".-" (:name data))]]]
-                                                                                                                                                         [:div (str "Bérlet: " (:season-pass data)) " óra"]
-                                                                                                                                                         [:div (str "XP: " (:total-hours data))]
-                                                                                                                                                         (if (= (:id data) @active-member)
-                                                                                                                                                           [:div
-                                                                                                                                                            [:div (str "Összesen: " (all-items-to-money (:id data)) " Ft")]
-                                                                                                                                                            [:div (str "Játszott órák: " (all-items-to-hours (:id data)) " óra")]])]]])})))
+        active-member (subscribe [:data "active-member"])]
+    (reagent/create-class
+     {:reagent-render
+      (fn [data index which-tab]
+        [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small.uk-animation-fade
+         {:style {:cursor "pointer"}}
+         [:div.valami.uk-padding-remove.draggable.uk-card.uk-card-default.uk-margin-remove.uk-grid-collapse.uk-margin
+          {:data-uk-grid true
+           :style {:border-radius "5px"}
+           :on-click #(dispatch [:set-active-member (:id data)])
+           :id (:id data)}
+          [:div.uk-width-1-3
+           [:div.uk-inline
+            [:img.uk-border-circle {:src "/img/logos/unnamed.png"}]
+            (if (not (some #(= % data) @pool))
+              [:div.uk-position-bottom-right
+               [:button.uk-button.uk-padding-remove.to-the-waiting-pool {:on-click #(chsk-send! [:dungeon/add-to-waiting-pool data])}
+                [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/time-left.svg"}]]
+               [:div.uk-position-bottom-right
+                [:button.uk-button.uk-padding-remove.to-the-waiting-pool {:on-click #(chsk-send! [:dungeon/remove-from-waiting-pool data])}
+                 [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/remove.svg"}]]] [:div.uk-card-body.uk-padding-small.uk-margin-remove.uk-width-2-3.uk-dark
+                                                                                                {:class (if (= (:id data) @active-member)
+                                                                                                          "uk-card-primary"
+                                                                                                          "uk-card-default")}
+                                                                                                [:div.container {:style {:font-size "1.4em" :padding "3px"}}
+                                                                                                 [:div
+                                                                                                  [:div.name-animated (str (:id data) ".-" (:name data))]]]
+                                                                                                [:div (str "Bérlet: " (:season-pass data)) " óra"]
+                                                                                                [:div (str "XP: " (:total-hours data))]
+                                                                                                (if (= (:id data) @active-member)
+                                                                                                  [:div
+                                                                                                   [:div (str "Összesen: " (all-items-to-money (:id data)) " Ft")]
+                                                                                                   [:div (str "Játszott órák: " (all-items-to-hours (:id data)) " óra")]])]])]]]])})))
                                         ;[:div (str "Bérlet: "(:season-pass data)) " óra"]])]]
                      ;(if (= (:id data) @active-member)
                       ;   [:div.uk-grid.uk-margin-remove.uk-padding-remove {:data-uk-grid true}
@@ -515,12 +518,13 @@
         systems (subscribe [:data "system-map"])
         invoices (subscribe [:data "invoices"])
         get-member-data (fn [] (vec (set (map :member-id @invoices))))
-        the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (vec (set (map :member-id @invoices)))) @players)))] (reagent/create-class
-                                                                                                                                      {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
-                                                                                                                                       :reagent-render
-                                                                                                                                       (fn []
-                                                                                                                                         [:div
-                                                                                                                                          (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 3]) (the-players-playing))])})))
+        the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (vec (set (map :member-id @invoices)))) @players)))]
+    (reagent/create-class
+     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+      :reagent-render
+      (fn []
+        [:div
+         (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 3]) (the-players-playing))])})))
 
 (defn gaming-gamers []
   (let [players (subscribe [:data "players"])
@@ -538,12 +542,13 @@
                                                (get-in a [:players :three :member-id])
                                                (get-in a [:players :four :member-id])))
                                        @systems))))))
-        the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (get-players-playing)) @players)))] (reagent/create-class
-                                                                                                                     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-players-playing)])
-                                                                                                                      :reagent-render
-                                                                                                                      (fn []
-                                                                                                                        [:div
-                                                                                                                         (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 2]) (the-players-playing))])})))
+        the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (get-players-playing)) @players)))]
+    (reagent/create-class
+     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-players-playing)])
+      :reagent-render
+      (fn []
+        [:div
+         (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 2]) (the-players-playing))])})))
 
 (defn gamers []
   (let [players (subscribe [:data "players"])
@@ -777,24 +782,28 @@
         scrollspy (atom nil)]
 
     (reagent/create-class
-     {:component-did-mount #(do
-                              (reset!
-                               scrollspy
-                               (.scrollspy
-                                js/UIkit
-                                (str "#user-" index)
-                                (clj->js {:cls nil
-                                          :hidden false})))
-                              (if (= 0 (mod (+ 10 index) 20))
-                                (.on
-                                 ($ js/document)
-                                 "inview"
-                                 (str "#user-" index)
-                                 (fn [a] (chsk-send! [:dungeon/get-members {:number (+ 10 index) :search ""}])))))
+     {:component-did-mount
+      #(do
+         (reset!
+          scrollspy
+          (.scrollspy
+           js/UIkit
+           (str "#load-" index)
+           (clj->js {:cls nil
+                     :hidden false})))
+         (if (= 0 (mod (+ 10 index) 20))
+           (.on
+            ($ js/document)
+            "inview"
+            (str "#us-" index)
+            (fn [a] (chsk-send! [:dungeon/get-members {:number (+ 10 index) :search ""}])))))
       :reagent-render
       (fn [member index]
-        [:div.uk-width-1-2 {:id (str "user-" index)}
-
+        [:div.uk-width-1-2 {:data-emergence (if (= 0 (mod (+ 10 index) 20))
+                                              "hidden"
+                                              false)
+                            :id (str "load-" index)}
+         ;[:button {:on-click #(js/console.log (lazy-load))} "hello"]
          [:div.uk-card.uk-card-secondary ;{:style {:opacity 0.85}}
           [:div.uk-width-1-1.uk-padding-remove.uk-inline
            [:h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove {:style {:color "white !important"}}
@@ -887,11 +896,51 @@
                         (chsk-send! [:dungeon/add-member {:id @max-id :name @search}]))}
         (str @max-id) ". gamer hozzáadása!"]])))
 
+(defn lazy-load? []
+  (let [d (.-documentElement js/document)
+        offset (+ (.-scrollTop d) (.-innerHeight js/window))
+        height (.-offsetHeight d)]
+
+    (if (= offset height)
+      true
+      false)))
+
+(defn- get-scroll []
+  (-> (dom/getDocumentScroll) (.-y)))
+
+(defn- events->chan [el event-type c]
+  (events/listen el event-type #(put! c %))
+  c)
+
+(defn scroll-chan-events []
+  (events->chan js/window EventType/SCROLL (chan 1 (map get-scroll))))
+
+(defn listen! []
+  (let [chan (scroll-chan-events)]
+    (go-loop []
+      (let [new-y (<! chan)
+            lazy-number (subscribe [:data "lazy-number"])
+            search (subscribe [:data "search-member"])]
+
+        (if (lazy-load?)
+          (do
+            (chsk-send! [:dungeon/get-members {:number @lazy-number :search @search}])
+            (dispatch [:set-lazy-number (+ 20 @lazy-number)])))
+        ;(reset! cur-scroll-y (max 0 new-y))
+        (recur)))))
+
 (defn registration []
   (let [members (subscribe [:data "players"])
         search (subscribe [:data "search-member"])]
     (reagent/create-class
-     {:reagent-render
+     {:component-did-mount #(do
+                              (listen!)
+                              (.init js/emergence
+                                     (clj->js {:reset false
+                                               :callback
+                                               (fn [element state]
+                                                 (js/console.log state))})))
+      :reagent-render
       (fn []
         [:div.uk-container
 
