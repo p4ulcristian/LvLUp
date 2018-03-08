@@ -67,7 +67,7 @@
             {:builds {:min
                       {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
                        :compiler
-                       {:output-to "target/cljsbuild/public/js/app.1.3.js"
+                       {:output-to "target/cljsbuild/public/js/app.1.3.5.js"
                         :output-dir "target/uberjar"
                         :optimizations :simple
                         :externs ["externs/jquery.js"]
@@ -78,7 +78,7 @@
                        :compiler
                        {:main "lvlup.dev"
                         :asset-path "/js/out"
-                        :output-to "target/cljsbuild/public/js/app.1.3.js"
+                        :output-to "target/cljsbuild/public/js/app.1.3.5.js"
                         :output-dir "target/cljsbuild/public/js/out"
                         :source-map true
                         :optimizations :none

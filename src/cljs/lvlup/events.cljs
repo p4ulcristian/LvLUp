@@ -47,8 +47,8 @@
 (reg-event-db
  :set-search-member
  (fn [db [_ the-map]]
-   (chsk-send! [:dungeon/get-members
-                {:number 0 :search the-map}])
+   (dispatch [:dungeon/get-members
+              {:number 0 :search the-map}])
    (assoc db :search-member the-map :players [])))
 
 (reg-event-db
@@ -78,8 +78,43 @@
                ;; Optional callback:
                (fn [reply] ; Reply is arbitrary Clojure data
                  (if (cb-success? reply)
-                   ;(.log js/console (str (first reply)))
                    (dispatch [:set-any-data :reservations (read-string reply)])))) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+   db))
+
+(reg-event-db
+ :dungeon/remove-reservations
+ (fn [db [_ the-map]]
+   (chsk-send! [:dungeon/remove-reservations the-map]
+               8000 ; Timeout
+               ;; Optional callback:
+               (fn [reply] ; Reply is arbitrary Clojure data
+                 (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                   (dispatch [:set-any-data :reservations (read-string reply)]))))
+   db))
+
+(reg-event-db
+ :dungeon/get-members
+ (fn [db [_ the-map]]
+   (chsk-send! [:dungeon/get-members the-map]
+               8000 ; Timeout
+               ;; Optional callback:
+               (fn [reply] ; Reply is arbitrary Clojure data
+                 ;(.log js/console (str reply))
+                 (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                   (dispatch [:set-members reply]))))
+   db))
+
+(reg-event-db
+ :dungeon/get-members-with-id
+ (fn [db [_ the-map]]
+   ;(.log js/console (str "szia" the-map))
+   (chsk-send! [:dungeon/get-members-with-id the-map]
+               8000 ; Timeout
+               ;; Optional callback:
+               (fn [reply] ; Reply is arbitrary Clojure data
+                 ;(.log js/console (str reply))
+                 (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                   (dispatch [:set-players-data reply]))))
    db))
 
 (reg-event-db

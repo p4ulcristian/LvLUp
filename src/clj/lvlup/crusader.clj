@@ -113,28 +113,30 @@
                        (map inc (range (inc (count (all-member-id)))))))))))]
 
       (send-all [:dungeon/max-id (smallest-diff)])))
+
   (defn dungeon-change [{:keys [event]}]
     (let [[key change-map] event]
       (mc/update db "dungeon" {:name (:name change-map)}
                  change-map)
 
       (send-all [:dungeon/change change-map])))
+
   (defn modify-invoice [{:keys [event]}]
     (let [[key change-map] event
           oid (ObjectId. (:id change-map))
           the-invoice (fn [] (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))]
-      (send-all [:dungeon/bug-check (str oid " halika " (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))
+      ;(send-all [:dungeon/bug-check (str oid " halika " (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))
 
-                 (mc/insert db "invoices" (the-invoice))
-                 (mc/remove-by-id db "unpayedinvoices" oid)
+      (mc/insert db "invoices" (the-invoice))
+      (mc/remove-by-id db "unpayedinvoices" oid)
 
-                 (send-all [:dungeon/get-invoices
-                            (str
-                             (vec
-                              (map
-                               #(assoc % :_id (str (:_id %)))
-                               (with-collection db "unpayedinvoices"))))])])))
-    ;(find {:payed false})))))])))
+      (send-all [:dungeon/get-invoices
+                 (str
+                  (vec
+                   (map
+                    #(assoc % :_id (str (:_id %)))
+                    (with-collection db "unpayedinvoices"))))])))
+   ;(find {:payed false})))))])))
 
   (defn add-invoice [{:keys [event]}]
     (let [[key change-map] event]
@@ -186,23 +188,22 @@
 
   (defn get-members [{:keys [event]}]
     (let [[key change-map] event]
-      (send-all [:dungeon/get-members
-                 (str
-                  (vec
-                   (map
-                    #(dissoc % :_id)
-                    (with-collection
-                     db "members"
-                     (find {$or [(if (= "" (:search change-map))
-                                   {}
-                                   {$or [{:name {$regex (str (:search change-map) ".*") $options "i"}}
-                                         {:id (read-string (:search change-map))}]})]})
+      (vec
+       (map
+        #(dissoc % :_id)
+        (with-collection
+         db "members"
+         (find {$or [(if (= "" (:search change-map))
+                       {}
+                       {$or [{:name {$regex (str (:search change-map) ".*") $options "i"}}
+                             {:id (read-string (:search change-map))}]})]})
 
                                                   ;(fields [:id :name :season-pass])
                                                   ;; it is VERY IMPORTANT to use array maps with sort
-                     (sort (array-map :id -1 :name 1))
-                     (limit 20)
-                     (skip (:number change-map))))))])))
+         (sort (array-map :id -1 :name 1))
+         (limit 20)
+         (skip (:number change-map)))))))
+
   (defn get-reservations [{:keys [event]}]
     (let [[key change-map] event]
       (str
@@ -212,6 +213,16 @@
          (with-collection db "reservations"
                           (find {:date change-map})))))))
 
+  (defn remove-reservations [{:keys [event]}]
+    (let [[key change-map] event]
+      (mc/remove-by-id db "reservations" (ObjectId. (:_id change-map)))
+      (str
+       (vec
+        (map
+         #(assoc % :_id (str (:_id %)))
+         (with-collection db "reservations"
+                          (find {:date (:date change-map)})))))))
+
   (defn add-reservations [{:keys [event]}]
     (let [[key change-map] event]
       (if (:_id change-map)
@@ -219,30 +230,26 @@
                          (ObjectId. (:_id change-map))
                          (dissoc change-map :_id))
         (mc/insert db "reservations" change-map))
-      (send-all [:dungeon/get-reservations
-                 (str
-                  (vec
-                   (map
-                    #(assoc % :_id (str (:_id %)))
-                    (with-collection db "reservations"
-                                     (find {:date (:date change-map)})))))])))
-
-                                                  ;(fields [:id :name :season-pass])
-                                                  ;; it is VERY IMPORTANT to use array maps with sort
-
+      (str
+       (vec
+        (map
+         #(assoc % :_id (str (:_id %)))
+         (with-collection db "reservations"
+                          (find {:date (:date change-map)})))))))
 
   (defn get-members-with-id [{:keys [event]}]
     (let [[key change-map] event]
-      (send-all [:dungeon/set-players-data
-                 (str
-                  (vec
-                   (map
-                    #(dissoc % :_id)
-                    (with-collection db "members"
-                                     (find (if (not= [] change-map)
-                                             {$or
-                                              (vec (map (fn [a] (assoc {} :id a)) change-map))}
-                                             {:id nil}))))))])))
+      (str
+       (vec
+        (map
+         #(dissoc % :_id)
+         (with-collection db "members"
+                          (find (if (not= [] change-map)
+                                  {$or
+                                   (vec
+                                    (map (fn [a] (assoc {} :id a))
+                                         change-map))}
+                                  {}))))))))
   (defn get-dungeon []
     (doseq [uid (:any @connected-uids)]
       (chsk-send! uid [:dungeon/get-dungeon (str
@@ -348,7 +355,12 @@
   (?reply-fn true))
 
 (defmethod -event-msg-handler :dungeon/add-reservations
-  [ev-msg] (add-reservations ev-msg))
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (add-reservations ev-msg)))
+
+(defmethod -event-msg-handler :dungeon/remove-reservations
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (remove-reservations ev-msg)))
 
 (defmethod -event-msg-handler :dungeon/get-reservations
   [{:as ev-msg :keys [?reply-fn]}]
@@ -376,7 +388,7 @@
   [ev-msg] (modify-invoice ev-msg))
 
 (defmethod -event-msg-handler :dungeon/get-members
-  [ev-msg] (get-members ev-msg))
+  [{:as ev-msg :keys [?reply-fn]}] (?reply-fn (get-members ev-msg)))
 
 (defmethod -event-msg-handler :dungeon/add-to-waiting-pool
   [ev-msg] (add-to-waiting-pool ev-msg))
@@ -388,7 +400,8 @@
   [ev-msg] (get-waiting-pool))
 
 (defmethod -event-msg-handler :dungeon/get-members-with-id
-  [ev-msg] (get-members-with-id ev-msg))
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (get-members-with-id ev-msg)))
 
 (defmethod -event-msg-handler :dungeon/change
   [{:as ev-msg :keys [?reply-fn]}]

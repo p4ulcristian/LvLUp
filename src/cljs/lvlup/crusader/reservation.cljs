@@ -417,40 +417,46 @@
           ;[:button.uk-modal-close-default
           ; {:data-uk-close true :type "button"}
           ;[:div (str @reservation-details)]
-          [:div.uk-modal-header.uk-grid.uk-margin-remove.uk-padding-small {:data-uk-grid true}
-           [:div.uk-text-truncate.uk-width-4-5 {:style {:font-size "2em"}}
+          [:div.uk-modal-header.uk-grid.uk-padding-remove {:data-uk-grid true}
+           (if (:_id @reservation-details)
+             [:button.uk-button.uk-button-danger.uk-button-small.uk-modal-close.uk-text-center.uk-width-1-2.uk-padding-remove
+              {:on-click #(dispatch [:dungeon/remove-reservations
+                                     (assoc @reservation-details
+                                            :date (convert-iso-to-read (:date @reservation-details)))])
+               :type "button"}
+              "Törlés"])
+           (if (all-data? reservation-details)
+             [:button.uk-button.uk-button-primary.uk-button-small.uk-modal-close.uk-text-center.uk-padding-remove
+              {:class (if (:_id @reservation-details) "uk-width-1-2" "uk-width-1-1")
+               :on-click #(dispatch [:dungeon/add-reservations
+                                     (assoc @reservation-details
+                                            :date (convert-iso-to-read (:date @reservation-details)))])
+               :type "button"}
+              "Mentés"])
+           [:div.uk-text-truncate.uk-width-1-1.uk-margin-remove {:style {:font-size "2em" :padding-top "10px"}}
             (if (= "" (:name @reservation-details))
               "Foglalás"
               (str  (:name @reservation-details)))]
-
-           (if (all-data? reservation-details)
-             [:div.uk-width-1-5.uk-padding-remove
-              [:button.uk-button.uk-button-primary.uk-modal-close.uk-text-center
-               {:on-click #(dispatch [:dungeon/add-reservations
-                                      (assoc @reservation-details
-                                             :date (convert-iso-to-read (:date @reservation-details)))])
-                :type "button"}
-               "Mentés"]])]
-
-          [:div.uk-modal-body.uk-padding-remove-vertical
-           [:div.uk-form.uk-padding-small.remove-padding-vertical
-            [:div.uk-child-width-expand.uk-margin-remove {:data-uk-grid true}
+           [:div.uk-modal-body.uk-padding-remove-vertical
+            [:div.uk-form.uk-padding-small.remove-padding-vertical
+             [:div.uk-child-width-expand.uk-margin-remove {:data-uk-grid true}
              ;[:button {:on-click #} "Hello"]
-             [:input.uk-margin-small.uk-text-center.uk-form-medium.uk-margin-remove.uk-input.uk-padding-remove
-              {:placeholder "Id"
-               :type "number"
-               :on-change #(dispatch [:set-reservation-modal :id (-> % .-target .-value)])
-               :value (:id @reservation-details)}]
-             [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-medium.uk-text-center.uk-padding-remove
-              {:placeholder "Dátum"}]
-             [:input.uk-margin-small.uk-text-center.uk-form-medium.uk-margin-remove.uk-input.uk-padding-remove
-              {:placeholder "Teljes név"
-               :on-change #(dispatch [:set-reservation-modal :name (-> % .-target .-value)])
-               :value (:name @reservation-details)}]]]
-           [display-time @slider-values]
+
+              [:input.uk-margin-small.uk-text-center.uk-form-medium.uk-margin-remove.uk-input.uk-padding-remove
+               {:placeholder "Id"
+                :type "number"
+                :on-change #(dispatch [:set-reservation-modal :id (-> % .-target .-value)])
+                :value (:id @reservation-details)}]
+              [:input#flatpickr.uk-input.uk-form-width-medium.uk-form-medium.uk-text-center.uk-padding-remove.uk-margin-remove
+               {:placeholder "Dátum"}]
+              [:input.uk-margin-small.uk-text-center.uk-form-medium.uk-margin-remove.uk-input.uk-padding-remove
+               {:placeholder "Teljes név"
+                :on-change #(dispatch [:set-reservation-modal :name (-> % .-target .-value)])
+                :value (:name @reservation-details)}]]]
+            [display-time @slider-values]
            ;(str (convert-iso-to-read @date))
-           [:div#no-ui-slider.uk-margin-small]; [:div (str range-config)]
-           [choose-systems reservation-details]]]])})))
+            [:div#no-ui-slider.uk-margin-small]; [:div (str range-config)]
+            [choose-systems reservation-details]]]]])})))
 
 (defn display-date [date]
   (get days (.getDay date)))
@@ -502,14 +508,21 @@
           [:input#choose-date.uk-text-center.uk-padding-remove {:placeholder "Válassz dátumot"}]
           [reservation-categories]]])})))
 
+(defn calc-scrollbar []
+  (let [d (.-body js/document)
+        offset (-  (.-innerWidth js/window) (.-clientWidth d))]
+    (+ 80 offset)))
+
 (defn reservation []
   (let [date (subscribe [:data "date"])
         system-map (subscribe [:data "system-map"])]
+
     (reagent/create-class
      {:component-did-mount #(dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])
       :reagent-render
       (fn []
         [:div {:style {:opacity 0.8}}
+         ;(str "calc(100vw -  " @scroll-bar-width "px)")
          [choose-date-panel]
              ;[:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-width-auto {:placeholder "Id"}]
          [:div.uk-grid
@@ -517,9 +530,9 @@
 
           [reservation-modal]
           [reservation-dates]
-          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width "calc(100vw - 80px)" :overflow-x "scroll" :overflow-y "visible"}}
+          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width (str "calc(100vw -  " (calc-scrollbar) "px)") :overflow-x "scroll" :overflow-y "visible"}}
            [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match
-            {:data-uk-grid true :style {:min-width "calc(100vw - 80px)"  :height "100%"}};}}
+            {:data-uk-grid true :style {:min-width (str "calc(100vw -  " (calc-scrollbar) "px)")  :height "100%"}};}}
                 ;(str (systems-to-reservations @system-map))
             (for [item (reservation-systems system-map)]
               (-> ^{:key (str "h" item)} [reservation-column item]))]]]])})))

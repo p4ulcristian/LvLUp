@@ -80,7 +80,7 @@
       0
       (if (> 60 minutes)
         (* 2 type-price)
-        (if (> 5 remaining-minutes)
+        (if (> 10 remaining-minutes)
           (* halves type-price)
           (* (inc halves) type-price))))))
 
@@ -503,15 +503,18 @@
 
 (defn paying-gamers []
   (let [players (subscribe [:data "players"])
-        systems (subscribe [:data "system-map"])
+      ;  systems (subscribe [:data "system-map"])
         invoices (subscribe [:data "invoices"])
         get-member-data (fn [] (vec (set (map :member-id @invoices))))
         the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (vec (set (map :member-id @invoices)))) @players)))]
     (reagent/create-class
-     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+     {:component-did-update #(dispatch [:dungeon/get-members-with-id (get-member-data)])
+      :component-did-mount #(dispatch [:dungeon/get-members-with-id (get-member-data)])
       :reagent-render
       (fn []
         [:div
+
+         ;(str (get-member-data))
          (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 3]) (the-players-playing))])})))
 
 (defn gaming-gamers []
@@ -532,7 +535,8 @@
                                        @systems))))))
         the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (get-players-playing)) @players)))]
     (reagent/create-class
-     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-players-playing)])
+     {:component-did-update #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
+      :component-did-mount #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
       :reagent-render
       (fn []
         [:div
@@ -571,11 +575,14 @@
         the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (get-players-playing)) @players)))]
 
     (reagent/create-class
-     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-players-playing)])
+     {:component-will-update #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
+      :component-did-mount #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
       :reagent-render
       (fn []
         [:div.uk-width-1-1
-                                ;[:div {:data-uk-spinner true}]
+         ;(str (get-players-playing))
+         ;:component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+         ;[:button {:on-click #(chsk-send! [:dungeon/get-members-with-id (get-players-playing)])} "hello"]
          [:div.uk-grid-match.uk-grid-small.uk-animation-slide-right {:data-uk-grid true} ;:style {:height "90vh" :overflow "auto"}}
           (map-indexed
            #(-> ^{:key (:name %2)} [system %2])
@@ -655,9 +662,9 @@
         (chsk-send!
          [:dungeon/change
           (assoc filtered-system2
-                 :players (:players filtered-system))]))
+                 :players (:players filtered-system))])
 
-      (notification "Csak két azonos típusú rendszert tudsz cserélni!"))))
+        (notification "Csak két azonos típusú rendszert tudsz cserélni!")))))
 
 (defn one-item [item member]
   [:tr
@@ -746,8 +753,8 @@
         ;members (subscribe [:data "players"])
         get-member-data (fn [] (vec (set (map :member-id @invoices))))]
     (reagent/create-class
-     {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
-      :component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
+     {:component-did-mount #(dispatch [:dungeon/get-members-with-id (get-member-data)])
+      :component-did-update #(dispatch [:dungeon/get-members-with-id (get-member-data)])
       :reagent-render
       (fn []
         [:div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1
@@ -896,11 +903,12 @@
     (go-loop []
       (let [new-y (<! chan)
             lazy-number (subscribe [:data "lazy-number"])
-            search (subscribe [:data "search-member"])]
+            search (subscribe [:data "search-member"])
+            active-page (subscribe [:data "actual-page"])]
 
-        (if (lazy-load?)
+        (if (and (lazy-load?) (= @active-page "registration"))
           (do
-            (chsk-send! [:dungeon/get-members {:number @lazy-number :search @search}])
+            (dispatch [:dungeon/get-members {:number @lazy-number :search @search}])
             (dispatch [:set-lazy-number (+ 20 @lazy-number)])))
         ;(reset! cur-scroll-y (max 0 new-y))
         (recur)))))
@@ -909,9 +917,9 @@
   (let [members (subscribe [:data "players"])
         search (subscribe [:data "search-member"])]
     (reagent/create-class
-     {:component-did-mount #(do
-                              (listen!))
-      ;:component-did-unmount #()
+     {:component-did-mount #(do (listen!))
+                                ;(dispatch [:dungeon/get-members {:number 0 :search ""}]))
+      ;:component-will-unmount #(unlisten!)
 
       :reagent-render
       (fn []
@@ -941,7 +949,7 @@
     (fn []
       [:button.uk-width-1-1.uk-button.uk-button-primary
        {:on-click #(do
-                     (chsk-send! [:dungeon/get-members {:number @number :search @search}])
+                     (dispatch [:dungeon/get-members {:number @number :search @search}])
                      (reset! number (+ 20 @number)))}
        "Mutass többet..."])))
                             ;(count @players)])))
