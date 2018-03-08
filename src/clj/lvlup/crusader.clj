@@ -239,17 +239,16 @@
 
   (defn get-members-with-id [{:keys [event]}]
     (let [[key change-map] event]
-      (str
-       (vec
-        (map
-         #(dissoc % :_id)
-         (with-collection db "members"
-                          (find (if (not= [] change-map)
-                                  {$or
-                                   (vec
-                                    (map (fn [a] (assoc {} :id a))
-                                         change-map))}
-                                  {}))))))))
+      (vec
+       (map
+        #(dissoc % :_id)
+        (with-collection db "members"
+                         (find (if (not= [] change-map)
+                                 {$or
+                                  (vec
+                                   (map (fn [a] (assoc {} :id a))
+                                        change-map))}
+                                 {})))))))
   (defn get-dungeon []
     (doseq [uid (:any @connected-uids)]
       (chsk-send! uid [:dungeon/get-dungeon (str

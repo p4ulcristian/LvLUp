@@ -112,7 +112,7 @@
                8000 ; Timeout
                ;; Optional callback:
                (fn [reply] ; Reply is arbitrary Clojure data
-                 ;(.log js/console (str reply))
+                 (.log js/console (str reply))
                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                    (dispatch [:set-players-data reply]))))
    db))
@@ -186,7 +186,7 @@
  :set-players-data
  (fn [db [_ the-map]]
       ;  (.log js/console (str (set (clojure.set/union (:players db) the-map))))
-   (assoc db :players-data (concat (:players db) the-map))))
+   (assoc db :players-data the-map)))
 
 (reg-event-db
  :set-members

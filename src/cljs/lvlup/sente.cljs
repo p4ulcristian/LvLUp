@@ -85,9 +85,7 @@
                                 (dispatch [:replace-member data]))
                                ;(chsk-send! [:dungeon/get-max-id])
                                ;(dispatch [:set-members (read-string data)]))
-      :dungeon/set-players-data (do
-                                  (.log js/console "hello")
-                                  (dispatch [:set-players-data (read-string data)]))
+
 
       :dungeon/waiting-pool (dispatch [:set-waiting-pool (read-string data)])
       :dungeon/get-invoices (dispatch [:set-invoices (read-string data)])

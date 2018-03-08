@@ -580,7 +580,7 @@
       :reagent-render
       (fn []
         [:div.uk-width-1-1
-         ;(str (get-players-playing))
+
          ;:component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
          ;[:button {:on-click #(chsk-send! [:dungeon/get-members-with-id (get-players-playing)])} "hello"]
          [:div.uk-grid-match.uk-grid-small.uk-animation-slide-right {:data-uk-grid true} ;:style {:height "90vh" :overflow "auto"}}
