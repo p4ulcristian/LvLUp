@@ -80,9 +80,12 @@
       :dungeon/get-dungeon (do
                              (case @actual-page
                                (dispatch [:set-systems (read-string data)])))
-      :dungeon/replace-member (dispatch [:replace-member data])
+      :dungeon/replace-member (do
+                                (js/console.log (str data))
+                                (dispatch [:replace-member data]))
                                ;(chsk-send! [:dungeon/get-max-id])
                                ;(dispatch [:set-members (read-string data)]))
+      :dungeon/set-players-data (dispatch [:set-players-data (read-string data)])
       :dungeon/get-members (do
                                ;(.log js/console (str "meh-" (read-string data)))
                              ;(dispatch [:remove-member (read-string data)])
@@ -105,7 +108,6 @@
       (chsk-send! [:dungeon/get-max-id])
 
       (chsk-send! [:dungeon/get-invoices])
-      (chsk-send! [:dungeon/get-members {:number 0 :search ""}])
 
       (notification (str "Hello " ?uid)))))
 

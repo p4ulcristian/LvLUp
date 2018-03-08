@@ -78,9 +78,11 @@
                      "pc" 175)]
     (if (neg? seconds)
       0
-      (if (> 10 remaining-minutes)
-        (* halves type-price)
-        (* (inc halves) type-price)))))
+      (if (> 60 minutes)
+        (* 2 type-price)
+        (if (> 5 remaining-minutes)
+          (* halves type-price)
+          (* (inc halves) type-price))))))
 
 (defn calculate-time-interval [time-one time-two]
       ;(.log js/console (str "start? " time-one))
@@ -99,10 +101,9 @@
 (defn abs [n] (max n (- n)))
 
 (defn count-time-halves [start finish]
-  (if
-   (tcore/before?
-    start
-    finish)
+  (if (tcore/before?
+       start
+       finish)
     (* 0.5
        (+
         (quot
@@ -370,7 +371,7 @@
                               (tformat/parse (:start data))
                               (tcore/plus (tcore/now) (tcore/hours 1)))))
         valami (atom (js/setInterval #(reset! time-elapsed (inc @time-elapsed)) 1000))
-        players (subscribe [:data "players"])
+        players (subscribe [:data "players-data"])
         this-player (fn [] (first
                             (filter
                              #(= (:id %) (:member-id data))
@@ -475,31 +476,20 @@
                 [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/time-left.svg"}]]
                [:div.uk-position-bottom-right
                 [:button.uk-button.uk-padding-remove.to-the-waiting-pool {:on-click #(chsk-send! [:dungeon/remove-from-waiting-pool data])}
-                 [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/remove.svg"}]]] [:div.uk-card-body.uk-padding-small.uk-margin-remove.uk-width-2-3.uk-dark
-                                                                                                {:class (if (= (:id data) @active-member)
-                                                                                                          "uk-card-primary"
-                                                                                                          "uk-card-default")}
-                                                                                                [:div.container {:style {:font-size "1.4em" :padding "3px"}}
-                                                                                                 [:div
-                                                                                                  [:div.name-animated (str (:id data) ".-" (:name data))]]]
-                                                                                                [:div (str "Bérlet: " (:season-pass data)) " óra"]
-                                                                                                [:div (str "XP: " (:total-hours data))]
-                                                                                                (if (= (:id data) @active-member)
-                                                                                                  [:div
-                                                                                                   [:div (str "Összesen: " (all-items-to-money (:id data)) " Ft")]
-                                                                                                   [:div (str "Játszott órák: " (all-items-to-hours (:id data)) " óra")]])]])]]]])})))
-                                        ;[:div (str "Bérlet: "(:season-pass data)) " óra"]])]]
-                     ;(if (= (:id data) @active-member)
-                      ;   [:div.uk-grid.uk-margin-remove.uk-padding-remove {:data-uk-grid true}
-                      ;     [:button.uk-button.uk-button-primary.uk-width-1-2.uk-padding-remove
-                      ;                       {:style {:border "1px red solid"}
-                      ;                        :data-uk-icon "icon: credit-card"
-                      ;                        :on-click #(all-items-to-season-pass (:id data))]])
-                      ;     [:button.uk-button.uk-button-primary.uk-width-1-2.uk-padding-remove
-                      ;                       {:data-uk-icon "icon: sign-out"
-                      ;                        :style {:border "1px red solid"}
-                      ;                        :on-click #(all-items-to-invoices (:id data))]])]]])})))
-
+                 [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/remove.svg"}]]]])]]
+          [:div.uk-card-body.uk-padding-small.uk-margin-remove.uk-width-2-3.uk-dark
+           {:class (if (= (:id data) @active-member)
+                     "uk-card-primary"
+                     "uk-card-default")}
+           [:div.container {:style {:font-size "1.4em" :padding "3px"}}
+            [:div
+             [:div.name-animated (str (:id data) ".-" (:name data))]]]
+           [:div (str "Bérlet: " (:season-pass data)) " óra"]
+           [:div (str "XP: " (:total-hours data))]
+           (if (= (:id data) @active-member)
+             [:div
+              [:div (str "Összesen: " (all-items-to-money (:id data)) " Ft")]
+              [:div (str "Játszott órák: " (all-items-to-hours (:id data)) " óra")]])]]])})))
 
 (defn waiting-pool []
   (let [pool (subscribe [:data "waiting-pool"])]
@@ -709,7 +699,7 @@
                    (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}]))}]]])
 
 (defn invoice [item]
-  (let [members (subscribe [:data "players"])
+  (let [members (subscribe [:data "players-data"])
         systems (subscribe [:data "system-map"])
         member (fn [] (first (doall (filter #(= (:id %) (first item)) @members))))]
     (fn [item]
@@ -753,7 +743,7 @@
 
 (defn checkout []
   (let [invoices (subscribe [:data "invoices"])
-        members (subscribe [:data "players"])
+        ;members (subscribe [:data "players"])
         get-member-data (fn [] (vec (set (map :member-id @invoices))))]
     (reagent/create-class
      {:component-did-mount #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
@@ -763,18 +753,16 @@
         [:div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1
               ;  (str @members)
             ;  [:button {:on-click #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])} "hello"]
-
+         ;(str (get-member-data))
          (if (= @invoices [])
-           [:div
-
-            [:div.uk-inline
-             [:img {:src "/img/pipboy-gangster.png"}]
-             [:h1.uk-overlay.uk-overlay-primary.uk-position-top-left {:style {:border-radius "20px"}}
-              "Senkinek sincs fizetetlen számlája! :)"]
-             [:div.uk-grid.uk-grid-small.uk-margin-top {:data-uk-grid true}
-              (map-indexed
-               #(-> ^{:key %2} [invoice %2])
-               (sort-by first (group-by :member-id @invoices)))]]])])})))
+           [:div [:div.uk-inline
+                  [:img {:src "/img/pipboy-gangster.png"}]
+                  [:h1.uk-overlay.uk-overlay-primary.uk-position-top-left {:style {:border-radius "20px"}}
+                   "Senkinek sincs fizetetlen számlája! :)"]]]
+           [:div.uk-grid.uk-grid-small.uk-margin-top {:data-uk-grid true}
+            (map-indexed
+             #(-> ^{:key %2} [invoice %2])
+             (sort-by first (group-by :member-id @invoices)))])])})))
 
 (defn modify-member-input [])
 
@@ -961,54 +949,64 @@
 (defn sidenav []
   (let [sidenav-state (subscribe [:data "sidenav-state"])
         number (atom 20)
-        search (subscribe [:data "search-member"])]
+        the-timeout (atom nil)]
 
-    (fn []
-      [:div#sidenav {:data-uk-offcanvas "flip: true"}
-       [:div.uk-offcanvas-bar.uk-padding-remove
+    (reagent/create-class
+     {:component-did-mount #(dispatch [:set-search-member ""])
+      :reagent-render
 
-        [:div.uk-grid.uk-child-width-1-4.uk-padding-small {:data-uk-grid true}
-         [:div {:on-click #(dispatch [:set-sidenav-state 1])}
-          [:img {:src (if (not= @sidenav-state 1)
-                        "/Icons/search.svg"
-                        "/Icons/search-active.svg")}]]
-         [:div {:on-click #(dispatch [:set-sidenav-state 2])}
-          [:img {:src (if (not= @sidenav-state 2)
-                        "/Icons/playing.svg"
-                        "/Icons/playing-active.svg")}]]
-         [:div {:on-click #(dispatch [:set-sidenav-state 3])}
-          [:img {:src  (if (not= @sidenav-state 3)
-                         "/Icons/payment-method.svg"
-                         "/Icons/cash-active.svg")}]]
-         [:div {:on-click #(dispatch [:set-sidenav-state 4])}
-          [:img {:src (if (not= @sidenav-state 4)
-                        "/Icons/waiting.svg"
-                        "/Icons/waiting-active.svg")}]]]
-        (case @sidenav-state
-          1 [:div
-             [:form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical
-              [:input.uk-search-input.uk-animation-slide-top
-               {:on-change #(do
-                              (reset! number 20)
-                              (chsk-send! [:dungeon/get-members
-                                           {:number 0 :search (-> % .-target .-value)}])
-                              (dispatch [:set-search-member (-> % .-target .-value)]))
-                                   ;:placeholder "Regisztráció/Keresés",
+      (fn []
+        [:div#sidenav {:data-uk-offcanvas "flip: true"}
+         [:div.uk-offcanvas-bar.uk-padding-remove
 
-                :value @search
-                :placeholder "Keresés", :type "search"}]]
-             [gamers]
-             [show-20-more number]]
+          [:div.uk-grid.uk-child-width-1-4.uk-padding-small {:data-uk-grid true}
+           [:div {:on-click #(dispatch [:set-sidenav-state 1])}
+            [:img {:src (if (not= @sidenav-state 1)
+                          "/Icons/search.svg"
+                          "/Icons/search-active.svg")}]]
+           [:div {:on-click #(dispatch [:set-sidenav-state 2])}
+            [:img {:src (if (not= @sidenav-state 2)
+                          "/Icons/playing.svg"
+                          "/Icons/playing-active.svg")}]]
+           [:div {:on-click #(dispatch [:set-sidenav-state 3])}
+            [:img {:src  (if (not= @sidenav-state 3)
+                           "/Icons/payment-method.svg"
+                           "/Icons/cash-active.svg")}]]
+           [:div {:on-click #(dispatch [:set-sidenav-state 4])}
+            [:img {:src (if (not= @sidenav-state 4)
+                          "/Icons/waiting.svg"
+                          "/Icons/waiting-active.svg")}]]]
+          (case @sidenav-state
+            1 [:div
+               [:form.uk-search.uk-search-large.uk-padding-small.uk-padding-remove-vertical
+                [:input.uk-search-input.uk-animation-slide-top
+                 {:on-change #(do
+                                (reset! number 20)
+                                (if @the-timeout (.clearTimeout js/window @the-timeout))
+                                (reset! the-timeout
+                                        (.setTimeout
+                                         js/window
+                                         (fn [a] (dispatch [:set-search-member a]))
+                                         500
+                                         (-> % .-target .-value))))
 
-          2 [:div
-             ^{:key 2} [:h3.uk-heading-bullet.uk-animation-slide-top "Dungeonben"]
-             [gaming-gamers]]
-          3 [:div
-             ^{:key 3} [:h3.uk-heading-bullet.uk-animation-slide-top "Kasszánál"]
-             [paying-gamers]]
-          4 [:div
-             ^{:key 4} [:h3.uk-heading-bullet.uk-animation-slide-top "Váróterem"]
-             [waiting-pool]])]])))
+                               ;(dispatch [:set-search-member (-> % .-target .-value)]))
+                                    ;:placeholder "Regisztráció/Keresés",
+
+
+                  :placeholder "Keresés", :type "search"}]]
+               [gamers]
+               [show-20-more number]]
+
+            2 [:div
+               ^{:key 2} [:h3.uk-heading-bullet.uk-animation-slide-top "Dungeonben"]
+               [gaming-gamers]]
+            3 [:div
+               ^{:key 3} [:h3.uk-heading-bullet.uk-animation-slide-top "Kasszánál"]
+               [paying-gamers]]
+            4 [:div
+               ^{:key 4} [:h3.uk-heading-bullet.uk-animation-slide-top "Váróterem"]
+               [waiting-pool]])]])})))
 
 (defn dungeon []
   (let [systems (subscribe [:data "system-map"])

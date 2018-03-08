@@ -154,12 +154,8 @@
   (defn season-pass [{:keys [event]}]
     (let [[key change-map] event]
       (mc/update db "members" {:id (:member-id change-map)} {$inc {:season-pass (:quantity change-map)}})
-      (send-all [:dungeon/get-members
-                 (str
-                  (vec
-                   (map
-                    #(dissoc % :_id)
-                    (with-collection db "members"))))])))
+      (send-all [:dungeon/replace-member
+                 (mc/find-one-as-map db "members" {:id (:member-id change-map)})])))
   (defn get-invoices []
 
     (send-all [:dungeon/get-invoices
@@ -238,21 +234,23 @@
 
   (defn get-members-with-id [{:keys [event]}]
     (let [[key change-map] event]
-      (send-all [:dungeon/get-members (str
-                                       (vec
-                                        (map
-                                         #(dissoc % :_id)
-                                         (with-collection db "members"
-                                                          (find (if (not= [] change-map)
-                                                                  {$or
-                                                                   (vec (map (fn [a] (assoc {} :id a)) change-map))}
-                                                                  {}))))))]))) (defn get-dungeon []
-                                                                                 (doseq [uid (:any @connected-uids)]
-                                                                                   (chsk-send! uid [:dungeon/get-dungeon (str
-                                                                                                                          (vec
-                                                                                                                           (map
-                                                                                                                            #(dissoc % :_id)
-                                                                                                                            (with-collection db "dungeon"))))]))))
+      (send-all [:dungeon/set-players-data
+                 (str
+                  (vec
+                   (map
+                    #(dissoc % :_id)
+                    (with-collection db "members"
+                                     (find (if (not= [] change-map)
+                                             {$or
+                                              (vec (map (fn [a] (assoc {} :id a)) change-map))}
+                                             {:id nil}))))))]))
+    (defn get-dungeon []
+      (doseq [uid (:any @connected-uids)]
+        (chsk-send! uid [:dungeon/get-dungeon (str
+                                               (vec
+                                                (map
+                                                 #(dissoc % :_id)
+                                                 (with-collection db "dungeon"))))])))))
 
 ;; We can watch this atom for changes if we like
 (add-watch connected-uids :connected-uids

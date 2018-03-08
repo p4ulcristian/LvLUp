@@ -16,6 +16,7 @@
  (fn [_ _]
    {:system-map []
     :invoices []
+    :players-data []
     :max-id 0
     :active-member 0
     :connection-state false
@@ -144,6 +145,12 @@
  :set-lazy-number
  (fn [db [_ the-map]]
    (assoc db :lazy-number the-map)))
+
+(reg-event-db
+ :set-players-data
+ (fn [db [_ the-map]]
+      ;  (.log js/console (str (set (clojure.set/union (:players db) the-map))))
+   (assoc db :players-data (concat (:players db) the-map))))
 
 (reg-event-db
  :set-members
