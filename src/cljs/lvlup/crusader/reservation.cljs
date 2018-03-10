@@ -152,7 +152,7 @@
                                            :padding "3px"
                                            :border-radius "100px"}
                                    :width "50"}]]
-           [:div
+           [:div {:style {:padding-bottom "18px"}}
 
             (map-indexed
              #(-> ^{:key %2} [hours-time %2])
@@ -201,10 +201,10 @@
                            "px")
                   :width "100%"}};}
          ;(str (* 18 (- (:start reservation) (:from (opening-hours)))))
-         [:div.uk-position-center.uk-text-center
-          {:data-uk-tooltip (str "title: " (:name reservation) "; pos: bottom")
-           :style {:color "white" :width "100%" :padding-bottom "20px" :padding-top "20px"}}
-          (to-monogram (:name reservation))]
+         [:div.uk-position-center.uk-text-center.uk-inline
+          {:data-uk-tooltip (str "title: " (:name reservation) "; pos: left; cls: uk-active")
+           :style {:color "white" :width "100%" :height "100%" :padding-bottom "20px" :padding-top "20px"}}
+          [:div.uk-position-center (to-monogram (:name reservation))]]
          [:span.uk-label.uk-label-success.uk-position-top
           {:data-uk-tooltip (str "title: " (quarter-to-time (:start reservation)) "; pos: top") :style {:height "25px" :opacity 0}}]
          [:span.uk-label.uk-label-success.uk-position-bottom
@@ -300,9 +300,14 @@
 
        [:button.uk-padding-small.uk-button.uk-button-default
         {:style {:border-radius "10px"}
-         :class (if (some #(= item %) (:places @reservation-details))
-                  "reserve-system chosen-system"
-                  "reserve-system")
+         :class (if-not (decide-fade
+                         (get-column-ranges reservations item (str (:id @reservation-details) (:name @reservation-details)))
+                         (:start @reservation-details)
+                         (:finish @reservation-details))
+                  (if (some #(= item %) (:places @reservation-details))
+                    "reserve-system chosen-system"
+                    "reserve-system")
+                  "system-disabled")
          :on-click #(dispatch [:set-reservation-modal :places (add-or-remove item (:places @details))])
          :disabled (decide-fade
                     (get-column-ranges reservations item (str (:id @reservation-details) (:name @reservation-details)))
@@ -322,7 +327,8 @@
   (let [system-map (subscribe [:data "system-map"])
         reservations (subscribe [:data "reservations"])]
     (fn [details]
-      [:div.uk-margin-remove.uk-width-1-1.uk-child-width-1-5.uk-grid {:data-uk-grid true}
+      [:div.uk-margin-remove.uk-width-1-1.uk-child-width-1-5.uk-grid
+       {:data-uk-grid true :style {:padding-bottom "15px"}}
 
        (for [item (reservation-systems system-map)]
          (-> ^{:key (str (:reservation-type item) (:number item))}
@@ -437,7 +443,7 @@
             (if (= "" (:name @reservation-details))
               "Foglalás"
               (str  (:name @reservation-details)))]
-           [:div.uk-modal-body.uk-padding-remove-vertical
+           [:div.uk-modal-body.uk-padding-remove-vertical.uk-margin-remove-top
             [:div.uk-form.uk-padding-small.remove-padding-vertical
              [:div.uk-child-width-expand.uk-margin-remove {:data-uk-grid true}
              ;[:button {:on-click #} "Hello"]
@@ -511,7 +517,7 @@
 (defn calc-scrollbar []
   (let [d (.-body js/document)
         offset (-  (.-innerWidth js/window) (.-clientWidth d))]
-    (+ 80 offset)))
+    (+ 84 offset)))
 
 (defn reservation []
   (let [date (subscribe [:data "date"])
@@ -521,7 +527,7 @@
      {:component-did-mount #(dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])
       :reagent-render
       (fn []
-        [:div {:style {:opacity 0.8}}
+        [:div.uk-container.uk-container-expand {:style {:opacity 0.93}}
          ;(str "calc(100vw -  " @scroll-bar-width "px)")
          [choose-date-panel]
              ;[:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-width-auto {:placeholder "Id"}]
@@ -530,9 +536,10 @@
 
           [reservation-modal]
           [reservation-dates]
-          [:div.uk-padding-remove.uk-margin-remove.dragscroll {:style {:width (str "calc(100vw -  " (calc-scrollbar) "px)") :overflow-x "scroll" :overflow-y "visible"}}
-           [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match
-            {:data-uk-grid true :style {:min-width (str "calc(100vw -  " (calc-scrollbar) "px)")  :height "100%"}};}}
+          [:div.uk-padding-remove.uk-margin-remove.dragscroll.reservation-background-base.uk-width-expand
+           {:style {:overflow-x "scroll" :overflow-y "visible"}}
+           [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match.reservation-background
+            {:data-uk-grid true :style {:height "100%" :padding-bottom "18px"}};}}
                 ;(str (systems-to-reservations @system-map))
             (for [item (reservation-systems system-map)]
               (-> ^{:key (str "h" item)} [reservation-column item]))]]]])})))
