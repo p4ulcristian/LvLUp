@@ -20,6 +20,11 @@
             [taoensso.sente  :as sente :refer (cb-success?)]
             [jayq.core :refer [$ css html]]))
 
+(def colors
+  [{:background "#000" :color "black"}
+   {:background "#FFF" :color "black"}
+   {:background "red" :color "blue"}])
+
 (defn szeged-tables []
   (let [numbers (range 1 13)]
     (vec
@@ -74,7 +79,7 @@
   (tformat/unparse timeformat (coerce/from-long origin)))
 
 (defn quarters [quarter]
-  [:div.uk-text-right {:style {:padding-right "10px"}} quarter])
+  [:div.uk-text-right {:style {:padding-right "10px" :color "white"}} quarter])
 
 (defn to-24-pm [hour]
   (if (< 23 hour)
@@ -88,7 +93,7 @@
        [:div.uk-width-expand.uk-padding-remove
         [:div.uk-inline
          [:div.uk-margin-small.uk-position-center
-          {:style {:font-size "1.8em"}}
+          {:style {:font-size "1.8em" :color "white"}}
           (to-24-pm hour)]]]
        [:div.uk-width-expand.uk-padding-remove
         (map-indexed
@@ -131,9 +136,9 @@
      {:reagent-render
       (fn []
         [:div
-         [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-margin-remove
+         [:div.uk-padding-remove.uk-margin-remove.trans-black {:style {:border-bottom-left-radius "20px"}}
           ;
-          [:div {:style {:width "80px"}}
+          [:div {:style {:width "80px"}};}};}}
            [:div.uk-inline.uk-margin-small.uk-padding-small.uk-padding-remove-vertical
             {:data-uk-sticky " bottom: #top"
              :data-uk-toggle "target: #my-id"
@@ -189,18 +194,18 @@
                         true)
 
                        (dispatch [:set-reservation-modal "replace" reservation]))
-          :style {:cursor "pointer"
-                  :position "absolute"
-                  :transition "transform .05s ease-in-out"
-                  :top (str
-                        (* 18 (- (:start reservation) (:from (opening-hours @date))))
-                        "px")
-                  :height (str
-                           (* 18 (- (:finish reservation)
-                                    (:start reservation)))
-                           "px")
-                  :width "100%"}};}
-         ;(str (* 18 (- (:start reservation) (:from (opening-hours)))))
+          :style  {:cursor "pointer"
+                   :position "absolute"
+                   :transition "transform .05s ease-in-out"
+                   :top (str
+                         (* 18 (- (:start reservation) (:from (opening-hours @date))))
+                         "px")
+                   :height (str
+                            (* 18 (- (:finish reservation)
+                                     (:start reservation)))
+                            "px")
+                   :width "100%"}}
+
          [:div.uk-position-center.uk-text-center.uk-inline
           {:data-uk-tooltip (str "title: " (:name reservation) "; pos: left; cls: uk-active")
            :style {:color "white" :width "100%" :height "100%" :padding-bottom "20px" :padding-top "20px"}}
@@ -416,7 +421,7 @@
 
         [:div#my-id
 
-         {:data-uk-modal "" :style {:opacity 0.95}}
+         {:data-uk-modal ""}
 
          [:div.uk-modal-dialog
 
@@ -507,10 +512,10 @@
                                                    (dispatch [:dungeon/get-reservations b]))}))))
       :reagent-render
       (fn []
-        [:div.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove.uk-width-1-1
+        [:div.uk-margin-remove.uk-padding-remove.uk-width-1-1.trans-black {:style {:border-top-left-radius "20px" :border-top-right-radius "20px"}}
          [:div.uk-grid.uk-child-width-expand.uk-padding-small.uk-margin-remove
           {:data-uk-grid true}
-          [:h3.uk-text-left.uk-heading-bullet (display-date @date)]
+          [:h3.uk-text-left.uk-heading-bullet {:style {:color "white"}} (display-date @date)]
           [:input#choose-date.uk-text-center.uk-padding-remove {:placeholder "Válassz dátumot"}]
           [reservation-categories]]])})))
 
@@ -527,19 +532,19 @@
      {:component-did-mount #(dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])
       :reagent-render
       (fn []
-        [:div.uk-container.uk-container-expand {:style {:opacity 0.93}}
+        [:div.uk-container.uk-container-expand.uk-margin-small-top
          ;(str "calc(100vw -  " @scroll-bar-width "px)")
          [choose-date-panel]
              ;[:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-width-auto {:placeholder "Id"}]
-         [:div.uk-grid
+         [:div.uk-grid.uk-margin-large-bottom
           {:data-uk-grid true}
 
           [reservation-modal]
           [reservation-dates]
-          [:div.uk-padding-remove.uk-margin-remove.dragscroll.reservation-background-base.uk-width-expand
+          [:div.uk-padding-remove.uk-margin-remove.dragscroll.trans-black.uk-width-expand
            {:style {:overflow-x "scroll" :overflow-y "visible"}}
-           [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match.reservation-background
-            {:data-uk-grid true :style {:height "100%" :padding-bottom "18px"}};}}
+           [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match.reservation-background.trans-black
+            {:data-uk-grid true :style {:height "100%" :padding-bottom "18px" :border-bottom-right-radius "20px"}};}}
                 ;(str (systems-to-reservations @system-map))
             (for [item (reservation-systems system-map)]
               (-> ^{:key (str "h" item)} [reservation-column item]))]]]])})))

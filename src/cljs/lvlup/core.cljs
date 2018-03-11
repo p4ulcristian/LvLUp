@@ -393,7 +393,7 @@
         connection-state (subscribe [:data "connection-state"])
 
         actual-page (subscribe [:data "actual-page"])]
-    (fn []  [:nav.uk-card-secondary
+    (fn []  [:nav
              {:data-uk-navbar "mode: click" :style {:cursor "pointer" :height "45px"}}
              [sidenav]
              [:div.uk-navbar-left
@@ -402,7 +402,7 @@
                 [:a {:href "#" :style {:height "50px"}}
                  [:img {:height "50" :width "50" :src "/img/lvlup-logo-transparent.png"}]
                  [:h1.uk-margin-remove.uk-padding-remove-vertical.uk-padding-small.uk-animation-slide-left-medium
-                  {:style {:font-size "2em"}}
+                  {:style {:font-size "2em" :color "white"}}
                   (decide-title (str @actual-page))]]
                 [:div.uk-navbar-dropdown ; {:data-uk-dropdown " animation: uk-animation-slide-top; duration: 500"}
                  [:ul.uk-nav.uk-navbar-dropdown-nav
