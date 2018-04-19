@@ -5,7 +5,6 @@
             [reagent.session :as session]
             [clojure.string :as str]
             [goog.string :as gstring]
-            ;[lvlup.sente :refer [chsk-send! start-router!]]
             [ajax.core :refer [GET POST]]
             [clojure.set :refer [union]]
             [cljs-time.core :as tcore]
@@ -22,7 +21,7 @@
 
 (def colors
   [{:background "#000" :color "black"}
-   {:background "#FFF" :color "black"}
+   {:background "white" :color "black"}
    {:background "red" :color "blue"}])
 
 (defn szeged-tables []
@@ -151,6 +150,7 @@
                            true)
                           (dispatch [:set-reservation-modal "reset" "valami"]))
              :style {:z-index "980"}}
+
             [:img.add-reservation {:src "/Icons/plus.svg"
                                    :height "50"
                                    :style {:background "white"
@@ -184,6 +184,7 @@
       (fn [reservation]
         [:div.uk-card.uk-card-default.uk-padding-small.uk-inline.one-reservation
          {:data-uk-toggle "target: #my-id"
+          :class (str "colorset-" (:color reservation))
           :on-click #(do
                        (.updateOptions
                         @slider-atom
@@ -195,6 +196,7 @@
 
                        (dispatch [:set-reservation-modal "replace" reservation]))
           :style  {:cursor "pointer"
+
                    :position "absolute"
                    :transition "transform .05s ease-in-out"
                    :top (str
@@ -208,7 +210,8 @@
 
          [:div.uk-position-center.uk-text-center.uk-inline
           {:data-uk-tooltip (str "title: " (:name reservation) "; pos: left; cls: uk-active")
-           :style {:color "white" :width "100%" :height "100%" :padding-bottom "20px" :padding-top "20px"}}
+           :style {:width "100%" :height "100%" :padding-bottom "20px" :padding-top "20px"}}
+          ;(str (:color reservation))
           [:div.uk-position-center (to-monogram (:name reservation))]]
          [:span.uk-label.uk-label-success.uk-position-top
           {:data-uk-tooltip (str "title: " (quarter-to-time (:start reservation)) "; pos: top") :style {:height "25px" :opacity 0}}]
@@ -230,7 +233,7 @@
                                          :ondrop (fn [e] (.notification js/UIkit "meh"))})))
       :reagent-render
       (fn [item]
-        [:div.uk-padding-small.uk-padding-remove-vertical.uk-width-auto
+        [:div.uk-padding-small.uk-padding-remove-vertical.uk-width-auto.uk-margin-remove
          [:div.uk-padding-remove {:style {:height "100%"}}
           [:div.uk-text-center
            [:div.uk-inline.uk-margin-small.uk-align-center
@@ -304,7 +307,7 @@
       [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small-top
 
        [:button.uk-padding-small.uk-button.uk-button-default
-        {:style {:border-radius "10px"}
+        {:style {:border-radius "5px"}
          :class (if-not (decide-fade
                          (get-column-ranges reservations item (str (:id @reservation-details) (:name @reservation-details)))
                          (:start @reservation-details)
@@ -389,10 +392,20 @@
                             "onChange"
                             (fn [a b c]
                               (do
-
                                 (dispatch [:set-reservation-modal :date a])
                                 (dispatch [:set-date a])
                                 (dispatch [:dungeon/get-reservations b]))
+                              (dispatch [:set-reservation-modal :places
+                                           (remove
+                                             (fn [d]
+                                               (decide-fade
+                                                 (get-column-ranges
+                                                   reservations
+                                                   d
+                                                   (str (:id @reservation-details) (:name @reservation-details)))
+                                                 (js/parseInt (first @slider-values))
+                                                 (js/parseInt (second @slider-values))))
+                                             (:places @reservation-details))])
                               (.updateOptions
                                @slider-atom
                                (clj->js
@@ -525,11 +538,26 @@
     (+ 84 offset)))
 
 (defn reservation []
-  (let [date (subscribe [:data "date"])
+  (let [time-tracker (atom 0)
+        date (subscribe [:data "date"])
         system-map (subscribe [:data "system-map"])]
 
     (reagent/create-class
-     {:component-did-mount #(dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])
+     {:component-did-mount #(do
+                              (dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])
+                              (.setInterval
+                               js/window
+                               (fn [b] (reset! time-tracker (+ @time-tracker (/ 18 15))))
+                               60000)
+                              (reset! time-tracker
+                                      (+ 60
+                                         (* 18
+                                            (-
+                                             (* 4 (.getHours (js/Date.)))
+                                             (:from (opening-hours (js/Date.)))))
+                                         (+
+                                          (* 18 (quot (.getMinutes (js/Date.)) 15))
+                                          (* (/ 18 15) (mod (.getMinutes (js/Date.)) 15))))))
       :reagent-render
       (fn []
         [:div.uk-container.uk-container-expand.uk-margin-small-top
@@ -537,14 +565,20 @@
          [choose-date-panel]
              ;[:input.uk-margin-small.uk-text-center.uk-form-large.uk-margin-remove.uk-width-auto {:placeholder "Id"}]
          [:div.uk-grid.uk-margin-large-bottom
-          {:data-uk-grid true}
+          {:data-uk-grid true :style {:position "relative"}}
 
           [reservation-modal]
           [reservation-dates]
+
           [:div.uk-padding-remove.uk-margin-remove.dragscroll.trans-black.uk-width-expand
-           {:style {:overflow-x "scroll" :overflow-y "visible"}}
+           {:style {:overflow-x "scroll" :overflow-y "visible" :position "relative"}}
            [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match.reservation-background.trans-black
             {:data-uk-grid true :style {:height "100%" :padding-bottom "18px" :border-bottom-right-radius "20px"}};}}
-                ;(str (systems-to-reservations @system-map))
+            ;(str (.getMinutes (js/Date.)))
             (for [item (reservation-systems system-map)]
-              (-> ^{:key (str "h" item)} [reservation-column item]))]]]])})))
+              (-> ^{:key (str "h" item)} [reservation-column item]))
+            [:div.realtime-tracker
+             {:style
+              {:top (str
+                     @time-tracker
+                     "px")}}]]]]])})))

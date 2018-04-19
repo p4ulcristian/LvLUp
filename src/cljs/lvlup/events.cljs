@@ -71,9 +71,6 @@
  (fn [db [_ the-map]]
    (assoc db :active-member the-map)))
 
-(defn add-rand-color [array]
-  (map #(assoc % :color (rand-int 4)) array))
-
 (reg-event-db
  :dungeon/get-reservations
  (fn [db [_ the-map]]
@@ -84,7 +81,7 @@
                  (if (cb-success? reply)
                    (dispatch [:set-any-data
                               :reservations
-                              (add-rand-color (read-string reply))])))) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                              (read-string reply)])))) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
    db))
 
 (reg-event-db
@@ -95,7 +92,7 @@
                ;; Optional callback:
                (fn [reply] ; Reply is arbitrary Clojure data
                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-                   (dispatch [:set-any-data :reservations (add-rand-color  (read-string reply))]))))
+                   (dispatch [:set-any-data :reservations (read-string reply)]))))
    db))
 
 (reg-event-db
@@ -118,7 +115,8 @@
                8000 ; Timeout
                ;; Optional callback:
                (fn [reply] ; Reply is arbitrary Clojure data
-                 (.log js/console (str reply))
+                ; (.log js/console (str reply))
+                 (.log js/console (str "hello" the-map))
                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                    (dispatch [:set-players-data reply]))))
    db))
@@ -131,7 +129,7 @@
                ;; Optional callback:
                (fn [reply] ; Reply is arbitrary Clojure data
                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-                   (dispatch [:set-any-data :reservations (add-rand-color  (read-string reply))]))))
+                   (dispatch [:set-any-data :reservations (read-string reply)]))))
    db))
 
 (reg-event-db

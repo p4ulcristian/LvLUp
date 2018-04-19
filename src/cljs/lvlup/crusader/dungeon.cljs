@@ -29,8 +29,6 @@
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
-;;Decides if time needs converting
-;;Needed because cljs compilation breaks string on time
 
 (defn convert-to-clojurescript-time [ido]
   (js/String (tcoerce/from-long (js/parseInt ido)))
@@ -38,12 +36,7 @@
     (js/String (tcoerce/from-long (js/parseInt ido)))
     ido))
 
-;(defn events->unlisten
-;  [el event-type] (events/unlisten el event-type))
 
-;(defn events->chan
-;  ([el event-type] (events->chan el event-type (chan)))
-;  ([el event-type c] (events/listen el event-type (fn [e] (put! c e))) c))
 (defn notification [valami]
   (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-primary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left" :timeout 700})))
 
@@ -52,6 +45,7 @@
 
 (defn lower [word]
   (clojure.string/lower-case word))
+
 
 (defn filter-by-name-and-id [members search-term keep?]
   (if (not= "" @search-term)
@@ -67,6 +61,13 @@
 
 (defn convert-time [origin]
   (tformat/unparse timeformat (coerce/from-long origin)))
+
+
+(defn calculate-time-zone []
+  (let [date (atom (js/Date.))]
+    (tcore/minus
+      (tcore/now)
+      (tcore/hours (/ (.getTimezoneOffset @date) 60)))))
 
 (defn minute-to-money [seconds type]
   (let [minutes (quot seconds 60)
@@ -152,10 +153,10 @@
                                                                               :member-id player-id
                                     ;:payed false
                                                                               :start (convert-to-clojurescript-time (:start place))
-                                                                              :finish (convert-to-clojurescript-time (str (tcore/plus (tcore/now) (tcore/hours 1))))
+                                                                              :finish (convert-to-clojurescript-time (str (calculate-time-zone)))
                                                                               :price (minute-to-money (tcore/in-seconds (tcore/interval
                                                                                                                          (tformat/parse (:start place))
-                                                                                                                         (tcore/plus (tcore/now) (tcore/hours 1))))
+                                                                                                                         (calculate-time-zone)))
                                                                                                       (:type place)))]))))
        (chsk-send! [:dungeon/get-members-with-id (vec player-id)])
        (doseq [system this-player-all-systems]
@@ -185,7 +186,7 @@
                                                    all-players)))))
         total-price (reduce + (map #(count-time-halves
                                      (tformat/parse (:start %))
-                                     (tcore/plus (tcore/now) (tcore/hours 1)))
+                                     (calculate-time-zone))
                                    this-player-systems))]
       ;(.log js/console (str "wtf" this-player-systems))
     total-price))
@@ -245,12 +246,12 @@
         total-price (reduce + (map #(minute-to-money (if
                                                       (tcore/before?
                                                        (tformat/parse (:start %))
-                                                       (tcore/plus (tcore/now) (tcore/hours 1)))
-                                                       (tcore/in-seconds
-                                                        (tcore/interval
-                                                         (tformat/parse (:start %))
-                                                         (tcore/plus (tcore/now) (tcore/hours 1))))
-                                                       0)
+                                                       (calculate-time-zone))
+                                                      (tcore/in-seconds
+                                                       (tcore/interval
+                                                        (tformat/parse (:start %))
+                                                        (calculate-time-zone)))
+                                                      0)
                                                      (:type %))
                                    this-player-systems))]
       ;(.log js/console (str "wtf" this-player-systems))
@@ -288,10 +289,10 @@
                            :member-id (:member-id (get (:players item) player-number))
                                       ;:payed false
                            :start (convert-to-clojurescript-time (:start (get (:players item) player-number)))
-                           :finish (convert-to-clojurescript-time (str (tcore/plus (tcore/now) (tcore/hours 1))))
+                           :finish (convert-to-clojurescript-time (str (calculate-time-zone)))
                            :price (minute-to-money (tcore/in-seconds (tcore/interval
                                                                       (tformat/parse (:start (get (:players item) player-number)))
-                                                                      (tcore/plus (tcore/now) (tcore/hours 1))))
+                                                                      (calculate-time-zone)))
                                                    (:type item)))]
                   8000 ; Timeout
 
@@ -313,7 +314,7 @@
                                (* -1
                                   (count-time-halves
                                    (tformat/parse (:start (get (:players item) player-number)))
-                                   (tcore/plus (tcore/now) (tcore/hours 1))))
+                                   (calculate-time-zone)))
                                :member-id (:member-id (get (:players item) player-number))}]))}])
 
 (defn modify-time [player-number item elojel the-atom name]
@@ -339,7 +340,7 @@
                             (if (= "+" elojel)
                               (tcore/minus (tformat/parse (:start (get (:players item) player-number))) (tcore/minutes 5))
                               (tcore/plus (tformat/parse (:start (get (:players item) player-number))) (tcore/minutes 5)))
-                            (tcore/plus (tcore/now) (tcore/hours 1)))))}]))
+                            (calculate-time-zone))))}]))
 
 (defn cancel [player-number item name]
   (let [];system (subscribe [:data "system-map"])]
@@ -357,11 +358,12 @@
   [:button.uk-button.uk-button.uk-button-primary.uk-width-1-1.uk-margin-small-top
    {:data-uk-icon "icon: play"
     :on-click #(do
+                 (calculate-time-zone)
                  (notification (str name " ideje elindítva!"))
                  (reset! the-atom 0)
                  (chsk-send!
                   [:dungeon/change
-                   (assoc item :players (assoc-in (:players item) [player-number :start] (convert-to-clojurescript-time (str (tcore/plus (tcore/now) (tcore/hours 1))))))]))}])
+                   (assoc item :players (assoc-in (:players item) [player-number :start] (convert-to-clojurescript-time (str (calculate-time-zone)))))]))}])
 
 (defn player-playing [system [player-number data]]
   (let [active-member (subscribe [:data "active-member"])
@@ -369,7 +371,7 @@
         time-elapsed (atom (if (:start data)
                              (calculate-time-interval
                               (tformat/parse (:start data))
-                              (tcore/plus (tcore/now) (tcore/hours 1)))))
+                              (calculate-time-zone))))
         valami (atom (js/setInterval #(reset! time-elapsed (inc @time-elapsed)) 1000))
         players (subscribe [:data "players-data"])
         this-player (fn [] (first
@@ -453,9 +455,7 @@
       false)))
 
 (defn player [data index which-tab]
-  (let [invoices (subscribe [:data "invoices"])
-        pool (subscribe [:data "waiting-pool"])
-        sidenav-state (subscribe [:data "sidenav-state"])
+  (let [pool (subscribe [:data "waiting-pool"])
         active-member (subscribe [:data "active-member"])]
     (reagent/create-class
      {:reagent-render
@@ -544,21 +544,18 @@
 
 (defn gamers []
   (let [players (subscribe [:data "players"])
-        systems (subscribe [:data "system-map"])
-        search (subscribe [:data "search-member"])
-        switched-member (atom nil)]
+        search (subscribe [:data "search-member"])]
+
 
     (reagent/create-class
      {:reagent-render
       (fn []
         [:div
-                  ;(str @players)
          (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 1])
                        (sort-by :id #(> %1 %2) (filter-by-name-and-id  @players search true)))])})))
 
 (defn system-row []
   (let [systems (subscribe [:data "system-map"])
-        players (subscribe [:data "players"])
         get-players-playing (fn []
                               (vec
                                (set
@@ -571,8 +568,7 @@
                                                (get-in a [:players :two :member-id])
                                                (get-in a [:players :three :member-id])
                                                (get-in a [:players :four :member-id])))
-                                       @systems))))))
-        the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (get-players-playing)) @players)))]
+                                       @systems))))))]
 
     (reagent/create-class
      {:component-will-update #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
@@ -580,10 +576,7 @@
       :reagent-render
       (fn []
         [:div.uk-width-1-1
-
-         ;:component-did-update #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])
-         ;[:button {:on-click #(chsk-send! [:dungeon/get-members-with-id (get-players-playing)])} "hello"]
-         [:div.uk-grid-match.uk-grid-small.uk-animation-slide-right {:data-uk-grid true} ;:style {:height "90vh" :overflow "auto"}}
+         [:div.uk-grid-match.uk-grid-small.uk-animation-slide-right {:data-uk-grid true}
           (map-indexed
            #(-> ^{:key (:name %2)} [system %2])
            (sort-by :number @systems))]])})))
@@ -623,11 +616,6 @@
                         (places-on-console (:players filtered-system))
                         {:type (:type filtered-system)
                          :member-id (js/parseInt member-id)}))])))));  8000
-        ;  (fn [reply] ; Reply is arbitrary Clojure data
-        ;    (if (sente/cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-        ;        (.log js/console reply)
-        ;        (.log js/console reply))])
-
 
 (defn transfer [e]
   (let [systems (subscribe [:data "system-map"])
@@ -654,17 +642,17 @@
        (= "ps" (:type filtered-system))
        (= "xbox" (:type filtered-system2))))
 
-      (do
-        (chsk-send!
-         [:dungeon/change
-          (assoc filtered-system :players (:players filtered-system2))])
+     (do
+       (chsk-send!
+        [:dungeon/change
+         (assoc filtered-system :players (:players filtered-system2))])
 
-        (chsk-send!
-         [:dungeon/change
-          (assoc filtered-system2
-                 :players (:players filtered-system))])
+       (chsk-send!
+        [:dungeon/change
+         (assoc filtered-system2
+                :players (:players filtered-system))])
 
-        (notification "Csak két azonos típusú rendszert tudsz cserélni!")))))
+       (notification "Csak két azonos típusú rendszert tudsz cserélni!")))))
 
 (defn one-item [item member]
   [:tr
@@ -707,7 +695,6 @@
 
 (defn invoice [item]
   (let [members (subscribe [:data "players-data"])
-        systems (subscribe [:data "system-map"])
         member (fn [] (first (doall (filter #(= (:id %) (first item)) @members))))]
     (fn [item]
       [:div {:class "uk-width-1-2@s uk-width-1-2@m uk-width-1-3@l"}
@@ -730,15 +717,7 @@
                 ".- "
                 (:name (member)))]
 
-         [:h5.uk-margin-remove (str "Bérlet órák: " (:season-pass (member)))]];[:button.uk-button-small.uk-button-danger.uk-width-1-2.uk-padding-remove
-                    ;                    {;:style {:border "1px red solid"}
-                    ;                     :data-uk-icon "icon: credit-card"
-                    ;                     :on-click #(all-items-to-season-pass (:id (member)))]
-                     ;[:button.uk-button-small.uk-button-default.uk-width-1-2.uk-padding-remove
-                      ;                  {:data-uk-icon "icon: sign-out"
-                      ;                   :style {:border "1px red solid"}
-                      ;                   :on-click #(all-items-to-invoices (:id (member)))]])
-
+         [:h5.uk-margin-remove (str "Bérlet órák: " (:season-pass (member)))]]
 
         [:div.uk-divider-icon.uk-margin-small.uk-margin-remove-top]
         [:div.uk-overflow-auto.uk-width-1-1 {:style {:height "180px"}}
@@ -787,17 +766,17 @@
                                                :on-click #(do
                                                             (notification "Név frissítve!")
                                                             (chsk-send! [:dungeon/update-member
-                                                                         @modify-atom]))}]
+                                                                         @modify-atom]))}]]]
 
-            [:span {:style {:cursor "pointer"}
-                    :data-uk-icon "icon: close; ratio: 2.5"
-                    :on-click #(do
-                                 (notification "Felhasználó törölve!")
-                                 (dispatch [:remove-member
-                                            (:id member)])
-                                 (chsk-send! [:dungeon/remove-member
-                                              (:id member)])
-                                 (chsk-send! [:dungeon/get-max-id]))}]]]
+            ;[:span {:style {:cursor "pointer"}
+            ;        :data-uk-icon "icon: close; ratio: 2.5"
+            ;        :on-click #(do
+            ;                     (notification "Felhasználó törölve!")
+            ;                     (dispatch [:remove-member
+            ;                                (:id member)]
+            ;                     (chsk-send! [:dungeon/remove-member
+            ;                                  (:id member)]
+            ;                     (chsk-send! [:dungeon/get-max-id])]]
           [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
            {:on-click #(do
                          (swap! modify-atom assoc :season-pass (- (:season-pass member) 1))
@@ -857,27 +836,30 @@
         search (subscribe [:data "search-member"])
         the-timeout (atom nil)]
         ;input-value (atom "")]
-    (fn [members]
-      [:div.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove
-       {:data-uk-grid "true", :data-uk-sticky "true"}
-        ;[:div.uk-width-1-1 (str @members)]
-       [:input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column
-        {:on-change #(do
-                       ;(reset! input-value %)
-                       (if @the-timeout (.clearTimeout js/window @the-timeout))
-                       (reset! the-timeout
-                               (.setTimeout
-                                js/window
-                                (fn [a] (dispatch [:set-search-member a]))
-                                500
-                                (-> % .-target .-value))))
-         :placeholder "Regisztráció/Keresés"
-         :type "text"}]
+    (reagent/create-class
+      {
+       :reagent-render
+       (fn [members]
+         [:div.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove
+          {:data-uk-grid "true" :data-uk-sticky "offset: 45"}
+           ;[:div.uk-width-1-1 (str @members)]
+          [:input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column
+           {:on-change #(do
+                          ;(reset! input-value %)
+                          (if @the-timeout (.clearTimeout js/window @the-timeout))
+                          (reset! the-timeout
+                                  (.setTimeout
+                                   js/window
+                                   (fn [a] (dispatch [:set-search-member a]))
+                                   500
+                                   (-> % .-target .-value))))
+            :placeholder "Regisztráció/Keresés"
+            :type "text"}]
 
-       [:button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column
-        {:on-click #(do (dispatch [:set-max-id (inc @max-id)])
-                        (chsk-send! [:dungeon/add-member {:id @max-id :name @search}]))}
-        (str @max-id) ". gamer hozzáadása!"]])))
+          [:button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column
+           {:on-click #(do (dispatch [:set-max-id (inc @max-id)])
+                           (chsk-send! [:dungeon/add-member {:id @max-id :name @search}]))}
+           (str @max-id) ". gamer hozzáadása!"]])})))
 
 (defn lazy-load? []
   (let [d (.-documentElement js/document)
@@ -917,8 +899,9 @@
   (let [members (subscribe [:data "players"])
         search (subscribe [:data "search-member"])]
     (reagent/create-class
-     {:component-did-mount #(do (listen!))
-                                ;(dispatch [:dungeon/get-members {:number 0 :search ""}]))
+
+     {:component-did-mount #(do (listen!)
+                                (dispatch [:dungeon/get-members {:number 0 :search ""}]))
       ;:component-will-unmount #(unlisten!)
 
       :reagent-render
@@ -928,7 +911,7 @@
                ;[:div (str (filter-by-name-and-id  @members search true))]
 
          [registration-input members]
-
+         ;(str @members)
          [:div.uk-grid.uk-margin-remove.uk-padding-small
 
           {:id "member"
@@ -1042,17 +1025,6 @@
       (fn []
         [:div.uk-background-cover.uk-offcanvas-content.svg-cursor
 
-                        ; [:button#btn5 {:type "button"
-                          ;              :on-click (fn [ev])}}
-                          ;                          (notification "Disconnecting"))}}
-                          ;                          (chsk-disconnect!))}}
-                          ;         "Disconnect"}}
-                         ; [:button#btn6 {:type "button"
-                          ;              :on-click (fn [ev]
-                          ;                           (notification "Reconnecting")
-                          ;                           (chsk-reconnect!)}}
-                          ;          "Reconnect"}}
-;[sidenav]
          (if   (= @systems [])
 
            [:img#loading
@@ -1071,90 +1043,3 @@
                                      ;[gamers]
 
             [system-row]])])})))
-
-(comment
-  smple/button2 {:had-a-callback? "nope"}
-  :type "button"
-  "csak példa"
-  [:button#btn2.uk-button.uk-button-default
-   {:on-click (fn [ev]
-                (notification "Comeback")
-                (chsk-send!
-                 [:example/button2]
-                 2000
-                 (fn [cb-reply] (notification (str cb-reply)))))
-    :type "button"}
-   "chsk-send! (w/o reply)"]
-  [:button {:on-click (fn [ev]
-                        (notification-sente "Button 2 was clicked (will receive reply from server)")
-                        (chsk-send! [:example/test-rapid-push {:had-a-callback? "indeed"}] 5000
-                                    (fn [cb-reply] (notification-sente "wat wat wat" cb-reply))))
-            :type "button"}
-   "MIAFASZ"]
-  [:button.uk-button.uk-button-default
-   {:type "button"
-    :on-click (fn [ev]
-                (notification-sente "Számold meg")
-                (chsk-send! [:example/count-clicks] 2000 (fn [ev] (notification-sente "Callback miután a szerver visszajelzett" ev))))}
-   "Megszámol"
-
-   (comment
-     [:button#btn4 {:type "button"
-                    :on-click (fn [ev]
-                                (notification-sente "Button 4 was clicked (will toggle async broadcast loop)")
-                                (chsk-send! [:example/toggle-broadcast] 5000
-                                            (fn [cb-reply]
-                                              (when (cb-success? cb-reply)
-                                                (let [loop-enabled? cb-reply]
-                                                  (if loop-enabled?
-                                                    (notification-sente "Async broadcast loop now enabled")
-                                                    (notification-sente "Async broadcast loop now disabled")))))))}
-      "Toggle server>user async broadcast push loop"]
-     [:button#btn5 {:type "button"
-                    :on-click (fn [ev]
-                                (notification-sente "Disconnecting")
-                                (sente/chsk-disconnect! chsk))}
-      "Disconnect"]
-     [:button#btn6 {:type "button"
-                    :on-click (fn [ev]
-                                (notification-sente "Reconnecting")
-                                (sente/chsk-reconnect! chsk))}
-      "Reconnect"]
-     [:p
-      [:input#user {:type "text" :placeholder "User-id"}]
-      [:input#pass {:type "text" :placeholder "User-Pass"}]
-      [:button#btn-login {:type "button"
-                          :on-click (fn [ev]
-                                      (let [user-id (.-value (.getElementById js/document "user"))
-                                            user-password (.-value (.getElementById js/document "pass"))]
-                                        (tr/blank? user-id
-                                                   (js/alert "Please enter a user-id first")
-                                                   (do
-                                                     (notification-sente "Logging in with user-id %s" user-id)
-
-                                                                              ;;; Use any login procedure you'd like. Here we'll trigger an Ajax
-                                                                              ;;; POST request that resets our server-side session. Then we ask
-                                                                              ;;; our channel socket to reconnect, thereby picking up the new
-                                                                              ;;; session.
-
-                                                     (sente/ajax-lite "/login"
-                                                                      {:method :post
-                                                                       :headers {:X-CSRF-Token (:csrf-token @chsk-state)}
-                                                                       :params  {:user-id (str user-id)
-                                                                                 :user-pass (str user-password)}}
-
-                                                                      (fn [ajax-resp]
-                                                                        (notification-sente "Ajax login response: %s" ajax-resp)
-                                                                        (let [login-successful? true] ; Your logic here
-
-                                                                          (if-not login-successful?
-                                                                            (notification-sente "Login failed")
-                                                                            (do
-                                                                              (notification-sente "Login successful")
-                                                                              (sente/chsk-reconnect! chsk))))))))))}
-       "Secure login!"]]
-     [:button#btn3 {:type "button"
-                    :on-click (fn [ev]
-                                (notification "Button 3 was clicked (will ask server to test rapid async push)")
-                                (chsk-send! [:example/test-rapid-push]))}
-      "Test rapid server>user async pushes"])])

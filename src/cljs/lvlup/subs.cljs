@@ -4,7 +4,6 @@
 (reg-sub
   :data
   (fn [db [_ the-key]]
-
-      (get
-           db
-           (keyword the-key))))
+    (get
+         db
+         (keyword the-key))))

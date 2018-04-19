@@ -93,26 +93,8 @@
       db   (mg/get-db conn "lvlup")]
 
   (defn get-max-id []
-    (let [all-member-id (fn [] (vec
-                                (map
-                                 :id
-                                 (with-collection db "members"
-                                                  (find {})
-                                                  (fields [:id])
-                                     ;; it is VERY IMPORTANT to use array maps with sort
-                                                  (sort (array-map :id 1))))))
-          smallest-diff
-          (fn []
-            (apply min
-                   (vec
-                    (remove
-                     #(= % nil)
-                     (second
-                      (data/diff
-                       (all-member-id)
-                       (map inc (range (inc (count (all-member-id)))))))))))]
-
-      (send-all [:dungeon/max-id (smallest-diff)])))
+    (let [all-member-id
+          (+ 11 (mc/count db "members" {}))] (send-all [:dungeon/max-id all-member-id])))
 
   (defn dungeon-change [{:keys [event]}]
     (let [[key change-map] event]
@@ -154,7 +136,9 @@
     (let [[key change-map] event]
       (mc/update db "members" {:id (:member-id change-map)} {$inc {:season-pass (:quantity change-map)}})
       (send-all [:dungeon/replace-member
-                 (mc/find-one-as-map db "members" {:id (:member-id change-map)})])))
+                 (dissoc
+                   (mc/find-one-as-map db "members" {:id (:member-id change-map)})
+                   :_id)])))
   (defn get-invoices []
 
     (send-all [:dungeon/get-invoices

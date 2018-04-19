@@ -11,7 +11,10 @@
             [lvlup.crusader.dungeon :refer [dungeon checkout registration filter-by-name-and-id sidenav]]
             [ajax.core :refer [GET POST]]
             [re-frame.core :refer [dispatch-sync dispatch subscribe]]
+            [cljs-time.core :as tcore]
             [jayq.core :refer [$ css html]]))
+
+
 
 ;; -------------------------
 ;; Ez itt a LvLUp view
@@ -387,73 +390,159 @@
                                         (reset! search-atom "")
                                         (.notification js/UIkit (str (:name member) " lemegy a dungeonbe!")))}]])
 
+
+(defn two-zeros [number]
+  (if (< number 10)
+    (str "0" number)
+    number))
+
+(defn get-month [number]
+  (case number
+    1 "jan."
+    2 "feb."
+    3 "már."
+    4 "ápr."
+    5 "máj."
+    6 "jún."
+    7 "júl."
+    8 "aug."
+    9 "sze."
+    10 "okt."
+    11 "nov."
+    12 "dec."))
+
+
+(defn menu-time []
+  (let [now (atom (tcore/now))
+        timeout  #(do
+                    (js/console.log "hello"))]
+
+
+    (reagent/create-class
+      {:component-did-mount #(.setInterval
+                               js/window
+                               (fn [a] (reset! now (tcore/now)))
+                               1000)
+       :reagent-render
+         (fn []
+
+           [:div (str
+                   (get-month (tcore/month @now))
+                   " "
+                   (tcore/day @now)
+                   " - "
+                   (two-zeros (tcore/hour @now))
+                   ":"
+                   (two-zeros (tcore/minute @now)))])})))
+
+
+(defn one-menu [name picture url]
+  ;[:a {:style {:color "white !important"} :href url}
+   [:div.uk-inline-clip.uk-transition-toggle.uk-padding-small.uk-animation-slide-top {:style {:cursor "pointer"}}
+    [:div {:style {:border "1px solid white" :border-radius "4px"}}
+
+     [:img.uk-align-center.uk-margin-remove-vertical {:alt "", :src picture :width "150px"}]
+     [:a.uk-transition-fade.uk-position-cover.uk-position-small.uk-overlay.uk-overlay-default.uk-flex.uk-flex-center.uk-flex-middle {:href url}
+      [:p.uk-h4.uk-margin-remove name]]]])
+
+(defn full-screen-nav [open?]
+
+   [:div.uk-inline {:style {:height "100vh" :width "100vw"} :on-click #(reset! open? (not @open?))}
+    [:ul.uk-navbar-nav
+     [:li.uk-padding-small.uk-align-center
+      [:div {:href "/crusader"}
+       [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
+        {:style {:font-size "2em" :color "white"}}
+        "Valami"]]
+      [:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [menu-time]]]]
+    [:div.uk-position-center
+     [:div.uk-flex.uk-child-width-1-2.uk-grid {:data-uk-grid true}
+
+      [one-menu "Foglalás" "/Icons/reservation2.svg" "/crusader/reservation"]
+      [one-menu "Kassza" "/Icons/checkout.svg" "/crusader/checkout"]
+      [one-menu "Felhasználók" "/Icons/users.svg" "/crusader/registration"]
+      [one-menu "Dungeon" "/Icons/dungeon.svg" "/crusader/dungeon"]]]])
+
+
 (defn crusader-navbar []
   (let [members (subscribe [:data "players"])
         search (atom "")
+        open? (atom false)
         connection-state (subscribe [:data "connection-state"])
-
+        sticky-atom (atom nil)
         actual-page (subscribe [:data "actual-page"])]
-    (fn []  [:nav
-             {:data-uk-navbar "mode: click" :style {:cursor "pointer" :height "45px"}}
-             [sidenav]
-             [:div.uk-navbar-left
-              [:ul.uk-navbar-nav
-               [:li
-                [:a {:href "#" :style {:height "50px"}}
-                 [:img {:height "50" :width "50" :src "/img/lvlup-logo-transparent.png"}]
-                 [:h1.uk-margin-remove.uk-padding-remove-vertical.uk-padding-small.uk-animation-slide-left-medium
-                  {:style {:font-size "2em" :color "white"}}
-                  (decide-title (str @actual-page))]]
-                [:div.uk-navbar-dropdown ; {:data-uk-dropdown " animation: uk-animation-slide-top; duration: 500"}
-                 [:ul.uk-nav.uk-navbar-dropdown-nav
-                  [:li.uk-nav-header "LvLuP Szeged"]
-                  [:li.nav-hover [:a {:href "/crusader/reservation"} "Foglalás"]]
-                  [:li.nav-hover [:a {:href "/crusader/checkout"} "Kassza"]]
-                  [:li.nav-hover [:a {:href "/crusader/registration"} "Felhasználók"]]
-                  [:li.nav-hover [:a {:href "/crusader/dungeon"} "Dungeon"]]]]]]]
+    (reagent/create-class
+      {
 
-                  ;[:li.uk-nav-divider]
-                  ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
-             [:div.uk-navbar-right.uk-grid {:data-uk-grid true}
-              [:img {:width "65px"
-                     :data-uk-tooltip (if @connection-state
-                                        "Kapcsolódva"
-                                        "Szétkapcsolódva")
-                     :src (if
-                           @connection-state
-                            "/Icons/connected.svg"
-                            "/Icons/disconnected.svg")}]
-              [:img {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "70px"}]
-              [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove {:style {:max-height "50vh" :overflow "auto" :z-index 1000}}
-               (doall
-                (map-indexed
-                 #(-> ^{:key %1} [member-name %2 search])
-                 (if (= "" (:id @search))
-                   []
-                   (filter-by-name-and-id  @members search false))))]]])))
+       :reagent-render
+       (fn []
+         [:div {:style {:cursor "pointer" :height "60px"}}
+          [:nav#stick
+           {
+            :data-uk-navbar "mode: click"
+            :style {:height (if @open? "100%" "60px") :z-index "1000"}
+            :data-uk-sticky true}
+           [sidenav]
+           (if @open? [full-screen-nav open?])
+           [:div.uk-navbar-left.uk-animation-fade {:class (if @open? "uk-hidden")}
+              [:div.stick-logo
+               [:img.rotate {:src "/img/lvlup-logo-transparent.png" :on-click #(reset! open? (not @open?))}]]]
+           [:div.uk-navbar-center {:class (if @open? "uk-hidden") :on-click #(reset! open? (not @open?))}
+
+            [:ul.uk-navbar-nav
+             [:li.uk-padding-small.uk-animation-fade
+              [:div {:href "/crusader"}
+               [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
+                {:style {:font-size "2em" :color "white"}}
+                (decide-title (str @actual-page))]]
+              [:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [menu-time]]]]]
+
+
+
+
+                ;[:li.uk-nav-divider]
+                ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
+           [:div.uk-navbar-right.uk-grid.uk-animation-fade {:data-uk-grid true :class (if @open? "uk-hidden")}
+            [:img {:width "65px"
+                   :data-uk-tooltip (if @connection-state
+                                      "Kapcsolódva"
+                                      "Szétkapcsolódva")
+                   :src (if
+                         @connection-state
+                          "/Icons/connected.svg"
+                          "/Icons/disconnected.svg")}]
+            [:img {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "70px"}]
+            [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove {:style {:max-height "50vh" :overflow "auto" :z-index 1000}}
+             (doall
+              (map-indexed
+               #(-> ^{:key %1} [member-name %2 search])
+               (if (= "" (:id @search))
+                 []
+                 (filter-by-name-and-id  @members search false))))]]]])})))
 
 (defn current-page []
   (let [actual-page (subscribe [:data "actual-page"])]
     (fn []
-      [:div {:style {:min-height "100vh"}}
+      [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
+       [crusader-navbar]
        (case @actual-page
          "crusader"    [:div.uk-inline
                         {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
                         [:img.uk-position-center {:src "/img/lvlup-logo-transparent.png"}]
-                        [crusader-navbar]
+
                         [crusader]]
 
          "dungeon"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
-                       [crusader-navbar]
+
                        [dungeon]]
          "checkout"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
-                        [crusader-navbar]
+
                         [checkout]]
-         "registration"  [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :background-repeat "repeat-y"  :min-height "100vh" :min-width "100vw"}}
-                          [crusader-navbar]
+         "registration"  [:div
+
                           [registration]]
          "reservation"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
-                         [crusader-navbar]
+
                          [reservation]]
          "home-page"   [home-page (:parameters @app-state)]
          [not-found])])))
@@ -495,9 +584,9 @@
 
 (secretary/defroute "/crusader/dungeon" []
                     (start-router!)
-                    (chsk-send! [:dungeon/get-dungeon])
+                    ;(chsk-send! [:dungeon/get-dungeon])
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
-                    (chsk-send! [:dungeon/get-invoices])
+                    ;(chsk-send! [:dungeon/get-invoices])
                     (dispatch [:set-actual-page "dungeon"]))
 
 (secretary/defroute "/hu:a" [a]
