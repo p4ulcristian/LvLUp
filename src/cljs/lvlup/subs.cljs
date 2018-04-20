@@ -7,3 +7,8 @@
     (get
          db
          (keyword the-key))))
+
+(reg-sub
+  :player
+  (fn [db [_ id]]
+    (first (filter #(= id (:id %)) (:players-data db)))))

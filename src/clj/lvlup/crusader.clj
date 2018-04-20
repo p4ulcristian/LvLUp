@@ -141,12 +141,10 @@
                    :_id)])))
   (defn get-invoices []
 
-    (send-all [:dungeon/get-invoices
-               (str
-                (vec
-                 (map
-                  #(assoc % :_id (str (:_id %)))
-                  (with-collection db "unpayedinvoices"))))]))
+    (vec
+     (map
+      #(assoc % :_id (str (:_id %)))
+      (with-collection db "unpayedinvoices"))))
                                 ;(find {:payed false})))))]))
 
   (defn update-member [{:keys [event]}]
@@ -233,13 +231,23 @@
                                    (map (fn [a] (assoc {} :id a))
                                         change-map))}
                                  {})))))))
+
+  (defn get-member-with-id [{:keys [event]}]
+    (let [[key change-map] event]
+      (dissoc
+        (mc/find-one-as-map
+          db "members"
+          {:id (:id change-map)})
+        :_id)))
+
+
+
   (defn get-dungeon []
-    (doseq [uid (:any @connected-uids)]
-      (chsk-send! uid [:dungeon/get-dungeon (str
-                                             (vec
-                                              (map
-                                               #(dissoc % :_id)
-                                               (with-collection db "dungeon"))))]))))
+     (vec
+      (map
+       #(dissoc % :_id)
+       (with-collection db "dungeon")))))
+
 
 ;; We can watch this atom for changes if we like
 (add-watch connected-uids :connected-uids
@@ -330,7 +338,8 @@
   [ev-msg] (random-stuff))
 
 (defmethod -event-msg-handler :dungeon/get-dungeon
-  [ev-msg] (get-dungeon))
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (get-dungeon)))
 
 (defmethod -event-msg-handler :dungeon/add-invoice
   [{:as ev-msg :keys [?reply-fn]}]
@@ -365,7 +374,7 @@
   [ev-msg] (season-pass ev-msg))
 
 (defmethod -event-msg-handler :dungeon/get-invoices
-  [ev-msg] (get-invoices))
+  [{:as ev-msg :keys [?reply-fn]}] (?reply-fn (get-invoices)))
 
 (defmethod -event-msg-handler :dungeon/modify-invoice
   [ev-msg] (modify-invoice ev-msg))
@@ -385,6 +394,10 @@
 (defmethod -event-msg-handler :dungeon/get-members-with-id
   [{:as ev-msg :keys [?reply-fn]}]
   (?reply-fn (get-members-with-id ev-msg)))
+
+(defmethod -event-msg-handler :dungeon/get-member-with-id
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (get-member-with-id ev-msg)))
 
 (defmethod -event-msg-handler :dungeon/change
   [{:as ev-msg :keys [?reply-fn]}]

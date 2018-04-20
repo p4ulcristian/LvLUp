@@ -545,6 +545,7 @@
     (reagent/create-class
      {:component-did-mount #(do
                               (dispatch [:dungeon/get-reservations (convert-iso-to-read @date)])
+                              (dispatch [:dungeon/get-dungeon])
                               (.setInterval
                                js/window
                                (fn [b] (reset! time-tracker (+ @time-tracker (/ 18 15))))
@@ -558,6 +559,7 @@
                                          (+
                                           (* 18 (quot (.getMinutes (js/Date.)) 15))
                                           (* (/ 18 15) (mod (.getMinutes (js/Date.)) 15))))))
+     ; :component-will-unmount #(dispatch [:open-menu false])
       :reagent-render
       (fn []
         [:div.uk-container.uk-container-expand.uk-margin-small-top
@@ -570,7 +572,7 @@
           [reservation-modal]
           [reservation-dates]
 
-          [:div.uk-padding-remove.uk-margin-remove.dragscroll.trans-black.uk-width-expand
+          [:div.uk-padding-remove.uk-margin-remove.dragscroll.trans-black.uk-width-expand.uk-animation-fade
            {:style {:overflow-x "scroll" :overflow-y "visible" :position "relative"}}
            [:div.uk-grid.uk-child-width-auto.reservation-grid.uk-margin-remove.uk-card.uk-card-secondary.restrict.uk-grid-match.reservation-background.trans-black
             {:data-uk-grid true :style {:height "100%" :padding-bottom "18px" :border-bottom-right-radius "20px"}};}}

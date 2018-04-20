@@ -6,7 +6,9 @@
    [taoensso.sente  :as sente :refer (cb-success?)]
    [lvlup.sente :refer [chsk-send! start-router!]]
    [clojure.set]
+   [lvlup.utils :as utils]
    [goog.string :as gstring]
+   [cljs-time.core :as tcore]
    [goog.string.format]
    [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx path trim-v
                           after debug dispatch]]))
@@ -18,6 +20,7 @@
     :invoices []
     :players-data []
     :max-id 0
+    :open-menu false
 
     :active-member 0
     :connection-state false
@@ -27,6 +30,7 @@
                         :start 0
                         :finish 0
                         :places []}
+    :now (tcore/now)
     :lazy-number 20
     :modal-data nil
     :waiting-pool []
@@ -44,6 +48,11 @@
  :set-any-data
  (fn [db [_ the-key the-map]]
    (assoc db the-key the-map)))
+
+(reg-event-db
+  :open-menu
+  (fn [db [_ bool]]
+    (assoc db :open-menu bool)))
 
 (reg-event-db
  :set-search-member
@@ -114,12 +123,36 @@
    (chsk-send! [:dungeon/get-members-with-id the-map]
                8000 ; Timeout
                ;; Optional callback:
-               (fn [reply] ; Reply is arbitrary Clojure data
-                ; (.log js/console (str reply))
-                 (.log js/console (str "hello" the-map))
+               (fn [reply]
                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                    (dispatch [:set-players-data reply]))))
    db))
+
+
+
+
+(reg-event-db
+  :add-player-data
+  (fn [db [_ the-map]]
+
+   (assoc db :players-data (conj
+                             (remove #(= (:id %) (:id the-map))
+                                     (:players-data db))
+                             the-map))))
+
+(reg-event-db
+  :dungeon/get-member-with-id
+  (fn [db [_ the-map]]
+    ;(.log js/console (str "szia" the-map))
+    (chsk-send! [:dungeon/get-member-with-id {:id the-map}]
+                8000 ; Timeout
+                ;; Optional callback:
+                (fn [reply]
+                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                    (do
+                      (.log js/console (str reply))
+                      (dispatch [:add-player-data reply])))))
+    db))
 
 (reg-event-db
  :dungeon/add-reservations
@@ -135,7 +168,7 @@
 (reg-event-db
  :set-reservation-modal
  (fn [db [_ what-key the-map]]
-   (.log js/console (str what-key))
+
    (case what-key
 
      "replace" (assoc db :reservation-modal (assoc the-map :date (js/Date. (:date the-map))))
@@ -174,6 +207,7 @@
 (reg-event-db
  :set-invoices
  (fn [db [_ the-map]]
+
    (assoc db :invoices the-map)))
 
 (reg-event-db
@@ -197,6 +231,12 @@
  (fn [db [_ the-map]]
       ;  (.log js/console (str (set (clojure.set/union (:players db) the-map))))
    (assoc db :players (concat (:players db) the-map))))
+
+(reg-event-db
+  :now
+  (fn [db [_ the-map]]
+     ;  (.log js/console (str (set (clojure.set/union (:players db) the-map))))
+    (assoc db :now the-map)))
 
 (reg-event-db
  :remove-member
@@ -230,3 +270,42 @@
  :set-date
  (fn [db [_ date]]
    (assoc db :date (js/Date. date))))
+
+
+(reg-event-db
+  :dungeon/get-dungeon
+  (fn [db [_]]
+
+
+    (chsk-send! [:dungeon/get-dungeon]
+                8000 ; Timeout
+                ;; Optional callback:
+
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+
+                      (dispatch [:set-systems reply]))))
+
+
+    db))
+
+(reg-event-db
+  :dungeon/get-invoices
+  (fn [db [_]]
+
+    (chsk-send! [:dungeon/get-invoices]
+                8000 ; Timeout
+                ;; Optional callback:
+
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                    (do
+                        (dispatch [:set-invoices reply])
+                        ;(assoc db :open-menu false)))))
+                        (dispatch [:dungeon/get-members-with-id  (vec (set (map :member-id reply)))])))))
+
+
+
+    db))
+    ;(assoc db :open-menu false)))
+    ; (assoc db :open-menu false)))

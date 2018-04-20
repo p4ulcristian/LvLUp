@@ -166,6 +166,7 @@
       (include-js "https://npmcdn.com/flatpickr/dist/l10n/hu.js")
       (include-js "/externaljs/picker.time.js")
       (include-js "/externaljs/dragscroll.js")
+      (include-js "/externaljs/jscolor.min.js")
       (include-js "/js/app.1.3.8.js")])))
 
 (defn loading-page []

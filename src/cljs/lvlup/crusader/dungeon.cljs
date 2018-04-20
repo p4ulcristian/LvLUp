@@ -7,6 +7,7 @@
    [reagent.session :as session]
    [clojure.string  :as str]
    [jayq.core :refer [$]]
+   [lvlup.utils :as utils]
 
    [cljs.core.async :as async  :refer (<! >! put! chan timeout)]
 
@@ -28,6 +29,19 @@
    [lvlup.subs])
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
+
+(def system-colors
+  ["rgb(255,102,0)"
+   "rgb(255,147,0)"
+   "rgb(255,239,0)"
+   "rgb(94,255,0)"
+   "rgb(201,255,0)"
+   "rgb(0,255,249)"
+   "rgb(0,53,255)"
+   "rgb(236,131,240)"
+   "rgb(228,17,160)"
+   "rgb(146,3,45)"])
+
 
 
 (defn convert-to-clojurescript-time [ido]
@@ -158,7 +172,7 @@
                                                                                                                          (tformat/parse (:start place))
                                                                                                                          (calculate-time-zone)))
                                                                                                       (:type place)))]))))
-       (chsk-send! [:dungeon/get-members-with-id (vec player-id)])
+      ; (chsk-send! [:dungeon/get-members-with-id (vec player-id)])
        (doseq [system this-player-all-systems]
          (let [number (:number system)
                player (:players system) [filtered-system] (filter #(= number (:number %))
@@ -270,7 +284,7 @@
       (str "- " (quot seconds-negated 3600) "h " (mod (quot seconds-negated 60) 60) "m " (mod seconds-negated 60) "s")
       (str (quot seconds 3600) "h " (mod (quot seconds 60) 60) "m " (mod seconds 60) "s"))))
 
-(defn pay [player-number item name loading]
+(defn pay [player-number item name loading color]
   [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
    {:disabled loading
     :data-uk-icon "icon: sign-out"
@@ -279,11 +293,12 @@
                  (dispatch [:set-loading true])
                  (chsk-send!
                   [:dungeon/change
-                   (assoc item :players (dissoc (:players item) player-number))])
+                   (assoc item :color nil :players (dissoc (:players item) player-number))])
 
                  (chsk-send!
                   [:dungeon/add-invoice
                    (assoc  {}
+                           :color (:color item)
                            :type (:type item)
                            :name (:name item)
                            :member-id (:member-id (get (:players item) player-number))
@@ -317,6 +332,11 @@
                                    (calculate-time-zone)))
                                :member-id (:member-id (get (:players item) player-number))}]))}])
 
+
+
+
+
+
 (defn modify-time [player-number item elojel the-atom name]
   (fn [player-number item elojel the-atom]
     [:button.uk-button-small.uk-button.uk-button-danger.uk-width-1-2
@@ -341,6 +361,13 @@
                               (tcore/minus (tformat/parse (:start (get (:players item) player-number))) (tcore/minutes 5))
                               (tcore/plus (tformat/parse (:start (get (:players item) player-number))) (tcore/minutes 5)))
                             (calculate-time-zone))))}]))
+
+(defn modify-color [item color]
+  [:div.one-color.uk-modal-close
+   {:style {:height "50px" :width "50px" :background color}
+    :on-click #(chsk-send!
+                 [:dungeon/change
+                  (assoc item :color color)])}])
 
 (defn cancel [player-number item name]
   (let [];system (subscribe [:data "system-map"])]
@@ -373,49 +400,67 @@
                               (tformat/parse (:start data))
                               (calculate-time-zone))))
         valami (atom (js/setInterval #(reset! time-elapsed (inc @time-elapsed)) 1000))
-        players (subscribe [:data "players-data"])
-        this-player (fn [] (first
-                            (filter
-                             #(= (:id %) (:member-id data))
-                             @players)))]
 
-    (fn [system [player-number data]]
+        player (subscribe [:player (:member-id data)])]
 
-      [:div.uk-padding-remove.uk-animation-fade {:style {:border-top "1px solid white"}
-                                                 :class (if (= (:member-id data) @active-member)
-                                                          "uk-card-primary"
-                                                          "uk-card-secondary")}
-       [:div.uk-padding-small.uk-padding-remove-bottom
 
-        [:div (str (:id (this-player)) " - " (:name (this-player)))]]
+    (reagent/create-class
+      {:component-did-mount #(dispatch [:dungeon/get-member-with-id (:member-id data)])
 
-       (if (:start data)
-         [:div
-          [:div.uk-text-center
-           (str (convert-time (tformat/parse (:start data)))
-                " - "
-                (minute-to-money
-                 @time-elapsed
-                 (:type data))
-                " Ft")]
-          [:h3.uk-text-center.uk-padding-remove.uk-margin-remove (elapsing-time @time-elapsed)]]
-         [start-button player-number system time-elapsed (:name (this-player))])
-       [modify-time player-number system "-" time-elapsed (:name (this-player))]
-       [modify-time player-number system "+" time-elapsed (:name (this-player))]
-       [cancel player-number system (:name (this-player))]
-       [pay-with-season-pass player-number system (:name (this-player)) @loading]
-       [pay player-number system (:name (this-player)) @loading]])))
+       :reagent-render
+       (fn [system [player-number data]]
 
-(defn system [item]
+         [:div.uk-padding-remove.uk-animation-fade
+          {:style {:border-top "1px solid white"}
+           :class (if (= (:member-id data) @active-member)
+                    "uk-card-primary"
+                    "uk-card-secondary")}
+
+
+          [:div.uk-padding-small.uk-padding-remove-bottom
+
+           [:div (str (:id @player) " - " (:name @player))]]
+
+          (if (:start data)
+            [:div
+             [:div.uk-text-center
+              (str (convert-time (tformat/parse (:start data)))
+                   " - "
+                   (minute-to-money
+                    @time-elapsed
+                    (:type data))
+                   " Ft")]
+             [:h3.uk-text-center.uk-padding-remove.uk-margin-remove (elapsing-time @time-elapsed)]]
+            [start-button player-number system time-elapsed (:n @player)])
+          [modify-time player-number system "-" time-elapsed (:n @player)]
+          [modify-time player-number system "+" time-elapsed (:n @player)]
+          [cancel player-number system (:n @player)]
+          [pay-with-season-pass player-number system (:name @player) @loading]
+          [pay player-number system (:name @player) @loading]])})))
+
+(defn system [index item]
   (let []
     (reagent/create-class
      {:reagent-render
-      (fn [item]
+      (fn [index item]
         [:li.uk-width-1-5.valami.dropzone.dropzone2
-         {:id (:number item) :style {:opacity 0.91}}
+         {:id (:number item)
+          :style {:z-index (str "-" index)}}
 
-         [:div.uk-card.uk-card-secondary {:style {:border-radius "5px"}}
+         [:div.uk-card.uk-card-secondary.system-wall {:style {:border-radius "5px"}}
+          [:div.uk-width-1-1.uk-text-center {:style {:height "5px" :background (if (:color item) (:color item) "rgba(255,255,255,0.9)") :cursor "pointer"}
+                                             :data-uk-toggle (str "target: #color-choose" (:number item))}]
+
+          [:div.uk-flex-top
+           {:data-uk-modal "uk-modal"
+            :id (str "color-choose" (:number item))}
+           [:div.uk-modal-dialog.uk-margin-auto-vertical {:style {:background "rgba(0,0,0,0)"}}
+            [:div.uk-flex.uk-child-width-extend.uk-margin-remove.uk-flex-center
+             {:data-uk-grid true}
+             (map-indexed #(-> ^{:key %1}[modify-color item %2]) system-colors)]]]
           [:div.uk-card-header.uk-padding-small
+           {:style {:padding-top "5px" :cursor "pointer"}
+            :data-uk-toggle (str "target: #color-choose" (:number item))}
            [:div.uk-grid-small.uk-flex-middle {:data-uk-grid true}
             [:div.uk-width-auto
              [:img
@@ -458,7 +503,8 @@
   (let [pool (subscribe [:data "waiting-pool"])
         active-member (subscribe [:data "active-member"])]
     (reagent/create-class
-     {:reagent-render
+     {
+      :reagent-render
       (fn [data index which-tab]
         [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small.uk-animation-fade
          {:style {:cursor "pointer"}}
@@ -508,9 +554,7 @@
         get-member-data (fn [] (vec (set (map :member-id @invoices))))
         the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (vec (set (map :member-id @invoices)))) @players)))]
     (reagent/create-class
-     {:component-did-update #(dispatch [:dungeon/get-members-with-id (get-member-data)])
-      :component-did-mount #(dispatch [:dungeon/get-members-with-id (get-member-data)])
-      :reagent-render
+     {:reagent-render
       (fn []
         [:div
 
@@ -535,9 +579,7 @@
                                        @systems))))))
         the-players-playing (fn [] (doall (filter #(some (fn [a] (= a (:id %))) (get-players-playing)) @players)))]
     (reagent/create-class
-     {:component-did-update #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
-      :component-did-mount #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
-      :reagent-render
+     {:reagent-render
       (fn []
         [:div
          (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 2]) (the-players-playing))])})))
@@ -571,14 +613,14 @@
                                        @systems))))))]
 
     (reagent/create-class
-     {:component-will-update #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
-      :component-did-mount #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
+     {;:component-will-update #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
+      ;:component-did-mount #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
       :reagent-render
       (fn []
         [:div.uk-width-1-1
-         [:div.uk-grid-match.uk-grid-small.uk-animation-slide-right {:data-uk-grid true}
+         [:div.uk-grid-match.uk-grid-small.uk-animation-fade {:data-uk-grid true}
           (map-indexed
-           #(-> ^{:key (:name %2)} [system %2])
+           #(-> ^{:key (:name %2)} [system %1 %2])
            (sort-by :number @systems))]])})))
 
 (defn places-on-console [players]
@@ -697,9 +739,10 @@
   (let [members (subscribe [:data "players-data"])
         member (fn [] (first (doall (filter #(= (:id %) (first item)) @members))))]
     (fn [item]
-      [:div {:class "uk-width-1-2@s uk-width-1-2@m uk-width-1-3@l"}
-        ; (str @members)
-       [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark {:style {:opacity 0.87 :border-radius "10px"}}
+      [:div.uk-padding-small.uk-padding-remove-vertical {:class "uk-width-1-2@s uk-width-1-2@m uk-width-1-3@l"}
+        (str (first item))
+       [:div.uk-card.uk-card-secondary.uk-padding-remove.uk-dark.uk-animation-fade {:style {:opacity 0.87 :border-radius "10px"}}
+        [:div.uk-width-1-1 {:style {:height "5px" :background (:color item)}}]
         [:div.uk-padding-small
          [:div.uk-float-right
           [:h3.uk-margin-remove.uk-padding-remove.uk-text-right {:style {:color "red"}}
@@ -728,34 +771,36 @@
                    (second item)))]]]]])))
 
 (defn checkout []
-  (let [invoices (subscribe [:data "invoices"])
-        ;members (subscribe [:data "players"])
-        get-member-data (fn [] (vec (set (map :member-id @invoices))))]
+  (let [invoices (subscribe [:data "invoices"])]
     (reagent/create-class
-     {:component-did-mount #(dispatch [:dungeon/get-members-with-id (get-member-data)])
-      :component-did-update #(dispatch [:dungeon/get-members-with-id (get-member-data)])
+     {
+      :component-did-mount #(utils/do-later
+                              (fn [a] (dispatch [:dungeon/get-invoices]))
+                              1000
+                              nil)
       :reagent-render
       (fn []
-        [:div.uk-padding-remove.uk-margin-remove.uk-grid.uk-child-width-1-1
-              ;  (str @members)
-            ;  [:button {:on-click #(chsk-send! [:dungeon/get-members-with-id (get-member-data)])} "hello"]
-         ;(str (get-member-data))
-         (if (= @invoices [])
-           [:div [:div.uk-inline
-                  [:img {:src "/img/pipboy-gangster.png"}]
-                  [:h1.uk-overlay.uk-overlay-primary.uk-position-top-left {:style {:border-radius "20px"}}
-                   "Senkinek sincs fizetetlen számlája! :)"]]]
-           [:div.uk-grid.uk-grid-small.uk-margin-top {:data-uk-grid true}
-            (map-indexed
-             #(-> ^{:key %2} [invoice %2])
-             (sort-by first (group-by :member-id @invoices)))])])})))
+        [:div
+          (if (= @invoices [])
+            [:div [:div.uk-inline
+                   [:img {:src "/img/pipboy-gangster.png"}]
+                   [:h1.uk-overlay.uk-overlay-primary.uk-position-top-left {:style {:border-radius "20px"}}
+                    "Senkinek sincs fizetetlen számlája! :)"]]]
+            [:div.uk-grid.uk-grid-small.uk-padding-small.uk-margin-remove {:data-uk-grid true}
+             [:div.uk-width-1-2.uk-padding-small
+              [:div.uk-width-1-1.uk-text-center.uk-button-danger.uk-button {:data-uk-sticky "offset: 60"} "Mai számlák"]]
+             [:div.uk-width-1-2.uk-padding-small
+              [:div.uk-width-1-1.uk-text-center.uk-button-danger.uk-button {:data-uk-sticky "offset: 60"} "Elmaradt számlák - 10 db"]]
+             (map-indexed
+              #(-> ^{:key %2} [invoice %2])
+              (reverse (sort-by first (group-by :color @invoices))))])])})))
 
 (defn modify-member [member index]
   (let [modify-atom (atom member)]
     (reagent/create-class
      {:reagent-render
       (fn [member index]
-        [:div.uk-width-1-2.uk-padding-small.uk-margin-remove {}
+        [:div.uk-width-1-2.uk-padding-small.uk-margin-remove.uk-animation-fade {}
 
          [:div.uk-card.uk-card-secondary ;{:style {:opacity 0.85}}
           [:div.uk-width-1-1.uk-padding-remove
@@ -840,8 +885,8 @@
       {
        :reagent-render
        (fn [members]
-         [:div.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove
-          {:data-uk-grid "true" :data-uk-sticky "offset: 45"}
+         [:div.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove.uk-animation-fade
+          {:data-uk-grid "true" :data-uk-sticky "offset: 60"}
            ;[:div.uk-width-1-1 (str @members)]
           [:input#username.uk-input.uk-text-center.uk-padding-remove.uk-first-column
            {:on-change #(do
@@ -901,7 +946,10 @@
     (reagent/create-class
 
      {:component-did-mount #(do (listen!)
-                                (dispatch [:dungeon/get-members {:number 0 :search ""}]))
+                                (utils/do-later
+                                  (fn [a] (dispatch [:dungeon/get-members {:number 0 :search ""}]))
+                                  1000
+                                  nil))
       ;:component-will-unmount #(unlisten!)
 
       :reagent-render
@@ -999,12 +1047,18 @@
                ^{:key 4} [:h3.uk-heading-bullet.uk-animation-slide-top "Váróterem"]
                [waiting-pool]])]])})))
 
+
+
 (defn dungeon []
   (let [systems (subscribe [:data "system-map"])
         sidenav-canvas (atom nil)]
     (reagent/create-class
      {:component-did-mount #(do
 
+                              (utils/do-later
+                                (fn [a]  (dispatch [:dungeon/get-dungeon]))
+                                1000
+                                nil)
                               (reset! sidenav-canvas (.offcanvas js/UIkit ($ "#sidenav")))
 
                               (.dragging js/window)

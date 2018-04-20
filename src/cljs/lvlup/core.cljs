@@ -396,6 +396,17 @@
     (str "0" number)
     number))
 
+(defn get-day [number]
+  (case number
+    1 "Hétfő"
+    2 "Kedd"
+    3 "Szerda"
+    4 "Csütörtök"
+    5 "Péntek"
+    6 "Szombat"
+    7 "Vasárnap"))
+
+
 (defn get-month [number]
   (case number
     1 "jan."
@@ -413,47 +424,49 @@
 
 
 (defn menu-time []
-  (let [now (atom (tcore/now))
-        timeout  #(do
-                    (js/console.log "hello"))]
+  (let [now (subscribe [:data "now"])]
 
 
     (reagent/create-class
-      {:component-did-mount #(.setInterval
-                               js/window
-                               (fn [a] (reset! now (tcore/now)))
-                               1000)
+      {
        :reagent-render
          (fn []
 
-           [:div (str
-                   (get-month (tcore/month @now))
-                   " "
-                   (tcore/day @now)
-                   " - "
-                   (two-zeros (tcore/hour @now))
-                   ":"
-                   (two-zeros (tcore/minute @now)))])})))
+             [:div (str
+                     (get-month (tcore/month @now))
+                     " "
+                     (tcore/day @now)
+                     ".")
+                   [:b " " (get-day (.getDay (js/Date. @now)))]
+                   (str
+                     " - "
+                     (two-zeros (tcore/hour @now))
+                    ":"
+                     (two-zeros (tcore/minute @now)))])})))
+
 
 
 (defn one-menu [name picture url]
   ;[:a {:style {:color "white !important"} :href url}
-   [:div.uk-inline-clip.uk-transition-toggle.uk-padding-small.uk-animation-slide-top {:style {:cursor "pointer"}}
+   [:div.uk-inline-clip.uk-transition-toggle.uk-padding-small.uk-animation-slide-top
+    {:style {:cursor "pointer"}}
+
     [:div {:style {:border "1px solid white" :border-radius "4px"}}
 
      [:img.uk-align-center.uk-margin-remove-vertical {:alt "", :src picture :width "150px"}]
-     [:a.uk-transition-fade.uk-position-cover.uk-position-small.uk-overlay.uk-overlay-default.uk-flex.uk-flex-center.uk-flex-middle {:href url}
-      [:p.uk-h4.uk-margin-remove name]]]])
+     [:a.uk-transition-fade.uk-position-cover.uk-position-small.uk-overlay.uk-overlay-default.uk-flex.uk-flex-center.uk-flex-middle {:style {:text-decoration "none"} :href url}
+      [:h1.uk-margin-remove  name]]]])
 
-(defn full-screen-nav [open?]
+(defn full-screen-nav [open? name]
 
-   [:div.uk-inline {:style {:height "100vh" :width "100vw"} :on-click #(reset! open? (not @open?))}
+   [:div.uk-inline {:style {:height "100vh" :width "100vw" } :on-click #(do (dispatch [:open-menu (not @open?)])
+                                                                            (.scrollTo js/window 0 0))}
     [:ul.uk-navbar-nav
      [:li.uk-padding-small.uk-align-center
       [:div {:href "/crusader"}
        [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
         {:style {:font-size "2em" :color "white"}}
-        "Valami"]]
+        name]]
       [:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [menu-time]]]]
     [:div.uk-position-center
      [:div.uk-flex.uk-child-width-1-2.uk-grid {:data-uk-grid true}
@@ -467,7 +480,8 @@
 (defn crusader-navbar []
   (let [members (subscribe [:data "players"])
         search (atom "")
-        open? (atom false)
+
+        open? (subscribe [:data "open-menu"])
         connection-state (subscribe [:data "connection-state"])
         sticky-atom (atom nil)
         actual-page (subscribe [:data "actual-page"])]
@@ -480,14 +494,15 @@
           [:nav#stick
            {
             :data-uk-navbar "mode: click"
-            :style {:height (if @open? "100%" "60px") :z-index "1000"}
+            :style {:height (if @open? "100%" "60px") :z-index 1000}
             :data-uk-sticky true}
            [sidenav]
-           (if @open? [full-screen-nav open?])
+           (if @open? [full-screen-nav open? (decide-title (str @actual-page))])
            [:div.uk-navbar-left.uk-animation-fade {:class (if @open? "uk-hidden")}
-              [:div.stick-logo
-               [:img.rotate {:src "/img/lvlup-logo-transparent.png" :on-click #(reset! open? (not @open?))}]]]
-           [:div.uk-navbar-center {:class (if @open? "uk-hidden") :on-click #(reset! open? (not @open?))}
+              [:div.stick-logo.scale-hover {:style {:margin-left "10px"}}
+               [:img.rotate {:src "/img/lvlup-logo-transparent.png" :on-click #(dispatch [:open-menu (not @open?)])}]]]
+           [:div.uk-navbar-center {
+                                   :class (if @open? "uk-hidden") :on-click #(dispatch [:open-menu (not @open?)])}
 
             [:ul.uk-navbar-nav
              [:li.uk-padding-small.uk-animation-fade
@@ -502,50 +517,57 @@
 
                 ;[:li.uk-nav-divider]
                 ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
-           [:div.uk-navbar-right.uk-grid.uk-animation-fade {:data-uk-grid true :class (if @open? "uk-hidden")}
-            [:img {:width "65px"
-                   :data-uk-tooltip (if @connection-state
-                                      "Kapcsolódva"
-                                      "Szétkapcsolódva")
-                   :src (if
-                         @connection-state
-                          "/Icons/connected.svg"
-                          "/Icons/disconnected.svg")}]
-            [:img {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "70px"}]
-            [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove {:style {:max-height "50vh" :overflow "auto" :z-index 1000}}
-             (doall
-              (map-indexed
-               #(-> ^{:key %1} [member-name %2 search])
-               (if (= "" (:id @search))
-                 []
-                 (filter-by-name-and-id  @members search false))))]]]])})))
+           [:div.uk-navbar-right
+             [:div.uk-grid.uk-animation-fade.uk-padding.uk-padding-remove-vertical {:data-uk-grid true :class (if @open? "uk-hidden")}
+              [:img.scale-hover {:width "65px"
+                                 :data-uk-tooltip (if @connection-state
+                                                    "Kapcsolódva"
+                                                    "Szétkapcsolódva")
+                                 :src (if
+                                       @connection-state
+                                        "/Icons/connected.svg"
+                                        "/Icons/disconnected.svg")}]
+              [:img.scale-hover {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "70px"}]
+              [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove {:style {:max-height "50vh" :overflow "auto" :z-index 1000}}
+               (doall
+                (map-indexed
+                 #(-> ^{:key %1} [member-name %2 search])
+                 (if (= "" (:id @search))
+                   []
+                   (filter-by-name-and-id  @members search false))))]]]]])})))
 
 (defn current-page []
   (let [actual-page (subscribe [:data "actual-page"])]
-    (fn []
-      [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
-       [crusader-navbar]
-       (case @actual-page
-         "crusader"    [:div.uk-inline
-                        {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
-                        [:img.uk-position-center {:src "/img/lvlup-logo-transparent.png"}]
+    (reagent/create-class
+      {:component-did-mount #(.setInterval
+                               js/window
+                               (fn [a] (dispatch [:now (tcore/now)]))
+                               1000)
+       :reagent-render
+       (fn []
+         [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
+          [crusader-navbar]
+          (case @actual-page
+            "crusader"    [:div.uk-inline
+                           {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
+                           [:img.uk-position-center {:src "/img/lvlup-logo-transparent.png"}]
 
-                        [crusader]]
+                           [crusader]]
 
-         "dungeon"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
+            "dungeon"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
 
-                       [dungeon]]
-         "checkout"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
+                          [dungeon]]
+            "checkout"    [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
 
-                        [checkout]]
-         "registration"  [:div
+                           [checkout]]
+            "registration"  [:div
 
-                          [registration]]
-         "reservation"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
+                             [registration]]
+            "reservation"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
 
-                         [reservation]]
-         "home-page"   [home-page (:parameters @app-state)]
-         [not-found])])))
+                            [reservation]]
+            "home-page"   [home-page (:parameters @app-state)]
+            [not-found])])})))
 
 ;; -------------------------
 ;; Routes
@@ -564,16 +586,16 @@
 (secretary/defroute "/crusader/reservation" []
                     (start-router!)
 
-                    (dispatch [:set-actual-page "reservation"])
+                    (dispatch [:set-actual-page "reservation"]))
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
-                    (chsk-send! [:dungeon/get-dungeon]))
+
 
 (secretary/defroute "/crusader/checkout" []
                     (start-router!)
-                    (dispatch [:set-actual-page "checkout"])
+                    (dispatch [:set-actual-page "checkout"]))
       ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
       ;(chsk-send! [:dungeon/get-members])
-                    (chsk-send! [:dungeon/get-invoices]))
+
 
 (secretary/defroute "/crusader/registration" []
                     (start-router!)
