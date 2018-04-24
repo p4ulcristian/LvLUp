@@ -1,4 +1,5 @@
 (ns lvlup.core
+
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
@@ -12,6 +13,8 @@
             [ajax.core :refer [GET POST]]
             [re-frame.core :refer [dispatch-sync dispatch subscribe]]
             [cljs-time.core :as tcore]
+            [lvlup.utils :as utils :refer [read-now]]
+
             [jayq.core :refer [$ css html]]))
 
 
@@ -144,25 +147,25 @@
     [:tbody
      [:tr
       [:th.center "Hétfő"]
-      [:th.center "10:00-24:00"]]
+      [:th.center "12:00-24:00"]]
      [:tr
       [:th.center "Kedd"]
-      [:th.center "10:00-24:00"]]
+      [:th.center "12:00-24:00"]]
      [:tr
       [:th.center "Szerda"]
-      [:th.center "10:00-24:00"]]
+      [:th.center "12:00-24:00"]]
      [:tr
       [:th.center "Csütörtök"]
-      [:th.center "10:00-02:00"]]
+      [:th.center "12:00-02:00"]]
      [:tr
       [:th.center "Péntek"]
-      [:th.center "10:00-02:00"]]
+      [:th.center "12:00-02:00"]]
      [:tr
       [:th.center "Szombat"]
-      [:th.center "10:00-02:00"]]
+      [:th.center "12:00-02:00"]]
      [:tr
       [:th.center "Vasárnap"]
-      [:th.center "10:00-24:00"]]]]])
+      [:th.center "Zárva"]]]]])
 
 (defn send-email [email]
   (POST "/send-email"
@@ -391,58 +394,13 @@
                                         (.notification js/UIkit (str (:name member) " lemegy a dungeonbe!")))}]])
 
 
-(defn two-zeros [number]
-  (if (< number 10)
-    (str "0" number)
-    number))
-
-(defn get-day [number]
-  (case number
-    1 "Hétfő"
-    2 "Kedd"
-    3 "Szerda"
-    4 "Csütörtök"
-    5 "Péntek"
-    6 "Szombat"
-    7 "Vasárnap"))
 
 
-(defn get-month [number]
-  (case number
-    1 "jan."
-    2 "feb."
-    3 "már."
-    4 "ápr."
-    5 "máj."
-    6 "jún."
-    7 "júl."
-    8 "aug."
-    9 "sze."
-    10 "okt."
-    11 "nov."
-    12 "dec."))
 
 
-(defn menu-time []
-  (let [now (subscribe [:data "now"])]
 
 
-    (reagent/create-class
-      {
-       :reagent-render
-         (fn []
 
-             [:div (str
-                     (get-month (tcore/month @now))
-                     " "
-                     (tcore/day @now)
-                     ".")
-                   [:b " " (get-day (.getDay (js/Date. @now)))]
-                   (str
-                     " - "
-                     (two-zeros (tcore/hour @now))
-                    ":"
-                     (two-zeros (tcore/minute @now)))])})))
 
 
 
@@ -459,17 +417,15 @@
 
 (defn full-screen-nav [open? name]
 
-   [:div.uk-inline {:style {:height "100vh" :width "100vw" } :on-click #(do (dispatch [:open-menu (not @open?)])
-                                                                            (.scrollTo js/window 0 0))}
-    [:ul.uk-navbar-nav
-     [:li.uk-padding-small.uk-align-center
-      [:div {:href "/crusader"}
-       [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
-        {:style {:font-size "2em" :color "white"}}
-        name]]
-      [:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [menu-time]]]]
+   [:div.uk-inline.uk-padding-remove {:style {:height "100vh" :width "100vw" } :on-click #(do (dispatch [:open-menu (not @open?)])
+                                                                                              (.scrollTo js/window 0 0))}
+    [:div.uk-width-1-1
+     [:h5.uk-margin-remove.uk-padding-remove.uk-text-center.uk-heading-line
+      [:span {:style {:font-size "2em" :color "white"}}
+       name]]]
+      ;[:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [read-now]]]]
     [:div.uk-position-center
-     [:div.uk-flex.uk-child-width-1-2.uk-grid {:data-uk-grid true}
+     [:div.uk-flex.uk-child-width-1-2.uk-grid.uk-margin-remove {:data-uk-grid true}
 
       [one-menu "Foglalás" "/Icons/reservation2.svg" "/crusader/reservation"]
       [one-menu "Kassza" "/Icons/checkout.svg" "/crusader/checkout"]
@@ -480,7 +436,6 @@
 (defn crusader-navbar []
   (let [members (subscribe [:data "players"])
         search (atom "")
-
         open? (subscribe [:data "open-menu"])
         connection-state (subscribe [:data "connection-state"])
         sticky-atom (atom nil)
@@ -490,33 +445,31 @@
 
        :reagent-render
        (fn []
-         [:div {:style {:cursor "pointer" :height "60px"}}
+         [:div {:style {:height "60px"} :class (if (= @actual-page "home-page") "uk-hidden" "")}
           [:nav#stick
-           {
-            :data-uk-navbar "mode: click"
-            :style {:height (if @open? "100%" "60px") :z-index 1000}
+           {:data-uk-grid true
+            :style {:z-index 1000 :cursor "pointer" :height (if @open? "active-menu" "passive-menu")}
+            ;:class (if @open? "active-menu" "passive-menu")
             :data-uk-sticky true}
            [sidenav]
            (if @open? [full-screen-nav open? (decide-title (str @actual-page))])
            [:div.uk-navbar-left.uk-animation-fade {:class (if @open? "uk-hidden")}
-              [:div.stick-logo.scale-hover {:style {:margin-left "10px"}}
+              [:div.stick-logo.scale-hover
                [:img.rotate {:src "/img/lvlup-logo-transparent.png" :on-click #(dispatch [:open-menu (not @open?)])}]]]
-           [:div.uk-navbar-center {
-                                   :class (if @open? "uk-hidden") :on-click #(dispatch [:open-menu (not @open?)])}
-
-            [:ul.uk-navbar-nav
-             [:li.uk-padding-small.uk-animation-fade
-              [:div {:href "/crusader"}
-               [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
-                {:style {:font-size "2em" :color "white"}}
-                (decide-title (str @actual-page))]]
-              [:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [menu-time]]]]]
+           [:div.uk-navbar-center
+              {:class (if @open? "uk-hidden") :on-click #(dispatch [:open-menu (not @open?)])}
+            [:div
+             [:div {:href "/crusader"}
+              [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
+               {:style {:font-size "2em" :color "white"}}
+               (decide-title (str @actual-page))]]
+             [:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [read-now]]]]
 
 
 
 
-                ;[:li.uk-nav-divider]
-                ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
+              ;[:li.uk-nav-divider]
+              ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
            [:div.uk-navbar-right
              [:div.uk-grid.uk-animation-fade.uk-padding.uk-padding-remove-vertical {:data-uk-grid true :class (if @open? "uk-hidden")}
               [:img.scale-hover {:width "65px"
@@ -539,10 +492,7 @@
 (defn current-page []
   (let [actual-page (subscribe [:data "actual-page"])]
     (reagent/create-class
-      {:component-did-mount #(.setInterval
-                               js/window
-                               (fn [a] (dispatch [:now (tcore/now)]))
-                               1000)
+      {
        :reagent-render
        (fn []
          [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}

@@ -11,4 +11,11 @@
 (reg-sub
   :player
   (fn [db [_ id]]
-    (first (filter #(= id (:id %)) (:players-data db)))))
+    (first (filter #(= id (:id %)) (:players db)))))
+
+(reg-sub
+  :still-gaming
+  (fn [db [_]]
+   (filter
+     #(not= (:players %) {})
+     (:system-map db))))

@@ -46,17 +46,28 @@
 
 }
 
+.active-menu{
+height: 100%;
+}
+
+.passive-menu{
+height: 60px;
+}
+
 .container {
   padding: 15px;
   overflow: hidden;
 }
 
 .invoice-icon{
-  color: rgba(255,255,255,.7)
+
+  transition: 0.2s ease-in-out;
 }
 
 .invoice-icon:hover{
-  color: white;
+  color: white !important;
+  transition: 0.2s ease-in-out;
+  transform: scale(1.2);
 }
 
 .name-animated:hover {
@@ -215,6 +226,15 @@ opacity: 0.8;
 opacity: 0.91;
 }
 
+.one-invoice{
+
+    transition: 0.2s ease-in-out;
+}
+.one-invoice:hover{
+    transform: scale(1.02);
+    background: black !important;
+    transition: 0.2s ease-in-out;
+}
 
 .one-color{
 transition: 0.2s ease-in-out;

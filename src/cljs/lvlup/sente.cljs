@@ -82,7 +82,7 @@
                                (dispatch [:set-systems (read-string data)])))
       :dungeon/replace-member (do
                                 (js/console.log (str data))
-                                (dispatch [:replace-member data]))
+                                (dispatch [:add-player data]))
                                ;(chsk-send! [:dungeon/get-max-id])
                                ;(dispatch [:set-members (read-string data)]))
 

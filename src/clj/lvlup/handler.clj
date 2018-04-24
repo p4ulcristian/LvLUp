@@ -117,6 +117,7 @@
   ga('create', 'UA-99055366-1', 'auto');
   ga('send', 'pageview');")
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css")
+   (include-css "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css")
    (include-css "/css/normalize.css")
    (include-css "externaljs/albumviewer/jquery.fb.albumbrowser.css")
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css")
@@ -139,6 +140,7 @@
    (include-css "/css/classic.css")
    (include-css "/css/nouislider.min.css")
    (include-css "/css/crusader.css")
+
    (include-css "/css/classic.date.css")
    (include-css "/css/classic.time.css")
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css")])
@@ -181,6 +183,7 @@
     (include-js "externaljs/albumviewer/jquery.fb.albumbrowser.js")
     (include-js "externaljs/album-init.js")
     (include-js "externaljs/table-button.js")
+    (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js")
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit.min.js")
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit-icons.min.js") (include-js "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js")
     (include-js "https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js") (include-js "https://use.fontawesome.com/cb88aeea27.js")

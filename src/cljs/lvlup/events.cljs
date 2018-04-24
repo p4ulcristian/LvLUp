@@ -18,7 +18,6 @@
  (fn [_ _]
    {:system-map []
     :invoices []
-    :players-data []
     :max-id 0
     :open-menu false
 
@@ -113,7 +112,7 @@
                (fn [reply] ; Reply is arbitrary Clojure data
                  ;(.log js/console (str reply))
                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-                   (dispatch [:set-members reply]))))
+                   (dispatch [:add-players reply]))))
    db))
 
 (reg-event-db
@@ -125,20 +124,45 @@
                ;; Optional callback:
                (fn [reply]
                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-                   (dispatch [:set-players-data reply]))))
+                   (dispatch [:add-players reply]))))
    db))
 
 
 
+(reg-event-db
+  :add-to-cart
+  (fn [db [_ item]]
+    (let [cart (:cart db)]
+      (assoc db :cart (if (some #(= item %)
+                                cart)
+                          (remove #(= % item)
+                                  (:cart db))
+                          (conj cart item))))))
+
+
 
 (reg-event-db
-  :add-player-data
+  :add-player
   (fn [db [_ the-map]]
+    (assoc db :players (conj
+                         (remove #(= (:id the-map) (:id %))
+                                 (:players db))
+                         the-map))))
 
-   (assoc db :players-data (conj
-                             (remove #(= (:id %) (:id the-map))
-                                     (:players-data db))
-                             the-map))))
+(reg-event-db
+  :add-players
+  (fn [db [_ the-map]]
+    (assoc db :players (concat
+                         (remove #(some (fn [a] (= (:id %) (:id a)))
+                                        the-map)
+                                 (:players db))
+                         the-map))))
+
+
+
+
+
+
 
 (reg-event-db
   :dungeon/get-member-with-id
@@ -150,8 +174,7 @@
                 (fn [reply]
                   (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                     (do
-                      (.log js/console (str reply))
-                      (dispatch [:add-player-data reply])))))
+                      (dispatch [:add-player reply])))))
     db))
 
 (reg-event-db
@@ -220,11 +243,7 @@
  (fn [db [_ the-map]]
    (assoc db :lazy-number the-map)))
 
-(reg-event-db
- :set-players-data
- (fn [db [_ the-map]]
-      ;  (.log js/console (str (set (clojure.set/union (:players db) the-map))))
-   (assoc db :players-data the-map)))
+
 
 (reg-event-db
  :set-members
@@ -246,15 +265,7 @@
                         #(= (:id %) the-map)
                         (:players db))))))
 
-(reg-event-db
- :replace-member
- (fn [db [_ the-map]]
-   (assoc db :players (vec
-                       (conj
-                        (remove
-                         #(= (:id %) (:id the-map))
-                         (:players db))
-                        the-map)))))
+
 
 (reg-event-db
  :set-reservations

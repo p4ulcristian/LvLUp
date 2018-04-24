@@ -10,20 +10,22 @@
                            [reagent "0.7.0"]
                            [reagent-utils "0.2.0"]
                            [ring "1.5.0"]
-                           [re-frame "0.9.4"]
+
+                           [re-frame "0.10.5"]
                            [ring.middleware.logger "0.5.0"]
                            [com.cognitect/transit-clj "0.8.290" :exclusions [commons-codec]]
                            [bk/ring-gzip "0.1.1"]
                            [ring-transit-middleware "0.1.3"]
                            [com.novemberain/monger "3.1.0"]
-                           [com.google.guava/guava "19.0"]
+                           [com.google.guava/guava "24.1-jre"]
                            [ring/ring-defaults        "0.2.1"]
                            [compojure "1.5.1"]
                            [org.clojure/core.async    "0.2.395"]
                            [day8.re-frame/async-flow-fx "0.0.9"]
+                           [org.clojure/core.async "0.4.474"]
                            [hiccup "1.0.5"]
                            [yogthos/config "0.8"]
-                           [org.clojure/clojurescript "1.9.229"]
+                           [org.clojure/clojurescript "1.9.946"]
                            [com.draines/postal "2.0.0"]
                            [com.taoensso/sente "1.11.0"]
                  ;[clojure-guava "0.0.8"]
@@ -77,7 +79,9 @@
                       :app
                       {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
                        :compiler
-                       {:main "lvlup.dev"
+                       {:closure-defines      {"re_frame.trace.trace_enabled_QMARK_" true}
+                        :preloads             [day8.re-frame-10x.preload]
+                        :main "lvlup.dev"
                         :asset-path "/js/out"
                         :output-to "target/cljsbuild/public/js/app.1.3.8.js"
                         :output-dir "target/cljsbuild/public/js/out"
@@ -93,15 +97,16 @@
              :ring-handler lvlup.handler/app} :profiles {:dev {:repl-options {:init-ns lvlup.repl
                                                                               :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
-                                                               :dependencies [[ring/ring-mock "0.3.0"]
+                                                               :dependencies [[day8.re-frame/re-frame-10x "0.3.3"]
+                                                                              [ring/ring-mock "0.3.0"]
                                                                               [ring/ring-devel "1.5.0"]
                                                                               [prone "1.1.4"]
                                                                               [figwheel-sidecar "0.5.8"]
                                                                               [org.clojure/tools.nrepl "0.2.12"]
                                                                               [com.cemerick/piggieback "0.2.2-SNAPSHOT"]
                                                                               [pjstadig/humane-test-output "0.8.1"]] :source-paths ["env/dev/clj"]
-                                                               :plugins [[lein-figwheel "0.5.8"]] :injections [(require 'pjstadig.humane-test-output)
-                                                                                                               (pjstadig.humane-test-output/activate!)]
+                                                               :plugins [[lein-figwheel "0.5.15"]] :injections [(require 'pjstadig.humane-test-output)
+                                                                                                                (pjstadig.humane-test-output/activate!)]
 
                                                                :env {:dev true}}
 
