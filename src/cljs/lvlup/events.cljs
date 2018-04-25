@@ -58,7 +58,7 @@
  (fn [db [_ the-map]]
    (dispatch [:dungeon/get-members
               {:number 0 :search the-map}])
-   (assoc db :search-member the-map :players [])))
+   (assoc db :search-member the-map)))
 
 (reg-event-db
  :set-connection-state
@@ -265,8 +265,6 @@
                         #(= (:id %) the-map)
                         (:players db))))))
 
-
-
 (reg-event-db
  :set-reservations
  (fn [db [_ reservations]]
@@ -299,6 +297,63 @@
 
 
     db))
+
+
+(reg-event-db
+  :dungeon/change
+  (fn [db [_ the-map]]
+
+
+    (chsk-send! [:dungeon/change the-map]
+                5000
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply)
+                    ())))
+
+
+    db))
+
+(reg-event-db
+  :dungeon/modify-invoice
+  (fn [db [_ the-map]]
+
+
+    (chsk-send! [:dungeon/modify-invoice the-map]
+                5000
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply)
+                    (dispatch [:set-loading false]))))
+
+
+    (assoc db :loading true)))
+
+(reg-event-db
+  :dungeon/season-pass
+  (fn [db [_ the-map]]
+
+
+    (chsk-send! [:dungeon/season-pass the-map]
+                5000
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply)
+                    (dispatch [:set-loading false]))))
+
+
+    (assoc db :loading true)))
+
+(reg-event-db
+  :dungeon/add-invoice
+  (fn [db [_ the-map]]
+
+
+    (chsk-send! [:dungeon/add-invoice the-map]
+                5000
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply)
+                    (dispatch [:set-loading false]))))
+
+
+    (assoc db :loading true)))
 
 (reg-event-db
   :dungeon/get-invoices

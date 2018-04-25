@@ -406,39 +406,36 @@
 
 (defn one-menu [name picture url]
   ;[:a {:style {:color "white !important"} :href url}
-   [:div.uk-inline-clip.uk-transition-toggle.uk-padding-small.uk-animation-slide-top
+   [:div.uk-inline-clip.uk-transition-toggle.uk-padding-small
     {:style {:cursor "pointer"}}
 
     [:div {:style {:border "1px solid white" :border-radius "4px"}}
 
      [:img.uk-align-center.uk-margin-remove-vertical {:alt "", :src picture :width "150px"}]
      [:a.uk-transition-fade.uk-position-cover.uk-position-small.uk-overlay.uk-overlay-default.uk-flex.uk-flex-center.uk-flex-middle {:style {:text-decoration "none"} :href url}
-      [:h1.uk-margin-remove  name]]]])
+      [:h1.uk-margin-remove {:style {:color "black"}}  name]]]])
 
-(defn full-screen-nav [open? name]
+(defn full-screen-nav []
 
-   [:div.uk-inline.uk-padding-remove {:style {:height "100vh" :width "100vw" } :on-click #(do (dispatch [:open-menu (not @open?)])
-                                                                                              (.scrollTo js/window 0 0))}
-    [:div.uk-width-1-1
-     [:h5.uk-margin-remove.uk-padding-remove.uk-text-center.uk-heading-line
-      [:span {:style {:font-size "2em" :color "white"}}
-       name]]]
+   [:div.uk-inline.uk-padding-remove
+    {:style {:height "100vh" :width "100vw"}
+     :data-uk-toggle "target: #container-nav"}
+
       ;[:div.uk-text-meta.uk-text-small.uk-text-center.uk-margin-remove [read-now]]]]
     [:div.uk-position-center
-     [:div.uk-flex.uk-child-width-1-2.uk-grid.uk-margin-remove {:data-uk-grid true}
+     [:div.uk-flex.uk-flex-center.uk-child-width-1-2.uk-grid.uk-margin-remove {:data-uk-grid true}
 
       [one-menu "Foglalás" "/Icons/reservation2.svg" "/crusader/reservation"]
       [one-menu "Kassza" "/Icons/checkout.svg" "/crusader/checkout"]
       [one-menu "Felhasználók" "/Icons/users.svg" "/crusader/registration"]
-      [one-menu "Dungeon" "/Icons/dungeon.svg" "/crusader/dungeon"]]]])
+      [one-menu "Dungeon" "/Icons/dungeon.svg" "/crusader/dungeon"]
+      [one-menu "Patch notes" "/Icons/info.svg" "/crusader"]]]])
 
 
 (defn crusader-navbar []
   (let [members (subscribe [:data "players"])
         search (atom "")
-        open? (subscribe [:data "open-menu"])
         connection-state (subscribe [:data "connection-state"])
-        sticky-atom (atom nil)
         actual-page (subscribe [:data "actual-page"])]
     (reagent/create-class
       {
@@ -446,18 +443,21 @@
        :reagent-render
        (fn []
          [:div {:style {:height "60px"} :class (if (= @actual-page "home-page") "uk-hidden" "")}
+          [:div#container-nav {:data-uk-offcanvas true}
+           [:div.uk-offcanvas-bar.uk-padding-remove {:style {:width "100vw" :background "rgba(0,0,0,0.7)"}}
+            [full-screen-nav]]]
           [:nav#stick
            {:data-uk-grid true
-            :style {:z-index 1000 :cursor "pointer" :height (if @open? "active-menu" "passive-menu")}
-            ;:class (if @open? "active-menu" "passive-menu")
+            :style {:z-index 1000 :cursor "pointer"}
+
             :data-uk-sticky true}
            [sidenav]
-           (if @open? [full-screen-nav open? (decide-title (str @actual-page))])
-           [:div.uk-navbar-left.uk-animation-fade {:class (if @open? "uk-hidden")}
+
+           [:div.uk-navbar-left.uk-animation-fade
               [:div.stick-logo.scale-hover
-               [:img.rotate {:src "/img/lvlup-logo-transparent.png" :on-click #(dispatch [:open-menu (not @open?)])}]]]
-           [:div.uk-navbar-center
-              {:class (if @open? "uk-hidden") :on-click #(dispatch [:open-menu (not @open?)])}
+               [:img.rotate {:src "/img/lvlup-logo-transparent.png" :data-uk-toggle "target :#container-nav"}]]]
+           [:div.uk-navbar-center.uk-padding-remove
+              { :data-uk-toggle "target :#container-nav"}
             [:div
              [:div {:href "/crusader"}
               [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
@@ -471,7 +471,7 @@
               ;[:li.uk-nav-divider]
               ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
            [:div.uk-navbar-right
-             [:div.uk-grid.uk-animation-fade.uk-padding.uk-padding-remove-vertical {:data-uk-grid true :class (if @open? "uk-hidden")}
+             [:div.uk-grid.uk-animation-fade.uk-padding.uk-padding-remove-vertical {:data-uk-grid true}
               [:img.scale-hover {:width "65px"
                                  :data-uk-tooltip (if @connection-state
                                                     "Kapcsolódva"
@@ -489,14 +489,24 @@
                    []
                    (filter-by-name-and-id  @members search false))))]]]]])})))
 
+
+(defn loading-screen []
+  [:div.uk-inline {:style {:height "100vh" :width "100vw" :position "fixed" :background "rgba(0,0,0,0.9)" :z-index "200000"}}
+    [:div.uk-position-center {:data-uk-spinner "ratio: 5" :style {:color "white"}}]])
+
 (defn current-page []
-  (let [actual-page (subscribe [:data "actual-page"])]
+  (let [actual-page (subscribe [:data "actual-page"])
+        loading (subscribe [:data "loading"])]
     (reagent/create-class
       {
        :reagent-render
        (fn []
-         [:div {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
+         [:div.uk-offcanvas-content {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
           [crusader-navbar]
+
+
+
+          (if @loading [loading-screen])
           (case @actual-page
             "crusader"    [:div.uk-inline
                            {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}

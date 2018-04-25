@@ -137,55 +137,6 @@
           0)))
     0))
 
-(defn all-items-to-invoices [player-id]
-  (let [all-systems (subscribe [:data "system-map"])
-        all-players (filter (fn [a] (and (not= (:players a) {}) (not= (:players a) nil)))
-                            (map #(assoc {} :number (:number %) :players (:players %))
-                                 @all-systems))
-        this-player-all-systems (doall
-                                 (filter #(= (js/parseInt player-id) (:member-id (second (first (:players %)))))
-                                         (doall
-                                          (filter (fn [a] (contains? (second (first (:players a))) :member-id))
-                                                  all-players))))
-        this-player-systems (doall
-                             (filter #(= (js/parseInt player-id) (:member-id (second (first (:players %)))))
-                                     (doall
-                                      (filter (fn [a] (contains? (second (first (:players a))) :start))
-                                              all-players))))] (doseq [system this-player-systems]
-                                                                 (let [number (:number system)
-                                                                       player (:players system) [filtered-system] (filter #(= number (:number %))
-                                                                                                                          @all-systems)]
-            ; (.log js/console (str "wtf" the-val))
-                                                                   (doseq [[the-key place] player]
-                                                                     (chsk-send!
-                                                                      [:dungeon/add-invoice
-                                                                       (assoc {}
-                                                                              :type (:type place)
-                                                                              :name (:name place)
-                                                                              :member-id player-id
-                                    ;:payed false
-                                                                              :start (convert-to-clojurescript-time (:start place))
-                                                                              :finish (convert-to-clojurescript-time (str (calculate-time-zone)))
-                                                                              :price (minute-to-money (core/in-seconds (core/interval
-                                                                                                                         (format/parse (:start place))
-                                                                                                                         (calculate-time-zone)))
-                                                                                                      (:type place)))]))))
-      ; (chsk-send! [:dungeon/get-members-with-id (vec player-id)])
-       (doseq [system this-player-all-systems]
-         (let [number (:number system)
-               player (:players system) [filtered-system] (filter #(= number (:number %))
-                                                                  @all-systems)]
-               ; (.log js/console (str "wtf" the-val))
-           (doseq [[the-key place] player]
-                       ;(.log js/console (str "wtf" the-key)
-             (chsk-send!
-              [:dungeon/change
-               (assoc
-                filtered-system
-                :players (dissoc
-                          (:players
-                           filtered-system)
-                          the-key))]))))))
 
 (defn all-items-to-hours [player-id]
   (let [all-systems (subscribe [:data "system-map"])
@@ -203,48 +154,7 @@
       ;(.log js/console (str "wtf" this-player-systems))
     total-price))
 
-(defn all-items-to-season-pass [player-id]
-  (let [all-systems (subscribe [:data "system-map"])
-        all-players (filter (fn [a] (and (not= (:players a) {}) (not= (:players a) nil)))
-                            (map #(assoc {} :number (:number %) :players (:players %))
-                                 @all-systems))
-        this-player-all-systems (doall
-                                 (filter #(= (js/parseInt player-id) (:member-id (second (first (:players %)))))
-                                         (doall
-                                          (filter (fn [a] (contains? (second (first (:players a))) :member-id))
-                                                  all-players))))
-        this-player-systems (doall
-                             (filter #(= (js/parseInt player-id) (:member-id (second (first (:players %)))))
-                                     (doall
-                                      (filter (fn [a] (contains? (second (first (:players a))) :start))
-                                              all-players))))] (.log js/console (str "wtf: " all-players))
-       (doseq [system this-player-systems]
-         (let [number (:number system)
-               player (:players system) [filtered-system] (filter #(= number (:number %))
-                                                                  @all-systems)]
 
-           (doseq [[the-key place] player]
-                  ;  (.log js/console (str "wtf" the-key))
-             (chsk-send!
-              [:dungeon/season-pass
-               {:quantity
-                (* -1
-                   (all-items-to-hours player-id))
-                :member-id player-id}]))
-
-           (doseq [system this-player-all-systems]
-             (let [number (:number system)
-                   player (:players system) [filtered-system] (filter #(= number (:number %))
-                                                                      @all-systems)]
-                   ; (.log js/console (str "wtf" the-val))
-               (doseq [[the-key place] player] (chsk-send!
-                                                [:dungeon/change
-                                                 (assoc
-                                                  filtered-system
-                                                  :players (dissoc
-                                                            (:players
-                                                             filtered-system)
-                                                            the-key))]))))))))
 
 (defn all-items-to-money [player-id]
   (let [all-systems (subscribe [:data "system-map"])
@@ -282,54 +192,60 @@
       (str "- " (quot seconds-negated 3600) "h " (mod (quot seconds-negated 60) 60) "m " (mod seconds-negated 60) "s")
       (str (quot seconds 3600) "h " (mod (quot seconds 60) 60) "m " (mod seconds 60) "s"))))
 
-(defn pay [player-number item name loading]
-  [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
-   {:disabled loading
-    :data-uk-icon "icon: sign-out"
-    :on-click #(do
-                 (notification (str name " kasszához küldve!"))
-                 (dispatch [:set-loading true])
-                 (chsk-send!
-                  [:dungeon/change
-                   (assoc item :color nil :players (dissoc (:players item) player-number))])
+(defn pay [player-number item name]
+  (let [loading (atom false)]
+    (fn [player-number item name]
+      [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
+       {:disabled @loading
+        :data-uk-icon "icon: sign-out"
+        :on-click #(do
+                     (reset! loading true)
+                     (notification (str name " kasszához küldve!"))
+                     ;(dispatch [:set-loading true])
+                     (dispatch
+                      [:dungeon/change
+                       (assoc item :color nil :players (dissoc (:players item) player-number))])
 
-                 (chsk-send!
-                  [:dungeon/add-invoice
-                   (assoc  {}
-                           :color (:color item)
-                           :number (:number item)
-                           :type (:type item)
-                           :name (:name item)
-                           :member-id (:member-id (get (:players item) player-number))
-                           :payed false
-                           :start (convert-to-clojurescript-time (:start (get (:players item) player-number)))
-                           :finish (convert-to-clojurescript-time (str (calculate-time-zone)))
-                           :price (minute-to-money (core/in-seconds (core/interval
-                                                                      (format/parse (:start (get (:players item) player-number)))
-                                                                      (calculate-time-zone)))
-                                                   (:type item)))]
-                  8000 ; Timeout
+                     (dispatch
+                      [:dungeon/add-invoice
+                       (assoc  {}
+                               :color (:color item)
+                               :number (:number item)
+                               :type (:type item)
+                               :name (:name item)
+                               :member-id (:member-id (get (:players item) player-number))
+                               :payed false
+                               :start (convert-to-clojurescript-time (:start (get (:players item) player-number)))
+                               :finish (convert-to-clojurescript-time (str (calculate-time-zone)))
+                               :price (minute-to-money (core/in-seconds (core/interval
+                                                                          (format/parse (:start (get (:players item) player-number)))
+                                                                          (calculate-time-zone)))
+                                                       (:type item)))]
+                      8000 ; Timeout
 
-                  (fn [reply] ; Reply is arbitrary Clojure data
-                    (if (sente/cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-                      (dispatch [:set-loading false])))))}])
+                      (fn [reply] ; Reply is arbitrary Clojure data
+                        (if (sente/cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                          (dispatch [:set-loading false])))))}])))
 
-(defn pay-with-season-pass [player-number item name loading]
-  [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
-   {:data-uk-icon "icon: credit-card"
-    :disabled loading
-    :on-click #(do
-                 (notification (str name " fizetett bérlettel!"))
-                 (chsk-send!
-                  [:dungeon/change
-                   (assoc item :players (dissoc (:players item) player-number))])
-                 (chsk-send! [:dungeon/season-pass
-                              {:quantity
-                               (* -1
-                                  (count-time-halves
-                                   (format/parse (:start (get (:players item) player-number)))
-                                   (calculate-time-zone)))
-                               :member-id (:member-id (get (:players item) player-number))}]))}])
+(defn pay-with-season-pass [player-number item name]
+  (let [loading (atom false)]
+    (fn [player-number item name]
+      [:button.uk-button-small.uk-button.uk-button-primary.uk-width-1-3
+       {:data-uk-icon "icon: credit-card"
+        :disabled @loading
+        :on-click #(do
+                     (reset! loading true)
+                     (notification (str name " fizetett bérlettel!"))
+                     (dispatch
+                      [:dungeon/change
+                       (assoc item :players (dissoc (:players item) player-number))])
+                     (dispatch [:dungeon/season-pass
+                                {:quantity
+                                 (* -1
+                                    (count-time-halves
+                                     (format/parse (:start (get (:players item) player-number)))
+                                     (calculate-time-zone)))
+                                 :member-id (:member-id (get (:players item) player-number))}]))}])))
 
 
 
@@ -347,12 +263,12 @@
                    (notification (if (= "+" elojel)
                                    (str name " + 5 perc")
                                    (str name " - 5 perc")))
-                   (chsk-send! [:dungeon/change
-                                (assoc-in item
-                                          [:players player-number :start]
-                                          (if (= "+" elojel)
-                                            (convert-to-clojurescript-time (str (core/minus (format/parse (:start (get (:players item) player-number))) (core/minutes 5))))
-                                            (convert-to-clojurescript-time (str (core/plus (format/parse (:start (get (:players item) player-number))) (core/minutes 5))))))])
+                   (dispatch [:dungeon/change
+                              (assoc-in item
+                                        [:players player-number :start]
+                                        (if (= "+" elojel)
+                                          (convert-to-clojurescript-time (str (core/minus (format/parse (:start (get (:players item) player-number))) (core/minutes 5))))
+                                          (convert-to-clojurescript-time (str (core/plus (format/parse (:start (get (:players item) player-number))) (core/minutes 5))))))])
                    (reset! the-atom
                            (calculate-time-interval
 
@@ -364,7 +280,7 @@
 (defn modify-color [item color]
   [:div.one-color.uk-modal-close
    {:style {:height "50px" :width "50px" :background color}
-    :on-click #(chsk-send!
+    :on-click #(dispatch
                  [:dungeon/change
                   (assoc item :color color)])}])
 
@@ -376,7 +292,7 @@
        {:data-uk-icon "icon: close"
         :on-click #(do
                      (notification (str name " mégsézve!"))
-                     (chsk-send!
+                     (dispatch
                       [:dungeon/change
                        (assoc item :players (dissoc (:players item) player-number))]))}])))
 
@@ -387,7 +303,7 @@
                  (calculate-time-zone)
                  (notification (str name " ideje elindítva!"))
                  (reset! the-atom 0)
-                 (chsk-send!
+                 (dispatch
                   [:dungeon/change
                    (assoc item :players (assoc-in (:players item) [player-number :start] (convert-to-clojurescript-time (str (calculate-time-zone)))))]))}])
 
@@ -434,8 +350,8 @@
           [modify-time player-number system "-" time-elapsed (:n @player)]
           [modify-time player-number system "+" time-elapsed (:n @player)]
           [cancel player-number system (:n @player)]
-          [pay-with-season-pass player-number system (:name @player) @loading]
-          [pay player-number system (:name @player) @loading]])})))
+          [pay-with-season-pass player-number system (:name @player)]
+          [pay player-number system (:name @player)]])})))
 
 (defn system [index item]
   (let []
@@ -642,7 +558,7 @@
       "pc" (if (and
                 (= (:type filtered-system) "pc")
                 (= 0 (count (:players filtered-system))))
-             (chsk-send!
+             (dispatch
               [:dungeon/change
                (assoc filtered-system
                       :players {:one {:type (:type filtered-system)
@@ -650,7 +566,7 @@
              (notification "Több játékos nem fér el!"))
       (if (= 4 (count (:players filtered-system)))
         (notification "Több játékos nem fér el!")
-        (chsk-send!
+        (dispatch
          [:dungeon/change
           (assoc filtered-system :players
                  (assoc (:players filtered-system)
@@ -684,11 +600,11 @@
        (= "xbox" (:type filtered-system2))))
 
      (do
-       (chsk-send!
+       (dispatch
         [:dungeon/change
          (assoc filtered-system :players (:players filtered-system2))])
 
-       (chsk-send!
+       (dispatch
         [:dungeon/change
          (assoc filtered-system2
                 :players (:players filtered-system))])
@@ -725,7 +641,7 @@
            [:div.uk-badge.uk-position-bottom-right number]]
 
           [:td member-id]
-          [:td name]
+          [:td (:name @member)]
           [:td (utils/read-date (format/parse start))
                (str
                  (convert-time (format/parse start)) " - " (convert-time (format/parse finish)))]
@@ -744,18 +660,18 @@
                   :data-uk-icon "icon: credit-card; ratio: 1"
                   :on-click #(do
                                ;(notification (str name) " bérlettel fizetett!")
-                               (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}])
+                               (dispatch [:dungeon/modify-invoice {:id (:_id item)}])
 
-                               (chsk-send! [:dungeon/season-pass {:quantity (* -1 (count-time-halves
-                                                                                    (format/parse start)
-                                                                                    (format/parse finish)))
-                                                                  :member-id member-id}]))}]
+                               (dispatch [:dungeon/season-pass {:quantity (* -1 (count-time-halves
+                                                                                  (format/parse start)
+                                                                                  (format/parse finish)))
+                                                                :member-id member-id}]))}]
                 [:span.invoice-icon
                  {
                   :data-uk-icon "icon: check; ratio: 1"
                   :on-click #(do
                                (notification (str (:name member) " készpénzzel fizetett!"))
-                               (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}]))}]
+                               (dispatch [:dungeon/modify-invoice {:id (:_id item)}]))}]
                 [:span.invoice-icon
                  {:style {:color (if (some #(= item %)
                                            @the-cart)
@@ -777,24 +693,28 @@
         [place the-player] item
         {:keys [member-id start]} the-player
         player (subscribe [:player member-id])
-        {:keys [name]} @player]
+        {:keys [name]} @player
+        loading (atom false)]
 
     (reagent/create-class
       {:component-did-mount #(dispatch [:dungeon/get-member-with-id (:member-id (second item))])
        :reagent-render
-       (fn [item]
-         [:div.uk-width-1-1.uk-margin-remove.uk-padding-remove.one-invoice
-          {:data-uk-tooltip (str "title: " (if start
+       (fn [item gamer-system]
+         [:button.uk-button.uk-button-default.uk-width-1-1.uk-margin-remove.uk-padding-remove.one-invoice
+          {:disabled @loading
+           :data-uk-tooltip (str "title: " (if start
                                              (str (utils/read-hour  (format/parse start)) "-kor kezdett")
                                              "Most ült le!"))
            :style {:height "20px !important" :cursor "pointer"}
            :on-click #(if start
                         (do
-                          (chsk-send!
+
+                          (reset! loading true)
+                          (dispatch
                             [:dungeon/change
                              (assoc gamer-system :color nil :players (dissoc (:players gamer-system) place))])
 
-                          (chsk-send!
+                          (dispatch
                             [:dungeon/add-invoice
                              (assoc  {}
                                :color color
@@ -814,8 +734,9 @@
                               (if (sente/cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                                 (dispatch [:set-loading false]))))))}
 
-          [:div.uk-text-truncate.uk-padding-small.uk-text-center
-                                 (str member-id " - " (:name @player) " ")
+
+          [:div.uk-text-truncate.uk-padding-remove.uk-text-center
+           (str member-id " - " (:name @player) " ")
            [:span {:data-uk-icon "icon: sign-out"}]]])})))
 
      ;(str item)]))
@@ -858,7 +779,7 @@
       [:div {:style {:background "rgba(0,0,0,0.5)"}}
        [:h1.uk-text-center.uk-heading-line.uk-margin-remove [:span {:style {:color "white"}} "Összesen"]]
        [:div.uk-padding-small (map-indexed #(-> ^{:key %2}[cart-item %2])
-                                           @the-cart)]
+                                           (sort-by #(.parseInt js/window (:number %))  @the-cart))]
        [:hr.uk-margin-remove]
        [:h4.uk-text-center.uk-margin-remove.uk-padding-small
         {:style {:color "white"}}
@@ -871,7 +792,7 @@
           {:on-click #(doseq [item @the-cart]
                         (do
                           (dispatch [:add-to-cart item])
-                          (chsk-send! [:dungeon/modify-invoice {:id (:_id item)}])))
+                          (dispatch [:dungeon/modify-invoice {:id (:_id item)}])))
            :data-uk-icon "icon: check"}]]])))
 
 (defn smart-pult []
@@ -896,10 +817,7 @@
         invoices (subscribe [:data "invoices"])]
     (reagent/create-class
      {
-      :component-did-mount #(utils/do-later
-                              (fn [a] (dispatch [:dungeon/get-invoices]))
-                              1000
-                              nil)
+      :component-did-mount #(dispatch [:dungeon/get-invoices])
       :reagent-render
       (fn []
         [:div.uk-grid.uk-grid-small.uk-padding-small.uk-margin-remove {:data-uk-grid true}
@@ -1077,10 +995,8 @@
     (reagent/create-class
 
      {:component-did-mount #(do (listen!)
-                                (utils/do-later
-                                  (fn [a] (dispatch [:dungeon/get-members {:number 0 :search ""}]))
-                                  1000
-                                  nil))
+                                (dispatch [:dungeon/get-members {:number 0 :search ""}]))
+
       ;:component-will-unmount #(unlisten!)
 
       :reagent-render
@@ -1186,10 +1102,8 @@
     (reagent/create-class
      {:component-did-mount #(do
 
-                              (utils/do-later
-                                (fn [a]  (dispatch [:dungeon/get-dungeon]))
-                                1000
-                                nil)
+                              (dispatch [:dungeon/get-dungeon])
+
                               (reset! sidenav-canvas (.offcanvas js/UIkit ($ "#sidenav")))
 
                               (.dragging js/window)

@@ -10,7 +10,6 @@
                            [reagent "0.7.0"]
                            [reagent-utils "0.2.0"]
                            [ring "1.5.0"]
-
                            [re-frame "0.10.5"]
                            [ring.middleware.logger "0.5.0"]
                            [com.cognitect/transit-clj "0.8.290" :exclusions [commons-codec]]
@@ -70,7 +69,7 @@
             {:builds {:min
                       {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
                        :compiler
-                       {:output-to "target/cljsbuild/public/js/app.1.3.8.js"
+                       {:output-to "target/cljsbuild/public/js/app.1.4.3.js"
                         :output-dir "target/uberjar"
                         :optimizations :simple
                         :externs ["externs/jquery.js"]
@@ -83,7 +82,7 @@
                         :preloads             [day8.re-frame-10x.preload]
                         :main "lvlup.dev"
                         :asset-path "/js/out"
-                        :output-to "target/cljsbuild/public/js/app.1.3.8.js"
+                        :output-to "target/cljsbuild/public/js/app.1.4.3.js"
                         :output-dir "target/cljsbuild/public/js/out"
                         :source-map true
                         :optimizations :none
@@ -100,7 +99,7 @@
                                                                :dependencies [[day8.re-frame/re-frame-10x "0.3.3"]
                                                                               [ring/ring-mock "0.3.0"]
                                                                               [ring/ring-devel "1.5.0"]
-                                                                              [prone "1.1.4"]
+                                                                              [prone "1.1.4.3"]
                                                                               [figwheel-sidecar "0.5.8"]
                                                                               [org.clojure/tools.nrepl "0.2.12"]
                                                                               [com.cemerick/piggieback "0.2.2-SNAPSHOT"]

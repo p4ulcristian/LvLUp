@@ -371,13 +371,17 @@
   [ev-msg] (get-max-id))
 
 (defmethod -event-msg-handler :dungeon/season-pass
-  [ev-msg] (season-pass ev-msg))
+  [{:as ev-msg :keys [?reply-fn]}]
+  (season-pass ev-msg)
+  (?reply-fn true))
 
 (defmethod -event-msg-handler :dungeon/get-invoices
   [{:as ev-msg :keys [?reply-fn]}] (?reply-fn (get-invoices)))
 
 (defmethod -event-msg-handler :dungeon/modify-invoice
-  [ev-msg] (modify-invoice ev-msg))
+  [{:as ev-msg :keys [?reply-fn]}]
+  (modify-invoice ev-msg)
+  (?reply-fn true))
 
 (defmethod -event-msg-handler :dungeon/get-members
   [{:as ev-msg :keys [?reply-fn]}] (?reply-fn (get-members ev-msg)))
