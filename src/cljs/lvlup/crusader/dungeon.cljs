@@ -294,7 +294,7 @@
                      (notification (str name " mégsézve!"))
                      (dispatch
                       [:dungeon/change
-                       (assoc item :players (dissoc (:players item) player-number))]))}])))
+                       (assoc item :color nil :players (dissoc (:players item) player-number))]))}])))
 
 (defn start-button [player-number item the-atom name]
   [:button.uk-button.uk-button.uk-button-primary.uk-width-1-1.uk-margin-small-top
@@ -602,12 +602,12 @@
      (do
        (dispatch
         [:dungeon/change
-         (assoc filtered-system :players (:players filtered-system2))])
+         (assoc filtered-system :players (:players filtered-system2) :color (:color filtered-system2))])
 
        (dispatch
         [:dungeon/change
          (assoc filtered-system2
-                :players (:players filtered-system))])
+                :players (:players filtered-system) :color (:color filtered-system))])
 
        (notification "Csak két azonos típusú rendszert tudsz cserélni!")))))
 
@@ -931,7 +931,7 @@
         the-timeout (atom nil)]
         ;input-value (atom "")]
     (reagent/create-class
-      {
+      {:component-did-mount #(chsk-send! [:dungeon/get-max-id])
        :reagent-render
        (fn [members]
          [:div.uk-sticky.uk-card.uk-grid.uk-grid-stack.uk-margin-remove.uk-animation-fade
@@ -951,7 +951,8 @@
             :type "text"}]
 
           [:button.uk-button.uk-button-primary.uk-align-center.uk-margin-remove.uk-padding-remove.uk-width-1-1.uk-grid-margin.uk-first-column
-           {:on-click #(do (dispatch [:set-max-id (inc @max-id)])
+           {:disabled (if (= 0 @max-id) true false)
+            :on-click #(do (dispatch [:set-max-id (inc @max-id)])
                            (chsk-send! [:dungeon/add-member {:id @max-id :name @search}]))}
            (str @max-id) ". gamer hozzáadása!"]])})))
 

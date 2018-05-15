@@ -1,6 +1,6 @@
 (ns lvlup.handler
   (:require [compojure.core :refer [GET POST defroutes]]
-            [compojure.route :refer [not-found resources]]
+            [compojure.route :refer [not-found resources files]]
             [hiccup.page :refer [include-js include-css html5]]
             [lvlup.middleware :refer [wrap-middleware]]
             [ring.middleware.transit :refer [wrap-transit]]
@@ -8,7 +8,7 @@
             [ring.middleware.multipart-params :refer [wrap-multipart-params]]
             [compojure.response :refer [render]]
             [clojure.java.io :as io]
-            [ring.util.response :refer [response redirect content-type resource-response]]
+            [ring.util.response :refer [response redirect content-type resource-response file-response]]
             [ring.middleware.gzip :refer [wrap-gzip]]
             [hiccup.element :refer [javascript-tag]]
             [ring.middleware.session :refer [wrap-session]]
@@ -20,7 +20,7 @@
             [monger.collection :refer [insert update update-by-id remove-by-id] :as mc]
             [monger.query :refer :all]
             [monger.operators :refer :all]
-            [bidi.ring :refer [make-handler]]
+            [bidi.ring :refer [make-handler ->Resources ->ResourcesMaybe]]
             [buddy.auth :refer [authenticated? throw-unauthorized]]
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
@@ -169,7 +169,7 @@
       (include-js "/externaljs/picker.time.js")
       (include-js "/externaljs/dragscroll.js")
       (include-js "/externaljs/jscolor.min.js")
-      (include-js "/js/app.1.4.3.js")])))
+      (include-js "/js/app.1.4.5.js")])))
 
 (defn loading-page []
   (html5
@@ -187,7 +187,7 @@
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit.min.js")
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit-icons.min.js") (include-js "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js")
     (include-js "https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js") (include-js "https://use.fontawesome.com/cb88aeea27.js")
-    (include-js "/js/app.1.4.3.js")]))
+    (include-js "/js/app.1.4.5.js")]))
 
 (defonce    web-server_ (atom nil)) ; (fn stop [])
 
@@ -300,6 +300,8 @@
             :post (fn [req] (crusader/ring-ajax-post req))}
     "login" {:get (fn [req] {:status 200 :body (login req "LvLUP StaFF") :headers {"Content-Type" "text/html"}})
              :post (fn [req] (login-authenticate req))}
+    "make-xls" (fn [req] (crusader/save-statistics))
+    "file" (->ResourcesMaybe {:prefix "public/"})
 
     "send-email" (fn [req] (send-email-to-fellow-gamer req))
     "foglalasok" {[:type "/" :date]

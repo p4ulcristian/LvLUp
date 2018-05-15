@@ -10,6 +10,7 @@
    [monger.collection :refer [insert update update-by-id remove-by-id] :as mc]
    [monger.query :refer :all]
    [monger.operators :refer :all]
+   [dk.ative.docjure.spreadsheet :as xls]
    [hiccup.core        :as hiccup]
    [clojure.core.async :as async  :refer (<! <!! >! >!! put! chan go go-loop timeout)]
    [taoensso.encore    :as encore :refer (have have?)]
@@ -92,6 +93,8 @@
       conn               (mg/connect sa opts)
       db   (mg/get-db conn "lvlup")]
 
+
+
   (defn get-max-id []
     (let [all-member-id
           (+ 11 (mc/count db "members" {}))] (send-all [:dungeon/max-id all-member-id])))
@@ -145,6 +148,13 @@
      (map
       #(assoc % :_id (str (:_id %)))
       (with-collection db "unpayedinvoices"))))
+
+  (defn get-payed-invoices []
+
+    (vec
+      (map
+         #(assoc % :_id (str (:_id %)))
+         (with-collection db "invoices"))))
                                 ;(find {:payed false})))))]))
 
   (defn update-member [{:keys [event]}]
@@ -247,6 +257,36 @@
       (map
        #(dissoc % :_id)
        (with-collection db "dungeon")))))
+
+
+
+(defn format-date [date]
+  (let
+    [date-time (clojure.string/split date #"T")
+     year (clojure.string/join (first (split-at 4 (first date-time))))
+     month (clojure.string/join (first (split-at 2 (second (split-at 4 (first date-time))))))
+     day (clojure.string/join (second (split-at 2 (second (split-at 4 (first date-time))))))
+     hour (clojure.string/join (first (split-at 2 (second date-time))))
+     minute (clojure.string/join (first (split-at 2 (second (split-at 2 (second date-time))))))]
+    (str year "." month "." day " - " hour ":" minute)))
+
+
+(defn save-statistics []
+  (let [wb (xls/create-workbook "Számlák"
+                            (conj (vec (map #(vector (format-date (:start %))
+                                                     (format-date (:finish %))
+                                                     (:price %)
+                                                     (:member-id %))
+                                            (get-payed-invoices)))))
+
+
+
+
+        sheet (xls/select-sheet "Számlák" wb)
+        header-row (first (xls/row-seq sheet))]
+    (xls/set-row-style! header-row (xls/create-cell-style! wb {:background :yellow,
+                                                               :font {:bold true}}))
+    (xls/save-workbook! "invoices.xlsx" wb)))
 
 
 ;; We can watch this atom for changes if we like

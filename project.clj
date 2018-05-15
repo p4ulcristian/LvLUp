@@ -19,6 +19,7 @@
                            [com.google.guava/guava "24.1-jre"]
                            [ring/ring-defaults        "0.2.1"]
                            [compojure "1.5.1"]
+                           [dk.ative/docjure "1.12.0"]
                            [org.clojure/core.async    "0.2.395"]
                            [day8.re-frame/async-flow-fx "0.0.9"]
                            [org.clojure/core.async "0.4.474"]
@@ -69,7 +70,7 @@
             {:builds {:min
                       {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
                        :compiler
-                       {:output-to "target/cljsbuild/public/js/app.1.4.3.js"
+                       {:output-to "target/cljsbuild/public/js/app.1.4.5.js"
                         :output-dir "target/uberjar"
                         :optimizations :simple
                         :externs ["externs/jquery.js"]
@@ -82,7 +83,7 @@
                         :preloads             [day8.re-frame-10x.preload]
                         :main "lvlup.dev"
                         :asset-path "/js/out"
-                        :output-to "target/cljsbuild/public/js/app.1.4.3.js"
+                        :output-to "target/cljsbuild/public/js/app.1.4.5.js"
                         :output-dir "target/cljsbuild/public/js/out"
                         :source-map true
                         :optimizations :none
@@ -99,7 +100,7 @@
                                                                :dependencies [[day8.re-frame/re-frame-10x "0.3.3"]
                                                                               [ring/ring-mock "0.3.0"]
                                                                               [ring/ring-devel "1.5.0"]
-                                                                              [prone "1.1.4.3"]
+                                                                              [prone "1.1.4"]
                                                                               [figwheel-sidecar "0.5.8"]
                                                                               [org.clojure/tools.nrepl "0.2.12"]
                                                                               [com.cemerick/piggieback "0.2.2-SNAPSHOT"]

@@ -6,8 +6,15 @@
               [:div.uk-card.uk-card-secondary
                [:div.uk-card-body
                 [:p.uk-text-meta.uk-text-center "Minden új verzió után érdemes Ctrl+Shift+R-rel frissíteni az oldalt."]
+                [:h1.uk-center.uk-heading-line.uk-margin-remove.uk-text-center [:span "Patch notes 1.4.5 (hot-fix)"]]
+                [:ul.uk-list.uk-list-striped
+                 [:li "A vasárnap beálltával random hiba, megoldva, nem fordul elő többet."]
+                 [:li "Ha hamarabb megjelent az oldal mint betöltött, akkor sosem töltötte be a neveket, javítva."]]
 
-                [:h1.uk-center.uk-heading-line.uk-margin-remove.uk-text-center [:span "Patch notes 1.4.3"]]
+                [:h1.uk-center.uk-heading-line.uk-margin-remove.uk-text-center [:span "Patch notes 1.4.4 (bugfix)"]]
+
+
+                [:h1.uk-center.uk-heading-line.uk-margin-remove.uk-text-center [:span "Patch notes 1.4.3 (bugfix)"]]
                 [:ul.uk-list-striped
                   [:li "A keresés már nem feledteti el a már ülő emberek neveit. :)"]
                   [:li "Patch notes menüpont hozzáadva!"]

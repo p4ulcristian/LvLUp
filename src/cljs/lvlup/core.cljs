@@ -539,33 +539,33 @@
                     (dispatch [:set-actual-page "home-page"]))
 
 (secretary/defroute "/crusader" []
-                    (start-router!)
+
                     (dispatch [:set-actual-page "crusader"]))
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
 
 (secretary/defroute "/crusader/reservation" []
-                    (start-router!)
+
 
                     (dispatch [:set-actual-page "reservation"]))
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
 
 
 (secretary/defroute "/crusader/checkout" []
-                    (start-router!)
+
                     (dispatch [:set-actual-page "checkout"]))
       ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
       ;(chsk-send! [:dungeon/get-members])
 
 
 (secretary/defroute "/crusader/registration" []
-                    (start-router!)
-                    (dispatch [:set-actual-page "registration"])
-                    (chsk-send! [:dungeon/get-max-id]))
+
+                    (dispatch [:set-actual-page "registration"]))
+                    ;(chsk-send! [:dungeon/get-max-id]))
 
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
 
 (secretary/defroute "/crusader/dungeon" []
-                    (start-router!)
+
                     ;(chsk-send! [:dungeon/get-dungeon])
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
                     ;(chsk-send! [:dungeon/get-invoices])
@@ -582,6 +582,7 @@
 
 (defn init! []
   (dispatch-sync [:initialize])
+  (start-router!)
   (accountant/configure-navigation!
    {:nav-handler
     (fn [path]

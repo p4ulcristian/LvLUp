@@ -97,8 +97,12 @@
   [{:as ev-msg :keys [?data]}]
   (let [actual-page (subscribe [:data "actual-page"])
         [?uid ?csrf-token ?handshake-data] ?data]
-
-      (notification (str "Hello " ?uid))))
+      (case @actual-page
+        "registration" (chsk-send! [:dungeon/get-max-id])
+        "checkout" (dispatch [:dungeon/get-invoices])
+        "dungeon" (dispatch [:dungeon/get-dungeon])
+        "reservation" (dispatch [:dungeon/get-reservations])
+        (notification (str "Hello " ?uid)))))
 
 (defn chsk-disconnect! []
   (sente/chsk-disconnect! chsk))
