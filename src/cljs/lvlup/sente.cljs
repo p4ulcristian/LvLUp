@@ -60,9 +60,10 @@
 (defmethod -event-msg-handler :chsk/state
   [{:as ev-msg :keys [?data open?]}]
   (let [[old-state-map new-state-map] (have vector? ?data)]
+
     (if (:first-open? new-state-map)
       ;(notification-sente "Channel socket successfully established!: %s" new-state-map)
-      (notification-sente "Connected to LvLUp :)"              new-state-map))
+      (notification-sente (str "Connected to LvLUp :)" new-state-map)))
     (dispatch [:set-connection-state (:open? new-state-map)])))
       ;(notification-sente "Channel socket state change: %s"  new-state-map))))
 

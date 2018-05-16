@@ -7,6 +7,7 @@
    [clojure.data     :as data]
 
    [monger.core :as mg]
+
    [monger.collection :refer [insert update update-by-id remove-by-id] :as mc]
    [monger.query :refer :all]
    [monger.operators :refer :all]
@@ -68,10 +69,10 @@
 
 
 (defn send-all [message]
-  (let [uids (:any @connected-uids)] (doseq [uid uids]
-
-                                       (chsk-send! uid
-                                                   message))))
+  (let [uids (:any @connected-uids)]
+    (doseq [uid uids]
+      (chsk-send! uid
+                  message))))
 
 (def waiting-pool (atom []))
 
@@ -98,6 +99,12 @@
   (defn get-max-id []
     (let [all-member-id
           (+ 11 (mc/count db "members" {}))] (send-all [:dungeon/max-id all-member-id])))
+
+
+  (defn find-user [username]
+    (let []
+      (dissoc (mc/find-one-as-map db "users" {:username username}) :_id)))
+
 
   (defn dungeon-change [{:keys [event]}]
     (let [[key change-map] event]

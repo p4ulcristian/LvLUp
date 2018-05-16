@@ -2,6 +2,7 @@
   (:require [compojure.core :refer [GET POST defroutes]]
             [compojure.route :refer [not-found resources files]]
             [hiccup.page :refer [include-js include-css html5]]
+            [hiccup.form :refer [hidden-field]]
             [lvlup.middleware :refer [wrap-middleware]]
             [ring.middleware.transit :refer [wrap-transit]]
             [ring.middleware.reload :refer [wrap-reload]]
@@ -15,11 +16,13 @@
             [postal.core :refer [send-message]]
             [ring.middleware.logger :refer [wrap-with-logger]]
             [lvlup.crusader :as crusader]
+            [ring.middleware.anti-forgery :refer :all]
             [ring.middleware.params :refer [wrap-params]]
             [monger.core :as mg]
             [monger.collection :refer [insert update update-by-id remove-by-id] :as mc]
             [monger.query :refer :all]
             [monger.operators :refer :all]
+            [buddy.hashers :as hashers]
             [bidi.ring :refer [make-handler ->Resources ->ResourcesMaybe]]
             [buddy.auth :refer [authenticated? throw-unauthorized]]
             [buddy.auth.backends.session :refer [session-backend]]
@@ -189,9 +192,6 @@
     (include-js "https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js") (include-js "https://use.fontawesome.com/cb88aeea27.js")
     (include-js "/js/app.1.4.5.js")]))
 
-(defonce    web-server_ (atom nil)) ; (fn stop [])
-
-
 (def authdata
   "Global var that stores valid users with their
    respective passwords."
@@ -231,16 +231,19 @@
   [request text]
   (let []
     (html5
-     (head-crusader)
+
+      (head-crusader)
      [:body
       [:div.uk-card.uk-card-secondary {:style "height: 100vh"}
 
        [:div
 
         [:form.uk-padding {:method "post"}
+
          [:div {:class "uk-width-1-1@s uk-width-1-2@m uk-align-center"} [:img.uk-align-center {:src "/img/lvlup-logo-transparent.png"}]]
          [:div.uk-form {:class "uk-center uk-width-1-1@s uk-width-1-2@m uk-align-center" :data-uk-grid true}
           [:input.uk-input.uk-text-center {:placeholder "Felhasználónév" :name "username" :type "text" :id "username"}]
+          [:input {:type "hidden" :name "__anti-forgery-token" :value (force *anti-forgery-token*)}]
           [:input.uk-input.uk-text-center {:placeholder "Jelszó" :name "password" :type "password"}]
           [:input.uk-button.uk-button-primary.uk-align-center {:type "submit" :value "Bejelentkezés!"}]]]]]])))
 
@@ -255,44 +258,15 @@
   (let [username (get-in request [:form-params "username"])
         password (get-in request [:form-params "password"])
         session (:session request)
-        found-password (get authdata (keyword username))]
-    (if (and found-password (= found-password password))
+        user (crusader/find-user username)]
+    (if (hashers/check password (:password user))
       (let [next-url (get-in request [:query-params :next] "/crusader")
-            updated-session (assoc session :identity (keyword username))]
+            updated-session (assoc session :identity username :uid username :role "sadsadas")]
         (-> (redirect next-url)
             (assoc :session updated-session)))
-
       (let []
         (login request "Rossz felhasználó-jelszó páros!")))))
 
-;(defroutes routes
-           ;(GET "/" [] (loading-page))
-           ;(GET "/crusader" req (loading-page-crusader req))
-           ;(GET "/crusader/:a" req (loading-page-crusader req))
-           ;(GET "/crusader/:a/:b" req (loading-page-crusader req))
-;           (POST "/send-email" req (send-email-to-fellow-gamer req)))))))
-          ; (GET  "/chsk" req (crusader/ring-ajax-get-or-ws-handshake req))
-          ; (POST "/chsk" req (crusader/ring-ajax-post                req))
-          ; (GET "/login" req (login req "LvLUP StaFF"))
-           ;(POST "/login" [] login-authenticate)
-
-           ;(GET "/foglalasok/:a/:b" [a b] (get-reservations a b))
-           ;(GET "/systems" [] (get-systems))
-           ;(POST "/add-foglalasok" req
-            ;     (let [p (:transit-params req)]
-            ;       (add-reservation
-            ;        {:date (:date p)
-            ;         :name (:name p)
-            ;         :type (:type p)
-            ;         :start-hour (:start-hour p)
-            ;         :finish-hour (:finish-hour p)
-            ;         :system-name (:system-name p))
-           ;(POST "/delete-reservation" req
-            ;     (let [p (:transit-params req)]
-            ;       (delete-reservation p))) (GET "*" [] (loading-page))
-
-           ;(resources "/")
-           ;(not-found "Not Found"))
 
 (def routes
   ["/"
@@ -300,6 +274,7 @@
             :post (fn [req] (crusader/ring-ajax-post req))}
     "login" {:get (fn [req] {:status 200 :body (login req "LvLUP StaFF") :headers {"Content-Type" "text/html"}})
              :post (fn [req] (login-authenticate req))}
+
     "make-xls" (fn [req] (crusader/save-statistics))
     "file" (->ResourcesMaybe {:prefix "public/"})
 
@@ -315,13 +290,13 @@
 (def app
   (let [handler (make-handler routes)]
     (-> handler
-        (wrap-defaults
-         (assoc (assoc-in site-defaults [:security :anti-forgery] false) :proxy true))
-        (wrap-reload)
-        ;ring.middleware.keyword-params/wrap-keyword-params
-        ;ring.middleware.params/wrap-params
         (wrap-authorization auth-backend)
         (wrap-authentication auth-backend)
+        (wrap-defaults site-defaults)
+        (wrap-reload)
+        ring.middleware.keyword-params/wrap-keyword-params
+        ring.middleware.params/wrap-params
+
         (wrap-transit)
         (wrap-params)
         (wrap-multipart-params)
