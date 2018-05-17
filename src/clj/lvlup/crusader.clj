@@ -5,6 +5,7 @@
   (:require
    [clojure.string     :as str]
    [clojure.data     :as data]
+   [buddy.hashers :as hashers]
 
    [monger.core :as mg]
 
@@ -50,7 +51,9 @@
 
       chsk-server
       (sente/make-channel-socket-server!
-       (get-sch-adapter) {:packer packer})
+       (get-sch-adapter)
+       {:handshake-data-fn (fn [ring-req] (str (:role (:session ring-req))))
+        :packer packer})
 
       {:keys [ch-recv send-fn connected-uids
               ajax-post-fn ajax-get-or-ws-handshake-fn]}
@@ -104,6 +107,22 @@
   (defn find-user [username]
     (let []
       (dissoc (mc/find-one-as-map db "users" {:username username}) :_id)))
+
+  (defn get-users [{:keys [event]}]
+    (let [[key change-map] event]
+      (vec
+        (map
+          #(dissoc % :_id)
+          (with-collection db "users")))))
+
+  (defn add-user [{:keys [event]}]
+    (let [[key change-map] event]
+      (mc/insert db "users" (assoc change-map :password (hashers/derive (:password change-map))))))
+
+  (defn remove-user [{:keys [event]}]
+    (let [[key change-map] event]
+      (mc/remove-by-id db "users" (:_id (mc/find-one-as-map db "users" {:username change-map})))))
+      ;  (mc/update db "members" {:id (:id change-map)} {$set {:total-hours}})
 
 
   (defn dungeon-change [{:keys [event]}]
@@ -450,10 +469,22 @@
   [{:as ev-msg :keys [?reply-fn]}]
   (?reply-fn (get-member-with-id ev-msg)))
 
+
+(defmethod -event-msg-handler :crusader/add-user
+  [{:as ev-msg :keys [?reply-fn]}]
+  (add-user ev-msg))
+(defmethod -event-msg-handler :crusader/remove-user
+  [{:as ev-msg :keys [?reply-fn]}]
+  (remove-user ev-msg))
+(defmethod -event-msg-handler :crusader/get-users
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (get-users ev-msg)))
+
+
 (defmethod -event-msg-handler :dungeon/change
   [{:as ev-msg :keys [?reply-fn]}]
   (dungeon-change ev-msg))
-        ;(?reply-fn "mifasz"))
+
 
 (defmethod -event-msg-handler :example/count-clicks
   [ev-msg] (count-clicks))

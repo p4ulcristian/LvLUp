@@ -16,7 +16,8 @@
 (reg-event-db
  :initialize
  (fn [_ _]
-   {:system-map []
+   {:users {}
+    :system-map []
     :invoices []
     :max-id 0
     :open-menu false
@@ -176,6 +177,12 @@
                     (do
                       (dispatch [:add-player reply])))))
     db))
+
+
+(reg-event-db
+  :set-user-data
+  (fn [db [_ the-map]]
+    (assoc db :user the-map)))
 
 (reg-event-db
  :dungeon/add-reservations
@@ -373,5 +380,34 @@
 
 
     db))
-    ;(assoc db :open-menu false)))
-    ; (assoc db :open-menu false)))
+
+
+(reg-event-db
+  :crusader/remove-user
+  (fn [db [_ change-map]]
+    (chsk-send! [:crusader/remove-user change-map])
+    db))
+
+(reg-event-db
+  :crusader/add-user
+  (fn [db [_ user-map]]
+    (chsk-send! [:crusader/add-user user-map])
+    db))
+
+(reg-event-db
+  :set-users
+  (fn [db [_ the-map]]
+    (assoc db :users the-map)))
+
+(reg-event-db
+  :crusader/get-users
+  (fn [db [_]]
+
+    (chsk-send! [:crusader/get-users]
+                8000 ; Timeout
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                    (do
+                      (dispatch [:set-users reply])))))
+    db))
+

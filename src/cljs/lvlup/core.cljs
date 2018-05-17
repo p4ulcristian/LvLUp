@@ -8,6 +8,7 @@
             [lvlup.sente :refer [start-router! chsk-send! chsk-reconnect! chsk-disconnect!]]
               ;[lvlup.crusader.sente :refer [chsk-send! start-router! chsk-reconnect! chsk-disconnect!]]
             [lvlup.crusader.reservation :refer [reservation]]
+            [lvlup.crusader.admin :refer [admin]]
             [lvlup.crusader.crusader :refer [crusader]]
             [lvlup.crusader.dungeon :refer [dungeon checkout registration filter-by-name-and-id sidenav]]
             [ajax.core :refer [GET POST]]
@@ -432,9 +433,46 @@
       [one-menu "Patch notes" "/Icons/info.svg" "/crusader"]]]])
 
 
+(defn crusader-sidenav []
+
+   [:ul.uk-nav.uk-nav-primary.uk-nav-center.uk-margin-auto-vertical {:on-click #(.hide (.offcanvas js/UIkit "#container-nav"))}
+    [:li
+     [:a
+      {:href "/crusader/dungeon"}
+      [:span.uk-margin-small-right {:data-uk-icon "icon: happy"}]
+      " Dungeon"]]
+    [:li
+     [:a
+      {:href "/crusader/checkout"}
+      [:span.uk-margin-small-right {:data-uk-icon "icon: credit-card"}]
+      " Kassza"]]
+    [:li
+     [:a
+      {:href "/crusader/reservation"}
+      [:span.uk-margin-small-right {:data-uk-icon "icon: calendar"}]
+      " Foglalások"]]
+    [:li
+     [:a
+      {:href "/crusader/registration"}
+      [:span.uk-margin-small-right {:data-uk-icon "icon: users"}]
+      " Vendégek"]]
+    [:li
+     [:a
+      {:href "/crusader"}
+      [:span.uk-margin-small-right {:data-uk-icon "icon: info"}]
+      " Patch notes"]]
+    [:li.uk-nav-divider]
+    [:li
+     [:a
+      {:href "/logout"}
+      [:span.uk-margin-small-right {:data-uk-icon "icon: sign-out"}]
+      " Kijelentkezés"]]])
+
+
 (defn crusader-navbar []
   (let [members (subscribe [:data "players"])
         search (atom "")
+        user (subscribe [:data "user"])
         connection-state (subscribe [:data "connection-state"])
         actual-page (subscribe [:data "actual-page"])]
     (reagent/create-class
@@ -444,8 +482,9 @@
        (fn []
          [:div {:style {:height "60px"} :class (if (= @actual-page "home-page") "uk-hidden" "")}
           [:div#container-nav {:data-uk-offcanvas true}
-           [:div.uk-offcanvas-bar.uk-padding-remove {:style {:width "100vw" :background "rgba(0,0,0,0.7)"}}
-            [full-screen-nav]]]
+           [:div.uk-offcanvas-bar.uk-padding-remove.uk-flex.uk-flex-column
+            {:style { :background "rgba(0,0,0,0.9)"}}
+            [crusader-sidenav]]]
           [:nav#stick
            {:data-uk-grid true
             :style {:z-index 1000 :cursor "pointer"}
@@ -472,6 +511,7 @@
               ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
            [:div.uk-navbar-right
              [:div.uk-grid.uk-animation-fade.uk-padding.uk-padding-remove-vertical {:data-uk-grid true}
+              [:h4 (:role @user)]
               [:img.scale-hover {:width "65px"
                                  :data-uk-tooltip (if @connection-state
                                                     "Kapcsolódva"
@@ -495,7 +535,8 @@
     [:div.uk-position-center {:data-uk-spinner "ratio: 5" :style {:color "white"}}]])
 
 (defn current-page []
-  (let [actual-page (subscribe [:data "actual-page"])
+  (let [user (subscribe [:data "user"])
+        actual-page (subscribe [:data "actual-page"])
         loading (subscribe [:data "loading"])]
     (reagent/create-class
       {
@@ -508,6 +549,10 @@
 
           (if @loading [loading-screen])
           (case @actual-page
+            "admin" [:div
+                     (if (= "admin" (:role @user))
+                       [admin]
+                       [:h2.uk-heading-hero "Mondd hogy jóbarát és lépj be!"])]
             "crusader"    [:div.uk-inline
                            {:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
                            [:img.uk-position-center {:src "/img/lvlup-logo-transparent.png"}]
@@ -523,6 +568,7 @@
             "registration"  [:div
 
                              [registration]]
+
             "reservation"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
 
                             [reservation]]
@@ -540,39 +586,19 @@
 
 (secretary/defroute "/crusader" []
 
-                    (dispatch [:set-actual-page "crusader"]))
+                    (dispatch [:set-actual-page "crusader"])
+                    (start-router!))
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
 
-(secretary/defroute "/crusader/reservation" []
+(secretary/defroute "/crusader/:a" [a]
 
 
-                    (dispatch [:set-actual-page "reservation"]))
+                    (dispatch [:set-actual-page a])
+                    (start-router!))
                     ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
 
-
-(secretary/defroute "/crusader/checkout" []
-
-                    (dispatch [:set-actual-page "checkout"]))
-      ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
-      ;(chsk-send! [:dungeon/get-members])
-
-
-(secretary/defroute "/crusader/registration" []
-
-                    (dispatch [:set-actual-page "registration"]))
-                    ;(chsk-send! [:dungeon/get-max-id]))
-
-                    ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}]))
-
-(secretary/defroute "/crusader/dungeon" []
-
-                    ;(chsk-send! [:dungeon/get-dungeon])
-                    ;(chsk-send! [:dungeon/get-members {:number 0 :search ""}])
-                    ;(chsk-send! [:dungeon/get-invoices])
-                    (dispatch [:set-actual-page "dungeon"]))
-
-(secretary/defroute "/hu:a" [a]
-                    (swap! app-state assoc :page "home-page" :parameters a))
+;(secretary/defroute "/hu:a" [a]
+;                    (swap! app-state assoc :page "home-page" :parameters a))
 
 ;; -------------------------
 ;; Initialize app
@@ -582,7 +608,6 @@
 
 (defn init! []
   (dispatch-sync [:initialize])
-  (start-router!)
   (accountant/configure-navigation!
    {:nav-handler
     (fn [path]

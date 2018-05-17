@@ -231,29 +231,21 @@
   [request text]
   (let []
     (html5
-
       (head-crusader)
-     [:body
-      [:div.uk-card.uk-card-secondary {:style "height: 100vh"}
-
-       [:div
-
-        [:form.uk-padding {:method "post"}
-
-         [:div {:class "uk-width-1-1@s uk-width-1-2@m uk-align-center"} [:img.uk-align-center {:src "/img/lvlup-logo-transparent.png"}]]
-         [:div.uk-form {:class "uk-center uk-width-1-1@s uk-width-1-2@m uk-align-center" :data-uk-grid true}
-          [:input.uk-input.uk-text-center {:placeholder "Felhasználónév" :name "username" :type "text" :id "username"}]
-          [:input {:type "hidden" :name "__anti-forgery-token" :value (force *anti-forgery-token*)}]
-          [:input.uk-input.uk-text-center {:placeholder "Jelszó" :name "password" :type "password"}]
-          [:input.uk-button.uk-button-primary.uk-align-center {:type "submit" :value "Bejelentkezés!"}]]]]]])))
+      [:body
+       [:div {:style "height: 100vh; background-image: url(\"/img/login.jpg\")"
+              :class "uk-background-blend-darken uk-background-cover uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle"}
+        ;[:img {:src "/img/login.jpg"}]
+        [:div
+         [:form.uk-padding {:method "post" :style "background: rgba(255,255,255,0.4); border-radius: 20px "}
+          [:div {:class "uk-width-1-1@s uk-width-1-2@m uk-align-center"} [:img.uk-align-center {:src "/img/lvlup-logo-transparent.png"}]]
+          [:div.uk-form {:class "uk-center uk-width-1-1@s uk-width-1-2@m uk-align-center" :data-uk-grid true}
+           [:input.uk-input.uk-text-center {:placeholder "Felhasználónév" :name "username" :type "text" :id "username"}]
+           [:input {:type "hidden" :name "__anti-forgery-token" :value (force *anti-forgery-token*)}]
+           [:input.uk-input.uk-text-center {:placeholder "Jelszó" :name "password" :type "password"}]
+           [:input.uk-button.uk-button-secondary.uk-align-center {:type "submit" :value "Bejelentkezés!"}]]]]]])))
 
 (defn login-authenticate
-  "Check request username and password against authdata
- username and passwords.
- On successful authentication, set appropriate user
- into the session and redirect to the value of
- (:next (:query-params request)). On failed
- authentication, renders the login page."
   [request]
   (let [username (get-in request [:form-params "username"])
         password (get-in request [:form-params "password"])
@@ -261,7 +253,7 @@
         user (crusader/find-user username)]
     (if (hashers/check password (:password user))
       (let [next-url (get-in request [:query-params :next] "/crusader")
-            updated-session (assoc session :identity username :uid username :role "sadsadas")]
+            updated-session (assoc session :identity username :uid username :role (:role user))]
         (-> (redirect next-url)
             (assoc :session updated-session)))
       (let []
@@ -270,22 +262,26 @@
 
 (def routes
   ["/"
-   {"chsk" {:get (fn [req] (crusader/ring-ajax-get-or-ws-handshake req))
-            :post (fn [req] (crusader/ring-ajax-post req))}
-    "login" {:get (fn [req] {:status 200 :body (login req "LvLUP StaFF") :headers {"Content-Type" "text/html"}})
-             :post (fn [req] (login-authenticate req))}
+   [["chsk" {:get (fn [req] (crusader/ring-ajax-get-or-ws-handshake req))
+             :post (fn [req] (crusader/ring-ajax-post req))}]
+    ["login" {:get (fn [req] {:status 200 :body (login req "LvLUP StaFF") :headers {"Content-Type" "text/html"}})
+              :post (fn [req] (login-authenticate req))}]
 
-    "make-xls" (fn [req] (crusader/save-statistics))
-    "file" (->ResourcesMaybe {:prefix "public/"})
+    ["make-xls" (fn [req] (crusader/save-statistics))]
+    ["file" (->ResourcesMaybe {:prefix "public/"})]
+    ["logout" (fn [req] (-> (redirect "/login")
+                            (assoc :session {})))] ;:session {}))
 
-    "send-email" (fn [req] (send-email-to-fellow-gamer req))
-    "foglalasok" {[:type "/" :date]
-                  (fn [req]
-                    {:status 200
-                     :body  (get-reservations req)
-                     :headers {"Content-Type" "text/plain"}})}
-    "crusader" {true (fn [req] {:status 200 :body (loading-page-crusader req) :headers {"Content-Type" "text/html"}})}
-    true (fn [req] {:status 200 :body (loading-page) :headers {"Content-Type" "text/html"}})}])
+    ["send-email" (fn [req] (send-email-to-fellow-gamer req))]
+    ["foglalasok" {[:type "/" :date]
+                   (fn [req]
+                     {:status 200
+                      :body  (get-reservations req)
+                      :headers {"Content-Type" "text/plain"}})}]
+
+    ["crusader" {true (fn [req] {:status 200 :body (loading-page-crusader req) :headers {"Content-Type" "text/html"}})}]
+    [true (fn [req] {:status 200 :body (loading-page) :headers {"Content-Type" "text/html"}})]]])
+
 
 (def app
   (let [handler (make-handler routes)]

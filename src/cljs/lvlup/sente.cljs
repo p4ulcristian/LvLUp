@@ -63,7 +63,7 @@
 
     (if (:first-open? new-state-map)
       ;(notification-sente "Channel socket successfully established!: %s" new-state-map)
-      (notification-sente (str "Connected to LvLUp :)" new-state-map)))
+      (notification-sente (str "Connected to LvLUp :)")))
     (dispatch [:set-connection-state (:open? new-state-map)])))
       ;(notification-sente "Channel socket state change: %s"  new-state-map))))
 
@@ -98,12 +98,13 @@
   [{:as ev-msg :keys [?data]}]
   (let [actual-page (subscribe [:data "actual-page"])
         [?uid ?csrf-token ?handshake-data] ?data]
-      (case @actual-page
-        "registration" (chsk-send! [:dungeon/get-max-id])
-        "checkout" (dispatch [:dungeon/get-invoices])
-        "dungeon" (dispatch [:dungeon/get-dungeon])
-        "reservation" (dispatch [:dungeon/get-reservations])
-        (notification (str "Hello " ?uid)))))
+    (dispatch [:set-user-data {:name ?uid :role ?handshake-data}])
+    (case @actual-page
+      "registration" (chsk-send! [:dungeon/get-max-id])
+      "checkout" (dispatch [:dungeon/get-invoices])
+      "dungeon" (dispatch [:dungeon/get-dungeon])
+      "reservation" (dispatch [:dungeon/get-reservations])
+      (notification (str "Hello " ?uid "!" "Jogosultság" ?handshake-data)))))
 
 (defn chsk-disconnect! []
   (sente/chsk-disconnect! chsk))
