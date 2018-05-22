@@ -4,7 +4,7 @@
    [lvlup.sente :refer [chsk-send! start-router! chsk-reconnect! chsk-disconnect!]]
    [reagent.session :as session]
    [clojure.string  :as str]
-   [jayq.core :refer [$]]
+  ; [jayq.core :refer [$]]
 
    [lvlup.utils :as utils]
    [cljs.core.async :as async  :refer (<! >! put! chan timeout)]
@@ -23,7 +23,8 @@
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
 (def system-colors
-  ["rgb(255,102,0)"
+  ["#222"
+   "rgb(255,102,0)"
    "rgb(255,147,0)"
    "rgb(255,239,0)"
    "rgb(94,255,0)"
@@ -205,7 +206,7 @@
                      ;(dispatch [:set-loading true])
                      (dispatch
                       [:dungeon/change
-                       (assoc item :color nil :players (dissoc (:players item) player-number))])
+                       (assoc item :color "#222)" :players (dissoc (:players item) player-number))])
 
                      (dispatch
                       [:dungeon/add-invoice
@@ -253,29 +254,33 @@
 
 
 
-(defn modify-time [player-number item elojel the-atom name]
-  (fn [player-number item elojel the-atom]
-    [:button.uk-button-small.uk-button.uk-button-danger.uk-width-1-2
+(defn modify-time [player-number item elojel how-much the-atom name]
+  (fn [player-number item elojel how-much the-atom]
+    [:button.uk-button-small.uk-button.uk-button-danger.uk-width-1-4
      {:disabled (if (= nil (:start (get (:players item) player-number))) true false)
       :data-uk-icon (str "icon: " (if (= elojel "-")
                                     "history"
                                     "future"))
+      :data-uk-tooltip (str "title: "
+                            (if (= "+" elojel)
+                              (str name " + "how-much" perc")
+                              (str name " - "how-much" perc")))
       :on-click #(do
                    (notification (if (= "+" elojel)
-                                   (str name " + 5 perc")
-                                   (str name " - 5 perc")))
+                                   (str name " + "how-much" perc")
+                                   (str name " - "how-much" perc")))
                    (dispatch [:dungeon/change
                               (assoc-in item
                                         [:players player-number :start]
                                         (if (= "+" elojel)
-                                          (convert-to-clojurescript-time (str (core/minus (format/parse (:start (get (:players item) player-number))) (core/minutes 5))))
-                                          (convert-to-clojurescript-time (str (core/plus (format/parse (:start (get (:players item) player-number))) (core/minutes 5))))))])
+                                          (convert-to-clojurescript-time (str (core/minus (format/parse (:start (get (:players item) player-number))) (core/minutes how-much))))
+                                          (convert-to-clojurescript-time (str (core/plus (format/parse (:start (get (:players item) player-number))) (core/minutes how-much))))))])
                    (reset! the-atom
                            (calculate-time-interval
 
                             (if (= "+" elojel)
-                              (core/minus (format/parse (:start (get (:players item) player-number))) (core/minutes 5))
-                              (core/plus (format/parse (:start (get (:players item) player-number))) (core/minutes 5)))
+                              (core/minus (format/parse (:start (get (:players item) player-number))) (core/minutes how-much))
+                              (core/plus (format/parse (:start (get (:players item) player-number))) (core/minutes how-much)))
                             (calculate-time-zone))))}]))
 
 (defn modify-color [item color]
@@ -295,7 +300,7 @@
                      (notification (str name " mégsézve!"))
                      (dispatch
                       [:dungeon/change
-                       (assoc item :color nil :players (dissoc (:players item) player-number))]))}])))
+                       (assoc item :color "#222" :players (dissoc (:players item) player-number))]))}])))
 
 (defn start-button [player-number item the-atom name]
   [:button.uk-button.uk-button.uk-button-primary.uk-width-1-1.uk-margin-small-top
@@ -327,84 +332,132 @@
        (fn [system [player-number data]]
 
          [:div.uk-padding-remove.uk-animation-fade
-          {:style {:border-top "1px solid white"}
-           :class (if (= (:member-id data) @active-member)
-                    "uk-card-primary"
-                    "uk-card-secondary")}
 
 
-          [:div.uk-padding-small.uk-padding-remove-bottom
+          [:div.uk-padding-small.uk-padding-remove-bottom.uk-padding-remove-horizontal
+           { :class (if (= (:member-id data) @active-member)
+                      "active-border"
+                      "")
+            :on-click #(dispatch [:set-active-member (:id @player)])}
 
-           [:div (str (:id @player) " - " (:name @player))]]
+           [:div.uk-text-center [:b (:id @player)] (str  " - " (:name @player))]
 
-          (if (:start data)
-            [:div
-             [:div.uk-text-center
-              (str (convert-time (format/parse (:start data)))
-                   " - "
-                   (minute-to-money
-                    @time-elapsed
-                    (:type data))
-                   " Ft")]
-             [:h3.uk-text-center.uk-padding-remove.uk-margin-remove (elapsing-time @time-elapsed)]]
-            [start-button player-number system time-elapsed (:n @player)])
-          [modify-time player-number system "-" time-elapsed (:n @player)]
-          [modify-time player-number system "+" time-elapsed (:n @player)]
+           (if (:start data)
+             [:div
+              [:div.uk-text-center
+               (str (convert-time (format/parse (:start data)))
+                    " - "
+                    (minute-to-money
+                     @time-elapsed
+                     (:type data))
+                    " Ft")]
+              [:h3.uk-text-center.uk-padding-remove.uk-margin-remove (elapsing-time @time-elapsed)]]
+             [start-button player-number system time-elapsed (:number @player)])]
+          [modify-time player-number system "-" 30 time-elapsed (:number @player)]
+          [modify-time player-number system "-" 5 time-elapsed (:number @player)]
+          [modify-time player-number system "+" 5 time-elapsed (:number @player)]
+          [modify-time player-number system "+" 30 time-elapsed (:number @player)]
           [cancel player-number system (:n @player)]
           [pay-with-season-pass player-number system (:name @player)]
           [pay player-number system (:name @player)]])})))
 
-(defn system [index item]
+
+(defn places-on-console [players]
+  (cond
+    (= nil (:one players)) :one
+    (= nil (:two players)) :two
+    (= nil (:three players)) :three
+    (= nil (:four players)) :four))
+
+(defn change [member-id filtered-system]
   (let []
+    ;[filtered-system] (filter #(= system-name (:number %)) @systems)]
+    ;(notification (str member-id ". -> " (:number filtered-system)))
+    ;(places-on-console (:players filtered-system))
+
+
+    (case (:type filtered-system)
+      "pc" (if (and
+                 (= (:type filtered-system) "pc")
+                 (= 0 (count (:players filtered-system))))
+             (dispatch
+               [:dungeon/change
+                (assoc filtered-system
+                  :players {:one {:type (:type filtered-system)
+                                  :member-id (js/parseInt member-id)}})])
+             (notification "Több játékos nem fér el!"))
+      (if (= 4 (count (:players filtered-system)))
+        (notification "Több játékos nem fér el!")
+        (dispatch
+          [:dungeon/change
+           (assoc filtered-system :players
+                                  (assoc (:players filtered-system)
+                                    (places-on-console (:players filtered-system))
+                                    {:type (:type filtered-system)
+                                     :member-id (js/parseInt member-id)}))])))))
+
+
+(defn decide-full [ type players-count]
+  (let [selected-user (subscribe [:data "active-member"])]
+    (if (not= 0 @selected-user)
+      (case type
+        "pc" (if (= 0 players-count)
+               true
+               false)
+        (if (< players-count 4)
+          true
+          false))
+      false)))
+
+(defn system [index item]
+  (let [selected-user (subscribe [:data "active-member"])]
     (reagent/create-class
      {:reagent-render
       (fn [index item]
-        [:li.uk-width-1-5.valami.dropzone.dropzone2
-         {:id (:number item)
-          :style {:z-index (str "-" index)}}
-
-         [:div.uk-card.uk-card-secondary.system-wall {:style {:border-radius "5px"}}
-          [:div.uk-width-1-1.uk-text-center {:style {:height "5px" :background (if (:color item) (:color item) "rgba(255,255,255,0.9)") :cursor "pointer"}
-                                             :data-uk-toggle (str "target: #color-choose" (:number item))}]
-
+        [:li.uk-width-1-5.valami.dropzone2
+         {:id (:number item)}
+         [:div.uk-card.uk-card-secondary.system-wall
+          {:style {:border-radius "5px"}}
           [:div.uk-flex-top
-           {:data-uk-modal "uk-modal"
+           {:data-uk-modal true
             :id (str "color-choose" (:number item))}
            [:div.uk-modal-dialog.uk-margin-auto-vertical {:style {:background "rgba(0,0,0,0)"}}
             [:div.uk-flex.uk-child-width-extend.uk-margin-remove.uk-flex-center
              {:data-uk-grid true}
              (map-indexed #(-> ^{:key %1}[modify-color item %2]) system-colors)]]]
-          [:div.uk-card-header.uk-padding-small
-           {:style {:padding-top "5px" :cursor "pointer"}
-            :data-uk-toggle (str "target: #color-choose" (:number item))}
-           [:div.uk-grid-small.uk-flex-middle {:data-uk-grid true}
-            [:div.uk-width-auto
+          [:div.uk-padding-remove
+           {:data-uk-toggle (str "target: #color-choose" (:number item))
+            :style {:padding-top "5px" :cursor "pointer" :background (:color item)}}
+           ; :data-uk-toggle (str "target: #color-choose" (:number item))}
+          ; (str item)
+           [:div.uk-flex-center.uk-margin-remove {:data-uk-grid true}
+
+            [:div.uk-width-auto.uk-text-center.uk-padding-small.uk-padding-remove-vertical
+             {:style {:background "#222"}}
+             [:b.uk-text-large
+               (str (:number item) " ")]
              [:img
-              {:src (case (:type item)
+               {:src (case (:type item)
                       "ps" "/Icons/ps.svg"
                       "xbox" "/Icons/xbox.svg"
                       "pc" "/Icons/pc.svg"
                       "hmm")
-               :height "40"
-               :width "40"}]]
-            [:div.uk-width-expand
-             [:h3.uk-card-title.uk-margin-remove-bottom.uk-text-truncate (str (:number item) " - " (:name item))]
-             [:p.uk-text-meta.uk-margin-remove-top (:member-id item)]]]]
-                            ;[:time {:datetime "2016-04-01T19:00"} "April 01, 2016"]]]]]
-          (if (= 0 (count (:players item)))
-            [:h3.uk-heading.uk-text-center ""]
-            [:div.masvalami.draggable {:id (:number item) :style {:cursor "move"}}
-             (map-indexed
-              #(-> ^{:key (first %2)} [player-playing item %2])
-              (:players item))])]])})));[:button {:on-click #(.notification js/UIkit "Halika")} "dsads"]
-
-(defn get-member-systems [player]
-  (let [systems (subscribe [:data "system-map"])]
-    (filter #(= (:id player) (:member-id %)) @systems)))
+                :height "40"
+                :width "40"}]]]]
+          (if
+            (decide-full (:type item) (count (:players item)))
+            [:button.uk-button.uk-button-secondary.uk-align-center.uk-width-1-1
+             {:style {:cursor "pointer"}
+              :type "button"
+              :on-click #(change @selected-user item)}
+             "Ide ültetem"])
+          [:div.masvalami.draggable {:id (:number item) :style {:cursor "move"}}
+           (map-indexed
+            #(-> ^{:key (first %2)} [player-playing item %2])
+            (:players item))]]])})));[:button {:on-click #(.notification js/UIkit "Halika")} "dsads"]
 
 (defn plays? [id]
-  (let [systems (subscribe [:data "system-map"])]
-
+  (let [systems (subscribe [:dungeon])]
     (if (= 0
            (count
             (filter (fn [b] (= (:member-id b) id))
@@ -416,42 +469,25 @@
       false)))
 
 (defn player [data index which-tab]
-  (let [pool (subscribe [:data "waiting-pool"])
-        active-member (subscribe [:data "active-member"])]
+  (let [active-member (subscribe [:data "active-member"])]
     (reagent/create-class
      {
       :reagent-render
       (fn [data index which-tab]
-        [:div.uk-padding-small.uk-padding-remove-vertical.uk-margin-small.uk-animation-fade
-         {:style {:cursor "pointer"}}
-         [:div.valami.uk-padding-remove.draggable.uk-card.uk-card-default.uk-margin-remove.uk-grid-collapse.uk-margin
-          {:data-uk-grid true
-           :style {:border-radius "5px"}
-           :on-click #(dispatch [:set-active-member (:id data)])
-           :id (:id data)}
-          [:div.uk-width-1-3
-           [:div.uk-inline
-            [:img.uk-border-circle {:src "/img/logos/unnamed.png"}]
-            (if (not (some #(= % data) @pool))
-              [:div.uk-position-bottom-right
-               [:button.uk-button.uk-padding-remove.to-the-waiting-pool {:on-click #(chsk-send! [:dungeon/add-to-waiting-pool data])}
-                [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/time-left.svg"}]]
-               [:div.uk-position-bottom-right
-                [:button.uk-button.uk-padding-remove.to-the-waiting-pool {:on-click #(chsk-send! [:dungeon/remove-from-waiting-pool data])}
-                 [:img.uk-border-circle {:height "30" :width "30" :src "/Icons/remove.svg"}]]]])]]
-          [:div.uk-card-body.uk-padding-small.uk-margin-remove.uk-width-2-3.uk-dark
-           {:class (if (= (:id data) @active-member)
-                     "uk-card-primary"
-                     "uk-card-default")}
-           [:div.container {:style {:font-size "1.4em" :padding "3px"}}
-            [:div
-             [:div.name-animated (str (:id data) ".-" (:name data))]]]
-           [:div (str "Bérlet: " (:season-pass data)) " óra"]
-           [:div (str "XP: " (:total-hours data))]
-           (if (= (:id data) @active-member)
-             [:div
-              [:div (str "Összesen: " (all-items-to-money (:id data)) " Ft")]
-              [:div (str "Játszott órák: " (all-items-to-hours (:id data)) " óra")]])]]])})))
+        [:li.search-player
+         {:on-click #(do
+                       (.hide (.drop js/UIkit "#search-drop"))
+                       (dispatch [:set-active-member (:id data)]))
+          :id (:id data)}
+         [:div.container
+          [:div
+           [:div [:b (str (:id data) ". ")] (:name data)]]]])})))
+           ;[:div (str "Bérlet: " (:season-pass data)) " óra"]
+           ;[:div (str "XP: " (:total-hours data))]
+           ;(if (= (:id data) @active-member)
+            ; [:div
+             ; [:div (str "Összesen: " (all-items-to-money (:id data)) " Ft")]
+              ;[:div (str "Játszott órák: " (all-items-to-hours (:id data)) " óra")]]]]]]])})))
 
 (defn waiting-pool []
   (let [pool (subscribe [:data "waiting-pool"])]
@@ -501,87 +537,34 @@
          (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 2]) (the-players-playing))])})))
 
 (defn gamers []
-  (let [players (subscribe [:data "players"])
+  (let [players (subscribe [:data "search-pool"])
         search (subscribe [:data "search-member"])]
-
-
     (reagent/create-class
      {:reagent-render
       (fn []
-        [:div
-         (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1 1])
-                       (sort-by :id #(> %1 %2) (filter-by-name-and-id  @players search true)))])})))
+        [:ul.uk-list.uk-list-striped.uk-child-width-1-1.uk-margin-remove.uk-width-1-1
+         {:style {:background "lightgrey"}
+          :data-uk-grid true}
+         (map-indexed  #(-> ^{:key (:id %2)} [player %2 %1])
+                       (sort-by :id #(> %1 %2) @players))])})))
 
 (defn system-row []
-  (let [systems (subscribe [:data "system-map"])
-        get-players-playing (fn []
-                              (vec
-                               (set
-                                (remove
-                                 (fn [a] (= a nil))
-                                 (flatten
-                                  (map (fn [a]
-                                         (conj []
-                                               (get-in a [:players :one :member-id])
-                                               (get-in a [:players :two :member-id])
-                                               (get-in a [:players :three :member-id])
-                                               (get-in a [:players :four :member-id])))
-                                       @systems))))))]
-
-    (reagent/create-class
-     {;:component-will-update #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
-      ;:component-did-mount #(dispatch [:dungeon/get-members-with-id (get-players-playing)])
-      :reagent-render
-      (fn []
-        [:div.uk-width-1-1
-         [:div.uk-grid-match.uk-grid-small.uk-animation-fade {:data-uk-grid true}
-          (map-indexed
-           #(-> ^{:key (:name %2)} [system %1 %2])
-           (sort-by :number @systems))]])})))
-
-(defn places-on-console [players]
-  (cond
-    (= nil (:one players)) :one
-    (= nil (:two players)) :two
-    (= nil (:three players)) :three
-    (= nil (:four players)) :four))
-
-(defn change [e]
-  (let [systems (subscribe [:data "system-map"])
-        system-name (js/parseInt (.-id (.-target e)))
-        member-id (.-id (.-relatedTarget e))
-        [filtered-system] (filter #(= system-name (:number %)) @systems)]
-    (notification (str member-id ". -> " (:name filtered-system)))
-    ;(places-on-console (:players filtered-system))
-
-
-    (case (:type filtered-system)
-      "pc" (if (and
-                (= (:type filtered-system) "pc")
-                (= 0 (count (:players filtered-system))))
-             (dispatch
-              [:dungeon/change
-               (assoc filtered-system
-                      :players {:one {:type (:type filtered-system)
-                                      :member-id (js/parseInt member-id)}})])
-             (notification "Több játékos nem fér el!"))
-      (if (= 4 (count (:players filtered-system)))
-        (notification "Több játékos nem fér el!")
-        (dispatch
-         [:dungeon/change
-          (assoc filtered-system :players
-                 (assoc (:players filtered-system)
-                        (places-on-console (:players filtered-system))
-                        {:type (:type filtered-system)
-                         :member-id (js/parseInt member-id)}))])))));  8000
+  (let [systems (subscribe [:dungeon])]
+    (fn []
+      [:div.uk-width-1-1.uk-padding-remove
+       [:div.uk-grid-match.uk-grid-small.uk-animation-fade {:data-uk-grid true}
+        (map-indexed
+         #(-> ^{:key (:number %2)} [system %1 %2])
+         (sort-by :number @systems))]])))
 
 (defn transfer [e]
-  (let [systems (subscribe [:data "system-map"])
+  (let [systems (subscribe [:dungeon])
         system-name (js/parseInt (.-id (.-relatedTarget e)))
         other-system (js/parseInt (.-id (.-target e)))
         [filtered-system] (filter #(= system-name (:number %)) @systems)
         [filtered-system2] (filter #(= other-system (:number %)) @systems)]
-    (notification (str (:name filtered-system) " <-> " (:name filtered-system2)))
+    (notification (str (:number filtered-system) " <-> " (:number filtered-system2)))
+    ;(notification (str (:color filtered-system2) " - "(:color filtered-system)))
     (if
      (or
       (and
@@ -608,9 +591,9 @@
        (dispatch
         [:dungeon/change
          (assoc filtered-system2
-                :players (:players filtered-system) :color (:color filtered-system))])
+                :players (:players filtered-system) :color (:color filtered-system))]))
 
-       (notification "Csak két azonos típusú rendszert tudsz cserélni!")))))
+     (notification "Csak két azonos típusú rendszert tudsz cserélni!"))))
 
 
 
@@ -713,7 +696,7 @@
                           (reset! loading true)
                           (dispatch
                             [:dungeon/change
-                             (assoc gamer-system :color nil :players (dissoc (:players gamer-system) place))])
+                             (assoc gamer-system :color "#222" :players (dissoc (:players gamer-system) place))])
 
                           (dispatch
                             [:dungeon/add-invoice
@@ -823,6 +806,23 @@
       (fn []
         [:div.uk-grid.uk-grid-small.uk-padding-small.uk-margin-remove {:data-uk-grid true}
          ;[:button {:on-click #} (str @players)]
+         [:div.uk-container.uk-width-1-1.uk-card-secondary
+          [:ul.uk-subnav.uk-flex-center
+           {:data-uk-sticky true
+            :data-uk-switcher "connect: .uk-switcher ;animation: uk-animation-fade"
+            :data-uk-tab true}
+           [:li.uk-active {:on-click #(.scrollTo js/window 0 0)}
+            [:a "Fizetetlen számlák"]]
+           [:li {:on-click #(.scrollTo js/window 0 0)}
+            [:a "Fizetendő számlák"]]
+           [:li {:on-click #(.scrollTo js/window 0 0)}
+            [:a "Fizetett számlák"]]]
+
+          [:ul.uk-switcher
+           [:li "dsadsasda3"]
+           [:li "dsadsasda324234"]
+           [:li "dsadsasdadsad"]]]
+
          [:div.uk-width-3-4
           [:div
            [:table.uk-table.uk-table-middle
@@ -853,6 +853,7 @@
         [:div.uk-width-1-2.uk-padding-small.uk-margin-remove.uk-animation-fade {}
 
          [:div.uk-card.uk-card-secondary ;{:style {:opacity 0.85}}
+
           [:div.uk-width-1-1.uk-padding-remove
            [:h1.uk-heading-bullet.uk-width-1-1.uk-padding-remove {:style {:color "white !important"}}
             (str "Id: " (:id member) "  - Bérlet: " (:season-pass member))]
@@ -876,7 +877,7 @@
            {:on-click #(do
                          (swap! modify-atom assoc :season-pass (- (:season-pass member) 1))
                          (chsk-send! [:dungeon/update-member
-                                      (assoc @modify-atom :season-pass (- (:season-pass member) 1))])
+                                      (update @modify-atom :season-pass dec)])
                          (notification (str (:name @modify-atom) " - bérlete 1-gyel csökkent")))}
            "-1"]
           [:button.uk-button.uk-button-default.uk-width-1-4.uk-margin-remove
@@ -992,7 +993,7 @@
         (recur)))))
 
 (defn registration []
-  (let [members (subscribe [:data "players"])
+  (let [members (subscribe [:data "search-pool"])
         search (subscribe [:data "search-member"])]
     (reagent/create-class
 
@@ -1025,10 +1026,12 @@
            (sort-by :id #(> %1 %2) (filter-by-name-and-id  @members search true)))]])})))
 
 (defn show-20-more [number]
-  (let [search (subscribe [:data "search-member"])]
+  (let [search (subscribe [:data "search-member"])
+        number (atom 20)]
     (fn []
-      [:button.uk-width-1-1.uk-button.uk-button-primary
+      [:button.uk-width-2-3.uk-button.uk-button-primary
        {:on-click #(do
+                    ; (.scrollTo js/window 0 0)
                      (dispatch [:dungeon/get-members {:number @number :search @search}])
                      (reset! number (+ 20 @number)))}
        "Mutass többet..."])))
@@ -1073,18 +1076,19 @@
                                 (if @the-timeout (.clearTimeout js/window @the-timeout))
                                 (reset! the-timeout
                                         (.setTimeout
-                                         js/window
-                                         (fn [a] (dispatch [:set-search-member a]))
-                                         500
-                                         (-> % .-target .-value))))
+                                          js/window
+                                          (fn [a] (dispatch [:set-search-member a]))
+                                          500
+                                          (-> % .-target .-value))))
 
-                               ;(dispatch [:set-search-member (-> % .-target .-value)]))
-                                    ;:placeholder "Regisztráció/Keresés",
+                  ;(dispatch [:set-search-member (-> % .-target .-value)]))
+                  ;:placeholder "Regisztráció/Keresés",
 
 
-                  :placeholder "Keresés", :type "search"}]]
-               [gamers]
-               [show-20-more number]]
+                  :placeholder "Keresés...", :type "search"}]]
+               [:div.uk-width-1-1
+                [gamers]
+                [show-20-more number]]]
 
             2 [:div
                ^{:key 2} [:h3.uk-heading-bullet.uk-animation-slide-top "Dungeonben"]
@@ -1096,26 +1100,231 @@
                ^{:key 4} [:h3.uk-heading-bullet.uk-animation-slide-top "Váróterem"]
                [waiting-pool]])]])})))
 
+(defn player-data [data]
+  (let [edit (atom false)
+        name (atom nil)]
+
+    (reagent/create-class
+      {;:component-will-update #(reset! modify-atom data)
+       :reagent-render
+       (fn [data]
+         [:div
+          [:div
+           (if @edit
+             [:div.uk-width-1-1.uk-grid-collapse {:data-uk-grid true}
+              [:div.uk-width-expand [:input.uk-input.uk-text-center
+                                     {:style {:height "30px"}
+                                      :auto-focus true
+                                      :on-blur #(.setTimeout
+                                                  js/window
+                                                  (fn [a] (reset! edit false))
+                                                  500)
+
+                                      :on-change #(reset! name (-> % .-target .-value)) :default-value (:name data)}]]
+              [:div.uk-width-auto.uk-padding-small.uk-padding-remove-vertical
+               {:style {:cursor "pointer"
+                        :height "30px"}}
+               [:span
+                {
+                 :on-click #(do
+                              (notification "Név frissítve!")
+                              (reset! edit false)
+                              (chsk-send!
+                                [:dungeon/update-member
+                                 (assoc data :name (if @name @name (:name data)))]))
+                 :data-uk-icon "icon: check"}]]]
+
+             [:span
+              {:on-click #(reset! edit true)}
+              [:b
+               (str (:id data)
+                    ". ")]
+              (:name data) " "
+              [:span {:data-uk-icon "icon: credit-card"}]
+              " "
+              (:season-pass data)])]
+          [:div
+           [:span {:data-uk-icon "icon: cart"}]
+           " "
+           (all-items-to-hours (:id data)) " óra -> "
+           (all-items-to-money (:id data)) "  Ft"]])})))
+
+
+
+
+
+(defn season-pass-panel [member]
+  (let [modify-atom (atom member)]
+    (fn [member]
+      [:div.uk-padding-remove.uk-card-secondary.uk-margin-remove.uk-child-width-expand.uk-grid-collapse
+       {:data-uk-height-match true
+        :data-uk-grid true
+        ;:class "active-border"
+        :class "active-border"}
+       ;(str member)
+       [:div.uk-inline
+         [:span.uk-position-center
+          {:data-uk-tooltip "title: -1 bérletóra (hibajavításra)"
+           :on-click #(chsk-send! [:dungeon/update-member
+                                   (assoc @modify-atom :season-pass (- (:season-pass member) 1))])
+           :data-uk-icon "icon: minus"}]]
+
+       [:div
+        {:data-uk-tooltip "title: Beginner bérlet: 6 óra - 1750 Ft"
+         :on-click #(do
+                      (swap! modify-atom assoc :season-pass (+ (:season-pass member) 6))
+                      (chsk-send! [:dungeon/update-member
+                                   (assoc @modify-atom :season-pass (+ 6 (:season-pass member)))])
+                      (notification (str (:name @modify-atom) " kapott egy Beginner bérletet!")))}
+        [:img {:src "/Icons/bronze.png" :width "50px"}]]
+       [:div
+        {:data-uk-tooltip "title: Medium bérlet: 13 óra - 3500 Ft"
+         :on-click #(do
+                      (swap! modify-atom assoc :season-pass (+ (:season-pass member) 13))
+                      (chsk-send! [:dungeon/update-member
+                                   (assoc @modify-atom :season-pass (+ 13 (:season-pass member)))])
+                      (notification (str (:name @modify-atom) " kapott egy Medium bérletet!")))}
+        [:img {:src "/Icons/silver.png" :width "50px"}]]
+       [:div
+        {:data-uk-tooltip "title: Hardcore bérlet: 18 óra - 7000 Ft"
+         :on-click #(do
+                      (swap! modify-atom assoc :season-pass (+ (:season-pass member) 13))
+                      (chsk-send! [:dungeon/update-member
+                                   (assoc @modify-atom :season-pass (+  28 (:season-pass member)))])
+                      (notification (str (:name @modify-atom) " kapott egy Medium bérletet!")))}
+        [:img {:src "/Icons/gold.png" :width "50px"}]]
+       [:div.uk-inline
+        [:span.uk-position-center
+         {:on-click #(chsk-send! [:dungeon/update-member
+                                  (assoc @modify-atom :season-pass (+ (:season-pass member) 1))])
+          :data-uk-icon "icon: plus"
+          :data-uk-tooltip "title: +1 bérletóra (hibajavításra)"}]]
+
+       [:div.uk-inline
+        {:data-uk-tooltip "title: + 1 Monster, pultnál fizeti"
+         :style {:vertical-align "middle"}
+         :on-click #(chsk-send! [:dungeon/update-member
+                                 (assoc @modify-atom :season-pass (+ (:season-pass member) 1))])}
+        [:img.uk-position-center {:src "/Icons/monster.png" :width "25px" :style {:vertical-align "middle"}}]]
+       [:div.uk-inline
+        [:span.uk-position-center {:style {:pointer "pointer"}
+                                   :data-uk-icon "close"
+                                   :data-uk-tooltip "title: Kiválasztás resetelése"
+                                   :on-click #(dispatch [:set-active-member 0])}]]])))
+
+
+
+
+(defn selected-user []
+  (let [selected-user (subscribe [:data :active-member])
+        number (atom 20)
+        the-timeout (atom nil)
+
+        search (subscribe [:data "search-member"])
+        max-id (subscribe [:data "max-id"])]
+    (reagent/create-class
+      {:component-did-mount #(do
+                               (dispatch [:dungeon/get-members {:number 0 :search ""}])
+                               (dispatch [:dungeon/get-member-with-id @selected-user]))
+
+       :component-will-update #(dispatch [:dungeon/get-member-with-id @selected-user])
+       :reagent-render
+       (fn []
+         [:div.uk-width-1-1
+          [:div.uk-margin-remove.uk-padding-remove.uk-flex-center.uk-child-width-1-3
+           {:data-uk-grid true :data-uk-sticky "offset: 60"}
+           [:div.uk-padding-remove.uk-card-secondary
+            {:class (if (= 0 @selected-user) "" "active-border")}
+            (if (not= 0 @selected-user)
+              [:div
+               [:h4.uk-text-center.uk-margin-remove
+                [player-data (deref (subscribe [:player @selected-user]))]]])]
+
+
+           [:div.uk-padding-remove
+            [:form.uk-search.uk-search-large.uk-width-1-1.uk-card-secondary
+             {:style {:height "100%"}}
+             [:input.uk-search-input.uk-text-center
+              {;:value @search
+
+               ;:on-blur #(.hide (.drop js/UIkit "#search-drop"))
+               ;:on-click #(reset! edit false)
+               :on-change #(do
+                             (.show (.drop js/UIkit "#search-drop"))
+                             (reset! number 20)
+                             (if @the-timeout (.clearTimeout js/window @the-timeout))
+                             (reset! the-timeout
+                                     (.setTimeout
+                                       js/window
+                                       (fn [a] (dispatch [:set-search-member a]))
+                                       500
+                                       (-> % .-target .-value))))
+
+               ;(dispatch [:set-search-member (-> % .-target .-value)]))
+               ;:placeholder "Regisztráció/Keresés",
+
+
+               :placeholder (if
+                              (not= 0 @selected-user)
+                              "Keresés"
+                              "Ki akar játszani?")
+               :type "search"}]]
+            ;:auto-focus true}]]
+            [:div#search-drop.uk-height-large.uk-overflow-auto.uk-margin-remove
+             {:data-uk-drop "pos: bottom-justify; mode: click"}
+             [:div.uk-margin-remove.uk-grid-collapse {:data-uk-grid true}
+              ;:placeholder "Search...",}]]
+              ;:type "search"}]]
+              ;[:div.uk-width-1-1 (str "dsadsadsa" @members)]
+              [gamers]
+              [show-20-more]
+              [:button.uk-width-1-3.uk-button-danger
+               {:on-click #(do (dispatch [:set-max-id (inc @max-id)])
+                               (chsk-send! [:dungeon/add-member {:id @max-id :name @search}])
+                               (dispatch [:set-search-member @search]))}
+               (str @max-id ". ")
+               [:span {:data-uk-icon "icon: plus;"}]
+
+               [:span {:data-uk-icon "icon: user;"}]]]]]
+           (if (not= 0 @selected-user)
+             [season-pass-panel (deref (subscribe [:player @selected-user]))]
+             [:div.uk-card-secondary])]])})))
+
+
+
+
+
+
+
+       ;(if (not= 0 @selected-user)
+       ;  [:h2.uk-card.uk-card-default "Hova ül?"]
+       ;  [:h2.uk-card.uk-card-default "Ki ül"]]]])))
+
+
+
+
+
 
 
 (defn dungeon []
-  (let [systems (subscribe [:data "system-map"])
+  (let [app-state (subscribe [:dungeon])
+        systems (subscribe [:data "system-map"])
         sidenav-canvas (atom nil)]
     (reagent/create-class
      {:component-did-mount #(do
 
                               (dispatch [:dungeon/get-dungeon])
 
-                              (reset! sidenav-canvas (.offcanvas js/UIkit ($ "#sidenav")))
+                              
 
                               (.dragging js/window)
                               (.dropzone
                                (.interact js/window ".dropzone")
                                (clj->js {:accept ".valami"
                                                     ;:overlap 0.75
-                                         :ondragenter (fn [e] (.hide @sidenav-canvas))
+                                         :ondragenter (fn [e] (.hide @sidenav-canvas))}))
                                                     ;:ondragleave (fn [e] (.notification js/UIkit "Elhagytál, Csengő Zolival megcsaltáll"))
-                                         :ondrop (fn [e] (change e))}))
+                                         ;:ondrop (fn [e] (change e))}))
                               (.dropzone
                                (.interact js/window ".dropzone2")
                                (clj->js {:accept ".masvalami"
@@ -1125,6 +1334,8 @@
                                          :ondrop (fn [e] (transfer e))}))) :reagent-render
       (fn []
         [:div.uk-background-cover.uk-offcanvas-content.svg-cursor
+         (str @app-state)
+         [selected-user]
 
          (if   (= @systems [])
 
@@ -1140,7 +1351,7 @@
 
                         ;[usage]
 
-           [:div.uk-padding-small {:data-uk-grid true} ;:style {:background-color "#0076CC"}}
+           [:div.uk-padding-small.uk-margin-remove {:data-uk-grid true} ;:style {:background-color "#0076CC"}}
                                      ;[gamers]
 
             [system-row]])])})))

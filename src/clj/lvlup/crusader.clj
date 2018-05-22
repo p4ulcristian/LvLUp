@@ -6,6 +6,7 @@
    [clojure.string     :as str]
    [clojure.data     :as data]
    [buddy.hashers :as hashers]
+   [taoensso.nippy :as nippy]
 
    [monger.core :as mg]
 
@@ -18,10 +19,11 @@
    [taoensso.encore    :as encore :refer (have have?)]
    [taoensso.timbre    :as timbre :refer (tracef debugf infof warnf errorf)]
    [taoensso.sente     :as sente]
-
+   [duratom.core :refer [duratom]]
+   [differ.core :as differ]
+   ;[duratom.core]
    [hiccup.page :refer [include-js include-css html5]]
-
-   ;;; TODO Choose (uncomment) a supported web server + adapter -------------
+    ;;; TODO Choose (uncomment) a supported web server + adapter -------------
    [org.httpkit.server :as http-kit]
    [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
    ;;
@@ -45,6 +47,35 @@
 
 ;;;; Define our Sente channel socket (chsk) server
 
+(def lvlup-maintance
+  {"szeged"
+   {:dungeon
+    [{:number 1, :type "pc", :color "#222", :players {}}
+     {:number 2, :type "pc", :color "#222", :players {}}
+     {:number 3, :type "pc", :color "#222", :players {}}
+     {:number 4, :type "pc", :color "#222", :players {}}
+     {:number 5, :type "pc", :color "#222", :players {}}
+     {:number 6, :type "pc", :color "#222", :players {}}
+     {:number 7, :type "pc", :color "#222", :players {}}
+     {:number 8, :type "pc", :color "#222", :players {}}
+     {:number 9, :type "pc", :color "#222", :players {}}
+     {:number 10, :type "pc", :color "#222", :players {}}
+     {:number 11, :type "ps", :color "#222", :players {}}
+     {:number 12, :type "ps", :color "#222", :players {}}
+     {:number 13, :type "xbox", :color "#222", :players {}}
+     {:number 14, :type "xbox", :color "#222", :players {}}]
+    :checkout []}})
+
+(def local-db
+  (duratom
+    :local-file
+     :file-path "db/shared.edn"
+     :init lvlup-maintance
+    :rw {:read nippy/thaw-from-file
+         :write nippy/freeze-to-file}))
+
+;(def local-db (atom {"szeged" {:dungeon [{:number 1 :type "ps" :color "#222"}]}}))
+
 (let [;; Serialization format, must use same val for client + server:
       packer :edn ; Default packer, a good choice in most cases
       ;; (sente-transit/get-transit-packer) ; Needs Transit dep
@@ -52,7 +83,7 @@
       chsk-server
       (sente/make-channel-socket-server!
        (get-sch-adapter)
-       {:handshake-data-fn (fn [ring-req] (str (:role (:session ring-req))))
+       {:handshake-data-fn (fn [ring-req] {:role (:role (:session ring-req)) :city (:city (:session ring-req))})
         :packer packer})
 
       {:keys [ch-recv send-fn connected-uids
@@ -64,6 +95,9 @@
   (def ch-chsk                       ch-recv) ; ChannelSocket's receive channel
   (def chsk-send!                    send-fn) ; ChannelSocket's send API fn
   (def connected-uids                connected-uids)) ; Watchable, read-only atom
+
+
+
 
 
 (def clicks (atom 0))
@@ -115,6 +149,15 @@
           #(dissoc % :_id)
           (with-collection db "users")))))
 
+  (defn filter-users-id [city]
+    (vec
+      (map
+        :username
+        (with-collection db "invoices"
+          (find {:city city})))))
+     ;(find {:payed false})
+
+
   (defn add-user [{:keys [event]}]
     (let [[key change-map] event]
       (mc/insert db "users" (assoc change-map :password (hashers/derive (:password change-map))))))
@@ -125,10 +168,14 @@
       ;  (mc/update db "members" {:id (:id change-map)} {$set {:total-hours}})
 
 
-  (defn dungeon-change [{:keys [event]}]
+  (defn dungeon-change [{:keys [event]} req]
     (let [[key change-map] event]
-      (mc/update db "dungeon" {:name (:name change-map)}
-                 change-map)
+      (reset! local-db
+              (assoc-in @local-db
+                        [(:city (:session req)) :dungeon (dec (:number change-map))]
+                        change-map))
+      ;(mc/update db "dungeon" {:name (:name change-map)}
+       ;          change-map)
 
       (send-all [:dungeon/change change-map])))
 
@@ -168,12 +215,7 @@
                  (dissoc
                    (mc/find-one-as-map db "members" {:id (:member-id change-map)})
                    :_id)])))
-  (defn get-invoices []
 
-    (vec
-     (map
-      #(assoc % :_id (str (:_id %)))
-      (with-collection db "unpayedinvoices"))))
 
   (defn get-payed-invoices []
 
@@ -206,6 +248,11 @@
 
   (defn get-members [{:keys [event]}]
     (let [[key change-map] event]
+      (infof (str (clojure.string/join
+                    " "
+                    (reverse
+                      (clojure.string/split (:search change-map) #" ")))
+                  ".*"))
       (vec
        (map
         #(dissoc % :_id)
@@ -213,7 +260,21 @@
          db "members"
          (find {$or [(if (= "" (:search change-map))
                        {}
-                       {$or [{:name {$regex (str (:search change-map) ".*") $options "i"}}
+                       {$or [(cond
+                               (= (count (clojure.string/split (:search change-map) #" ")) 1)
+                               {:name {$regex (str (:search change-map) ".*")  $options "i"}}
+                               (= (count (clojure.string/split (:search change-map) #" ")) 2)
+                               {:name {$regex (str (second (clojure.string/split (:search change-map) #" "))
+                                                   ".*."
+                                                   (first (clojure.string/split (:search change-map) #" "))
+                                                   "|"
+                                                   (first (clojure.string/split (:search change-map) #" "))
+                                                   ".*."
+                                                   (second (clojure.string/split (:search change-map) #" ")))  $options "i"}}
+                               :else {:name {$regex (str (:search change-map) ".*")  $options "i"}})
+
+
+
                              {:id (read-string (:search change-map))}]})]})
 
                                                   ;(fields [:id :name :season-pass])
@@ -284,6 +345,21 @@
        #(dissoc % :_id)
        (with-collection db "dungeon")))))
 
+
+(defn broadcast
+  "Broadcast data to all connected clients"
+    [data]
+    (doseq [uid (:any @connected-uids)]
+     (chsk-send! uid data)))
+
+    ;(doseq [varos the-keys]
+     ; (doseq [uid (filter-users-id varos)];(if (first (first (second data))))
+      ;  (chsk-send! uid data)))))
+
+(add-watch local-db :watch-local
+           (fn [k reference old-state new-state]
+             ;(infof "Condsadsa" new-state)
+             (broadcast [:state/diff (differ/diff (get old-state "szeged") (get new-state "szeged"))])))
 
 
 (defn format-date [date]
@@ -441,8 +517,8 @@
   (season-pass ev-msg)
   (?reply-fn true))
 
-(defmethod -event-msg-handler :dungeon/get-invoices
-  [{:as ev-msg :keys [?reply-fn]}] (?reply-fn (get-invoices)))
+(defmethod -event-msg-handler :state/get-state
+  [{:as ev-msg :keys [?reply-fn ring-req]}] (?reply-fn (get @local-db (:city (:session ring-req)))))
 
 (defmethod -event-msg-handler :dungeon/modify-invoice
   [{:as ev-msg :keys [?reply-fn]}]
@@ -482,8 +558,8 @@
 
 
 (defmethod -event-msg-handler :dungeon/change
-  [{:as ev-msg :keys [?reply-fn]}]
-  (dungeon-change ev-msg))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (dungeon-change ev-msg ring-req))
 
 
 (defmethod -event-msg-handler :example/count-clicks

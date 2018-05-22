@@ -10,8 +10,8 @@
    ;[lvlup.events]
    ;[lvlup.subs]
    [cljs.core.async :as async :refer (<! >! put! chan)]
-   [taoensso.sente  :as sente :refer (cb-success?)]
-   [jayq.core :refer [$ css html]])
+   [taoensso.sente  :as sente :refer (cb-success?)])
+
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
@@ -81,10 +81,11 @@
       :dungeon/get-dungeon (do
                              (case @actual-page
                                (dispatch [:set-systems (read-string data)])))
+      :state/diff (dispatch [:state/diff data])
       :dungeon/replace-member (do
-                                (js/console.log (str data))
-                                (dispatch [:add-player data]))
-                               ;(chsk-send! [:dungeon/get-max-id])
+                                ;(js/console.log (str data))
+                                (dispatch [:add-player data])
+                                (chsk-send! [:dungeon/get-max-id]))
                                ;(dispatch [:set-members (read-string data)]))
 
 
@@ -98,13 +99,18 @@
   [{:as ev-msg :keys [?data]}]
   (let [actual-page (subscribe [:data "actual-page"])
         [?uid ?csrf-token ?handshake-data] ?data]
-    (dispatch [:set-user-data {:name ?uid :role ?handshake-data}])
+    (dispatch [:set-user-data {:name ?uid
+                               :role (:role ?handshake-data)
+                               :city (:city ?handshake-data)}])
+    (dispatch [:state/get-state])
     (case @actual-page
       "registration" (chsk-send! [:dungeon/get-max-id])
       "checkout" (dispatch [:dungeon/get-invoices])
-      "dungeon" (dispatch [:dungeon/get-dungeon])
+      "dungeon" (do
+                  (chsk-send! [:dungeon/get-max-id])
+                  (dispatch [:dungeon/get-dungeon]))
       "reservation" (dispatch [:dungeon/get-reservations])
-      (notification (str "Hello " ?uid "!" "Jogosultság" ?handshake-data)))))
+      (notification (str "Hello " ?uid "!")))))
 
 (defn chsk-disconnect! []
   (sente/chsk-disconnect! chsk))

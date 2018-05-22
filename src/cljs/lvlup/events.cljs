@@ -9,6 +9,7 @@
    [lvlup.utils :as utils]
    [goog.string :as gstring]
    [cljs-time.core :as tcore]
+   [differ.core :as differ]
    [goog.string.format]
    [re-frame.core :refer [reg-event-db reg-event-fx inject-cofx path trim-v
                           after debug dispatch]]))
@@ -16,7 +17,8 @@
 (reg-event-db
  :initialize
  (fn [_ _]
-   {:users {}
+   {:app-state nil
+    :users {}
     :system-map []
     :invoices []
     :max-id 0
@@ -38,6 +40,7 @@
     :search-member ""
     :actual-page nil
     :players []
+    :search-pool []
     :reservations []
     :date (js/Date.)
     :time-table nil
@@ -59,7 +62,7 @@
  (fn [db [_ the-map]]
    (dispatch [:dungeon/get-members
               {:number 0 :search the-map}])
-   (assoc db :search-member the-map)))
+   (assoc db :search-member the-map :search-pool [])))
 
 (reg-event-db
  :set-connection-state
@@ -116,17 +119,7 @@
                    (dispatch [:add-players reply]))))
    db))
 
-(reg-event-db
- :dungeon/get-members-with-id
- (fn [db [_ the-map]]
-   ;(.log js/console (str "szia" the-map))
-   (chsk-send! [:dungeon/get-members-with-id the-map]
-               8000 ; Timeout
-               ;; Optional callback:
-               (fn [reply]
-                 (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-                   (dispatch [:add-players reply]))))
-   db))
+
 
 
 
@@ -145,19 +138,28 @@
 (reg-event-db
   :add-player
   (fn [db [_ the-map]]
-    (assoc db :players (conj
-                         (remove #(= (:id the-map) (:id %))
-                                 (:players db))
-                         the-map))))
+    (assoc db
+      :search-pool (if (some
+                         #(= (:id the-map) (:id %))
+                         (:search-pool db))
+                     (conj (remove #(= (:id the-map) (:id %))
+                                   (:search-pool db))
+                           the-map)
+                     (:search-pool db))
+
+      :players (conj
+                 (remove #(= (:id the-map) (:id %))
+                         (:players db))
+                 the-map))))
 
 (reg-event-db
   :add-players
   (fn [db [_ the-map]]
-    (assoc db :players (concat
-                         (remove #(some (fn [a] (= (:id %) (:id a)))
-                                        the-map)
-                                 (:players db))
-                         the-map))))
+    (assoc db :search-pool (concat
+                             (remove #(some (fn [a] (= (:id %) (:id a)))
+                                            the-map)
+                                     (:search-pool db))
+                             the-map))))
 
 
 
@@ -169,13 +171,14 @@
   :dungeon/get-member-with-id
   (fn [db [_ the-map]]
     ;(.log js/console (str "szia" the-map))
-    (chsk-send! [:dungeon/get-member-with-id {:id the-map}]
-                8000 ; Timeout
-                ;; Optional callback:
-                (fn [reply]
-                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
-                    (do
-                      (dispatch [:add-player reply])))))
+    (if (not (some #(= (:id %) the-map) (:players db)))
+      (chsk-send! [:dungeon/get-member-with-id {:id the-map}]
+                  8000 ; Timeout
+                  ;; Optional callback:
+                  (fn [reply]
+                    (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                      (do
+                        (dispatch [:add-player reply]))))))
     db))
 
 
@@ -369,13 +372,13 @@
     (chsk-send! [:dungeon/get-invoices]
                 8000 ; Timeout
                 ;; Optional callback:
-
                 (fn [reply] ; Reply is arbitrary Clojure data
                   (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                     (do
-                        (dispatch [:set-invoices reply])
+                      (.log js/console (str reply))
+                      (dispatch [:set-invoices reply])))))
                         ;(assoc db :open-menu false)))))
-                        (dispatch [:dungeon/get-members-with-id  (vec (set (map :member-id reply)))])))))
+                    ;  (dispatch [:dungeon/get-members-with-id  (vec (set (map :member-id reply)))])))))
 
 
 
@@ -387,6 +390,25 @@
   (fn [db [_ change-map]]
     (chsk-send! [:crusader/remove-user change-map])
     db))
+
+
+(reg-event-db
+  :state/get-state
+  (fn [db [_]]
+    (chsk-send! [:state/get-state]
+                8000
+                (fn [reply]
+                  (if (cb-success? reply)
+                    (do
+                      (dispatch [:set-any-data :app-state reply])))))
+    db))
+
+(reg-event-db
+  :state/diff
+  (fn [db [_ new-state]]
+    (.log js/console (str new-state))
+    (assoc db :app-state (differ/patch (:app-state db) new-state))))
+
 
 (reg-event-db
   :crusader/add-user

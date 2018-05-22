@@ -14,9 +14,10 @@
             [ajax.core :refer [GET POST]]
             [re-frame.core :refer [dispatch-sync dispatch subscribe]]
             [cljs-time.core :as tcore]
-            [lvlup.utils :as utils :refer [read-now]]
 
-            [jayq.core :refer [$ css html]]))
+            [lvlup.utils :as utils :refer [read-now]]))
+
+            ;[jayq.core :refer [$ css html]]))
 
 
 
@@ -273,8 +274,8 @@
 (defn side-menu []
   (let []
     (reagent/create-class
-     {:component-did-mount #(.tooltip ($ ".tooltipped"))
-      :component-did-update #(.tooltip ($ ".tooltipped"))
+     {;:component-did-mount #(.tooltip ($ ".tooltipped"))
+      ;:component-did-update #(.tooltip ($ ".tooltipped"))
       :reagent-render
       (fn []
         [:div#side-menu.valign.center  {:style {:width "100%"}} [:div
@@ -388,11 +389,12 @@
   [:div.uk-width-1-1.uk-padding-small.uk-margin-remove
    [:span.uk-text-middle.uk-padding-remove.uk-text-truncate (str (:id member) ". " (:name member))]
 
-   [:span.uk-float-right  {:data-uk-icon "icon: plus-circle"
-                           :on-click #(do
-                                        (chsk-send! [:dungeon/add-member (assoc member :playing true)])
-                                        (reset! search-atom "")
-                                        (.notification js/UIkit (str (:name member) " lemegy a dungeonbe!")))}]])
+   [:span.uk-float-right
+    {:data-uk-icon "icon: plus-circle"
+     :on-click #(do
+                  (chsk-send! [:dungeon/add-member (assoc member :playing true)])
+                  (reset! search-atom "")
+                  (.notification js/UIkit (str (:name member) " lemegy a dungeonbe!")))}]])
 
 
 
@@ -434,40 +436,84 @@
 
 
 (defn crusader-sidenav []
+ (let [user (subscribe [:data "user"])]
+   (fn []
+     [:ul.uk-nav.uk-nav-primary.uk-nav-center.uk-margin-auto-vertical {:on-click #(.hide (.offcanvas js/UIkit "#container-nav"))}
+      [:li
+       [:a
+        {:href "/crusader/dungeon"}
+        [:span.uk-margin-small-right {:data-uk-icon "icon: happy"}]
+        " Dungeon"]]
+      [:li
+       [:a
+        {:href "/crusader/checkout"}
+        [:span.uk-margin-small-right {:data-uk-icon "icon: credit-card"}]
+        " Kassza"]]
+      [:li
+       [:a
+        {:href "/crusader/reservation"}
+        [:span.uk-margin-small-right {:data-uk-icon "icon: calendar"}]
+        " Foglalások"]]
+      [:li
+       [:a
+        {:href "/crusader/registration"}
+        [:span.uk-margin-small-right {:data-uk-icon "icon: users"}]
+        " Vendégek"]]
+      [:li
+       [:a
+        {:href "/crusader"}
+        [:span.uk-margin-small-right {:data-uk-icon "icon: info"}]
+        " Patch notes"]]
+      (if (= "admin" (:role @user))
+        [:li
+         [:a
+          {:href "/crusader/admin"}
+          [:span.uk-margin-small-right {:data-uk-icon "icon: code"}]
+          " Admin"]])
+      [:li.uk-nav-divider]
+      [:li
+       [:a
+        {:href "/logout"}
+        [:span.uk-margin-small-right {:data-uk-icon "icon: sign-out"}]
+        " Kijelentkezés"]]])))
 
-   [:ul.uk-nav.uk-nav-primary.uk-nav-center.uk-margin-auto-vertical {:on-click #(.hide (.offcanvas js/UIkit "#container-nav"))}
-    [:li
-     [:a
-      {:href "/crusader/dungeon"}
-      [:span.uk-margin-small-right {:data-uk-icon "icon: happy"}]
-      " Dungeon"]]
-    [:li
-     [:a
-      {:href "/crusader/checkout"}
-      [:span.uk-margin-small-right {:data-uk-icon "icon: credit-card"}]
-      " Kassza"]]
-    [:li
-     [:a
-      {:href "/crusader/reservation"}
-      [:span.uk-margin-small-right {:data-uk-icon "icon: calendar"}]
-      " Foglalások"]]
-    [:li
-     [:a
-      {:href "/crusader/registration"}
-      [:span.uk-margin-small-right {:data-uk-icon "icon: users"}]
-      " Vendégek"]]
-    [:li
-     [:a
-      {:href "/crusader"}
-      [:span.uk-margin-small-right {:data-uk-icon "icon: info"}]
-      " Patch notes"]]
-    [:li.uk-nav-divider]
-    [:li
-     [:a
-      {:href "/logout"}
-      [:span.uk-margin-small-right {:data-uk-icon "icon: sign-out"}]
-      " Kijelentkezés"]]])
 
+(defn search-modal []
+  (let [;members (subscribe [:data "players"])
+        number (atom 20)
+        the-timeout (atom nil)]
+    (fn []
+      [:div#modal-full.uk-modal-full.uk-modal
+       {:data-uk-modal "uk-modal"}
+       [:div#search-full.uk-modal-dialog
+        {
+         :data-uk-height-viewport "uk-height-viewport"}
+        [:button.uk-modal-close-full
+         {:data-uk-close "uk-close", :type "button"}]
+        [:div.uk-margin-remove {:data-uk-grid true}
+         [:form.uk-search.uk-search-large.uk-width-1-1
+          [:input.uk-search-input.uk-text-center
+           {:on-change #(do
+                          (reset! number 20)
+                          (if @the-timeout (.clearTimeout js/window @the-timeout))
+                          (reset! the-timeout
+                                  (.setTimeout
+                                    js/window
+                                    (fn [a] (dispatch [:set-search-member a]))
+                                    500
+                                    (-> % .-target .-value))))
+
+            ;(dispatch [:set-search-member (-> % .-target .-value)]))
+            ;:placeholder "Regisztráció/Keresés",
+
+
+            :placeholder "Keresés", :type "search"
+            :auto-focus "autofocus",}]]
+         ;:placeholder "Search...",}]]
+         ;:type "search"}]]
+         ;[:div.uk-width-1-1 (str "dsadsadsa" @members)]
+         [lvlup.crusader.dungeon/gamers]
+         [lvlup.crusader.dungeon/show-20-more]]]])))
 
 (defn crusader-navbar []
   (let [members (subscribe [:data "players"])
@@ -510,24 +556,7 @@
               ;[:li.uk-nav-divider]
               ;[:li [:a {:href "/logout"} "Kijelentkezés"]]]]]]]
            [:div.uk-navbar-right
-             [:div.uk-grid.uk-animation-fade.uk-padding.uk-padding-remove-vertical {:data-uk-grid true}
-              [:h4 (:role @user)]
-              [:img.scale-hover {:width "65px"
-                                 :data-uk-tooltip (if @connection-state
-                                                    "Kapcsolódva"
-                                                    "Szétkapcsolódva")
-                                 :src (if
-                                       @connection-state
-                                        "/Icons/connected.svg"
-                                        "/Icons/disconnected.svg")}]
-              [:img.scale-hover {:data-uk-toggle "target: #sidenav" :src "/Icons/parachute.svg" :width "70px"}]
-              [:div.uk-width-1-1.uk-card.uk-card-secondary.uk-margin-remove.uk-padding-remove {:style {:max-height "50vh" :overflow "auto" :z-index 1000}}
-               (doall
-                (map-indexed
-                 #(-> ^{:key %1} [member-name %2 search])
-                 (if (= "" (:id @search))
-                   []
-                   (filter-by-name-and-id  @members search false))))]]]]])})))
+            [:h1.uk-heading-bullet.uk-padding-small.uk-margin-remove.uk-padding-remove-vertical (:role @user)]]]])})))
 
 
 (defn loading-screen []

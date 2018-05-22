@@ -35,6 +35,8 @@
 (defn stop!  []  (crusader/stop-router!)) ;(crusader/stop-web-server!))
 (defn start! [] (crusader/start-router!))
 
+(def version "?v=100")
+
 (start!)
 
 (def pass "jokaiutca17")
@@ -172,7 +174,7 @@
       (include-js "/externaljs/picker.time.js")
       (include-js "/externaljs/dragscroll.js")
       (include-js "/externaljs/jscolor.min.js")
-      (include-js "/js/app.1.4.5.js")])))
+      (include-js (str "/js/app.js" version))])))
 
 (defn loading-page []
   (html5
@@ -190,7 +192,7 @@
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit.min.js")
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit-icons.min.js") (include-js "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js")
     (include-js "https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js") (include-js "https://use.fontawesome.com/cb88aeea27.js")
-    (include-js "/js/app.1.4.5.js")]))
+    (include-js (str "/js/app.js" version))]))
 
 (def authdata
   "Global var that stores valid users with their
@@ -253,7 +255,8 @@
         user (crusader/find-user username)]
     (if (hashers/check password (:password user))
       (let [next-url (get-in request [:query-params :next] "/crusader")
-            updated-session (assoc session :identity username :uid username :role (:role user))]
+            updated-session (assoc session :identity username :uid username :role (:role user) :city (:city user))]
+                                           ;:city (:city user))]
         (-> (redirect next-url)
             (assoc :session updated-session)))
       (let []

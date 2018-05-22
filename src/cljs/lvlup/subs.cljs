@@ -9,6 +9,14 @@
          (keyword the-key))))
 
 (reg-sub
+  :dungeon
+  (fn [db [_]]
+    (get-in
+      db
+      [:app-state :dungeon])))
+
+
+(reg-sub
   :player
   (fn [db [_ id]]
     (first (filter #(= id (:id %)) (:players db)))))

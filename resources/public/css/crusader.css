@@ -93,16 +93,31 @@ height: 60px;
   font-size: 1.7em;
   height: 50px;
 }
+.uk-card-primary{
 
-#loading {
+background: darkblue;
+}
+
+.active-border{
+
+    background: #1E5582;
+
+}
+
+.glowing {
 		-webkit-animation: rotation 0.5s infinite linear;
-    -webkit-animation:  glowing 0.5s infinite linear;
+    -webkit-animation:  glowing 1.5s infinite linear;
     }
 @keyframes glowing {
-    0% { box-shadow: 0 0 -10px #c4a300; }
-    40% { box-shadow: 0 0 20px #c4a300; }
-    60% { box-shadow: 0 0 20px #c4a300; }
-    100% { box-shadow: 0 0 -10px #c4a300; }
+    0% { box-shadow: 0 0 -10px lightblue; }
+    40% { box-shadow: 0 0 30px lightblue; }
+    60% { box-shadow: 0 0 30px lightblue; }
+    100% { box-shadow: 0 0 -10px lightblue; }
+}
+
+.search-player:hover{
+background: lightblue!important;
+cursor: pointer;
 }
 
 .button-glow {
@@ -145,6 +160,16 @@ height: 60px;
  cursor: pointer;
  transition: 0.3s ease-in-out;
 
+}
+
+.monster-button{
+transition: 0.3s ease-in-out;
+}
+
+.monster-button:hover{
+background: rgba(255,255,255,0.1);
+border-radius: 10px;
+transform: scale(1.1);
 }
 
 .scale-hover {
@@ -315,6 +340,11 @@ transition: 0.3s ease-in-out;
 .one-reservation:hover{
 transform: scale(1.05);
 transition: 0.3s ease-in-out;
+}
+
+#search-full{
+background: rgba(255,255,255,0.99) !important;
+color: white !important;
 }
 
 .uk-notification-message{

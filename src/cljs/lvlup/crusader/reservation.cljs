@@ -16,8 +16,8 @@
 
             [lvlup.subs]
             [cljs.core.async :as async :refer (<! >! put! chan)]
-            [taoensso.sente  :as sente :refer (cb-success?)]
-            [jayq.core :refer [$ css html]]))
+            [taoensso.sente  :as sente :refer (cb-success?)]))
+            ;[jayq.core :refer [$ css html]]))
 
 (def colors
   [{:background "#000" :color "black"}
