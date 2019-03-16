@@ -1,15 +1,11 @@
 (ns lvlup.crusader
   "Official Sente reference example: server"
   {:author "Peter Taoussanis (@ptaoussanis)"}
-
   (:require
    [clojure.string     :as str]
    [clojure.data     :as data]
-   [buddy.hashers :as hashers]
    [taoensso.nippy :as nippy]
-
    [monger.core :as mg]
-
    [monger.collection :refer [insert update update-by-id remove-by-id] :as mc]
    [monger.query :refer :all]
    [monger.operators :refer :all]
@@ -19,62 +15,15 @@
    [taoensso.encore    :as encore :refer (have have?)]
    [taoensso.timbre    :as timbre :refer (tracef debugf infof warnf errorf)]
    [taoensso.sente     :as sente]
-   [duratom.core :refer [duratom]]
+   [lvlup.db :as db]
    [differ.core :as differ]
-   ;[duratom.core]
    [hiccup.page :refer [include-js include-css html5]]
-    ;;; TODO Choose (uncomment) a supported web server + adapter -------------
    [org.httpkit.server :as http-kit]
    [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
-   ;;
-   ;; [immutant.web :as immutant]
-   ;; [taoensso.sente.server-adapters.immutant :refer (get-sch-adapter)]
-   ;;
-   ;; [nginx.clojure.embed :as nginx-clojure]
-   ;; [taoensso.sente.server-adapters.nginx-clojure :refer (get-sch-adapter)]
-   ;;
-   ;; [aleph.http :as aleph]
-   ;; [taoensso.sente.server-adapters.aleph :refer (get-sch-adapter)]
-   ;; -----------------------------------------------------------------------
+   [taoensso.sente.packers.transit :as sente-transit]))
 
-   ;; Optional, for Transit encoding:
-   [taoensso.sente.packers.transit :as sente-transit])
-  (:import [org.bson.types ObjectId]
-           [com.mongodb DB WriteConcern]))
 
-;; (timbre/set-level! :trace) ; Uncomment for more logging
 (reset! sente/debug-mode?_ true) ; Uncomment for extra debug info
-
-;;;; Define our Sente channel socket (chsk) server
-
-(def lvlup-maintance
-  {"szeged"
-   {:dungeon
-    [{:number 1, :type "pc", :color "#222", :players {}}
-     {:number 2, :type "pc", :color "#222", :players {}}
-     {:number 3, :type "pc", :color "#222", :players {}}
-     {:number 4, :type "pc", :color "#222", :players {}}
-     {:number 5, :type "pc", :color "#222", :players {}}
-     {:number 6, :type "pc", :color "#222", :players {}}
-     {:number 7, :type "pc", :color "#222", :players {}}
-     {:number 8, :type "pc", :color "#222", :players {}}
-     {:number 9, :type "pc", :color "#222", :players {}}
-     {:number 10, :type "pc", :color "#222", :players {}}
-     {:number 11, :type "ps", :color "#222", :players {}}
-     {:number 12, :type "ps", :color "#222", :players {}}
-     {:number 13, :type "xbox", :color "#222", :players {}}
-     {:number 14, :type "xbox", :color "#222", :players {}}]
-    :checkout []}})
-
-(def local-db
-  (duratom
-    :local-file
-     :file-path "db/shared.edn"
-     :init lvlup-maintance
-    :rw {:read nippy/thaw-from-file
-         :write nippy/freeze-to-file}))
-
-;(def local-db (atom {"szeged" {:dungeon [{:number 1 :type "ps" :color "#222"}]}}))
 
 (let [;; Serialization format, must use same val for client + server:
       packer :edn ; Default packer, a good choice in most cases
@@ -97,269 +46,36 @@
   (def connected-uids                connected-uids)) ; Watchable, read-only atom
 
 
-
-
-
-(def clicks (atom 0))
-
-;Utility functions
-
-
 (defn send-all [message]
   (let [uids (:any @connected-uids)]
     (doseq [uid uids]
-      (chsk-send! uid
-                  message))))
-
-(def waiting-pool (atom []))
-
-(defn get-waiting-pool []
-  (send-all [:dungeon/waiting-pool (str @waiting-pool)]))
-
-(defn add-to-waiting-pool [{:keys [event]}]
-  (let [[key change-map] event]
-    (reset! waiting-pool (vec (set (conj @waiting-pool change-map))))
-    (get-waiting-pool)))
-
-(defn remove-from-waiting-pool [{:keys [event]}]
-  (let [[key change-map] event]
-    (reset! waiting-pool (vec (remove  #(= change-map %) @waiting-pool)))
-    (get-waiting-pool)))
-
-(let [^MongoOptions opts (mg/mongo-options {:threads-allowed-to-block-for-connection-multiplier 300})
-      ^ServerAddress sa  (mg/server-address "127.0.0.1" 27017)
-      conn               (mg/connect sa opts)
-      db   (mg/get-db conn "lvlup")]
+      (chsk-send! uid message))))
 
 
 
-  (defn get-max-id []
-    (let [all-member-id
-          (+ 11 (mc/count db "members" {}))] (send-all [:dungeon/max-id all-member-id])))
 
 
-  (defn find-user [username]
-    (let []
-      (dissoc (mc/find-one-as-map db "users" {:username username}) :_id)))
-
-  (defn get-users [{:keys [event]}]
-    (let [[key change-map] event]
-      (vec
-        (map
-          #(dissoc % :_id)
-          (with-collection db "users")))))
-
-  (defn filter-users-id [city]
-    (vec
-      (map
-        :username
-        (with-collection db "invoices"
-          (find {:city city})))))
-     ;(find {:payed false})
-
-
-  (defn add-user [{:keys [event]}]
-    (let [[key change-map] event]
-      (mc/insert db "users" (assoc change-map :password (hashers/derive (:password change-map))))))
-
-  (defn remove-user [{:keys [event]}]
-    (let [[key change-map] event]
-      (mc/remove-by-id db "users" (:_id (mc/find-one-as-map db "users" {:username change-map})))))
-      ;  (mc/update db "members" {:id (:id change-map)} {$set {:total-hours}})
-
-
-  (defn dungeon-change [{:keys [event]} req]
-    (let [[key change-map] event]
-      (reset! local-db
-              (assoc-in @local-db
-                        [(:city (:session req)) :dungeon (dec (:number change-map))]
-                        change-map))
-      ;(mc/update db "dungeon" {:name (:name change-map)}
-       ;          change-map)
-
-      (send-all [:dungeon/change change-map])))
-
-  (defn modify-invoice [{:keys [event]}]
-    (let [[key change-map] event
-          oid (ObjectId. (:id change-map))
-          the-invoice (fn [] (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))]
-      ;(send-all [:dungeon/bug-check (str oid " halika " (mc/find-one-as-map db "unpayedinvoices" {:_id oid}))
-
-      (mc/insert db "invoices" (the-invoice))
-      (mc/remove-by-id db "unpayedinvoices" oid)
-
-      (send-all [:dungeon/get-invoices
-                 (str
-                  (vec
-                   (map
-                    #(assoc % :_id (str (:_id %)))
-                    (with-collection db "unpayedinvoices"))))])))
-   ;(find {:payed false})))))])))
-
-  (defn add-invoice [{:keys [event]}]
-    (let [[key change-map] event]
-      (mc/insert db "unpayedinvoices" change-map)
-      ;  (mc/update db "members" {:id (:id change-map)} {$set {:total-hours}})
-      (send-all [:dungeon/get-invoices
-                 (str
-                  (vec
-                   (map
-                    #(assoc % :_id (str (:_id %)))
-                    (with-collection db "unpayedinvoices"))))])))
-                                ;(find {:payed false})))))])))
-
-  (defn season-pass [{:keys [event]}]
-    (let [[key change-map] event]
-      (mc/update db "members" {:id (:member-id change-map)} {$inc {:season-pass (:quantity change-map)}})
-      (send-all [:dungeon/replace-member
-                 (dissoc
-                   (mc/find-one-as-map db "members" {:id (:member-id change-map)})
-                   :_id)])))
-
-
-  (defn get-payed-invoices []
-
-    (vec
-      (map
-         #(assoc % :_id (str (:_id %)))
-         (with-collection db "invoices"))))
-                                ;(find {:payed false})))))]))
-
-  (defn update-member [{:keys [event]}]
-    (let [[key change-map] event]
-      (mc/update db "members" {:id (:id change-map)} change-map)
-      ;(mc/find db "members" {:id (:id change-map)})
-      (send-all [:dungeon/replace-member (dissoc
-                                          (mc/find-one-as-map db "members" {:id (:id change-map)})
-                                          :_id)])))
-
-  (defn remove-member [{:keys [event id ?data ring-req ?reply-fn send-fn]}]
-    (let [[key change-map] event]
-      (mc/remove db "members" {:id change-map})))
-
-  (defn add-member [{:keys [event]}]
-    (let [[key change-map] event]
-      (mc/insert db "members" (assoc change-map :season-pass 0 :total-hours 0))
-      (send-all [:dungeon/replace-member
-                 (dissoc
-                  (mc/find-one-as-map db "members"
-                                      {:id (:id change-map)})
-                  :_id)])))
-
-  (defn get-members [{:keys [event]}]
-    (let [[key change-map] event]
-      (infof (str (clojure.string/join
-                    " "
-                    (reverse
-                      (clojure.string/split (:search change-map) #" ")))
-                  ".*"))
-      (vec
-       (map
-        #(dissoc % :_id)
-        (with-collection
-         db "members"
-         (find {$or [(if (= "" (:search change-map))
-                       {}
-                       {$or [(cond
-                               (= (count (clojure.string/split (:search change-map) #" ")) 1)
-                               {:name {$regex (str (:search change-map) ".*")  $options "i"}}
-                               (= (count (clojure.string/split (:search change-map) #" ")) 2)
-                               {:name {$regex (str (second (clojure.string/split (:search change-map) #" "))
-                                                   ".*."
-                                                   (first (clojure.string/split (:search change-map) #" "))
-                                                   "|"
-                                                   (first (clojure.string/split (:search change-map) #" "))
-                                                   ".*."
-                                                   (second (clojure.string/split (:search change-map) #" ")))  $options "i"}}
-                               :else {:name {$regex (str (:search change-map) ".*")  $options "i"}})
-
-
-
-                             {:id (read-string (:search change-map))}]})]})
-
-                                                  ;(fields [:id :name :season-pass])
-                                                  ;; it is VERY IMPORTANT to use array maps with sort
-         (sort (array-map :id -1 :name 1))
-         (limit 20)
-         (skip (:number change-map)))))))
-
-  (defn get-reservations [{:keys [event]}]
-    (let [[key change-map] event]
-      (str
-       (vec
-        (map
-         #(assoc % :_id (str (:_id %)))
-         (with-collection db "reservations"
-                          (find {:date change-map})))))))
-
-  (defn remove-reservations [{:keys [event]}]
-    (let [[key change-map] event]
-      (mc/remove-by-id db "reservations" (ObjectId. (:_id change-map)))
-      (str
-       (vec
-        (map
-         #(assoc % :_id (str (:_id %)))
-         (with-collection db "reservations"
-                          (find {:date (:date change-map)})))))))
-
-  (defn add-reservations [{:keys [event]}]
-    (let [[key change-map] event]
-      (if (:_id change-map)
-        (mc/update-by-id db "reservations"
-                         (ObjectId. (:_id change-map))
-                         (dissoc change-map :_id))
-        (mc/insert db "reservations" change-map))
-      (str
-       (vec
-        (map
-         #(assoc % :_id (str (:_id %)))
-         (with-collection db "reservations"
-                          (find {:date (:date change-map)})))))))
-
-  (defn get-members-with-id [{:keys [event]}]
-    (let [[key change-map] event]
-      (vec
-       (map
-        #(dissoc % :_id)
-        (with-collection db "members"
-                         (find (if (not= [] change-map)
-                                 {$or
-                                  (vec
-                                   (map (fn [a] (assoc {} :id a))
-                                        change-map))}
-                                 {})))))))
-
-  (defn get-member-with-id [{:keys [event]}]
-    (let [[key change-map] event]
-      (dissoc
-        (mc/find-one-as-map
-          db "members"
-          {:id (:id change-map)})
-        :_id)))
-
-
-
-  (defn get-dungeon []
-     (vec
-      (map
-       #(dissoc % :_id)
-       (with-collection db "dungeon")))))
-
-
-(defn broadcast
+(defn broadcast-city
   "Broadcast data to all connected clients"
-    [data]
+  [city data]
+  (let [city-users (db/get-users-by-city city)]
     (doseq [uid (:any @connected-uids)]
-     (chsk-send! uid data)))
+      (if (some #(= uid %) city-users)
+        (do (chsk-send! uid data)
+            (chsk-send! uid [:dungeon/bug-check city]))))))
 
-    ;(doseq [varos the-keys]
-     ; (doseq [uid (filter-users-id varos)];(if (first (first (second data))))
-      ;  (chsk-send! uid data)))))
-
-(add-watch local-db :watch-local
+(add-watch db/local-db :watch-local
            (fn [k reference old-state new-state]
-             ;(infof "Condsadsa" new-state)
-             (broadcast [:state/diff (differ/diff (get old-state "szeged") (get new-state "szeged"))])))
+             (let [the-diff (differ/diff old-state new-state)]
+               (doseq [city db/cities]
+                 (if (or (contains? (second the-diff) city)
+                         (contains? (first the-diff) city))
+                   (broadcast-city
+                     city
+                     [:state/diff
+                      (differ/diff
+                        (get old-state city)
+                        (get new-state city))]))))))
 
 
 (defn format-date [date]
@@ -373,22 +89,22 @@
     (str year "." month "." day " - " hour ":" minute)))
 
 
-(defn save-statistics []
-  (let [wb (xls/create-workbook "Számlák"
-                            (conj (vec (map #(vector (format-date (:start %))
-                                                     (format-date (:finish %))
-                                                     (:price %)
-                                                     (:member-id %))
-                                            (get-payed-invoices)))))
+(comment (defn save-statistics []
+           (let [wb (xls/create-workbook "Számlák"
+                                     (conj (vec (map #(vector (format-date (:start %))
+                                                              (format-date (:finish %))
+                                                              (:price %)
+                                                              (:member-id %))
+                                                     (db/get-payed-invoices)))))
 
 
 
 
-        sheet (xls/select-sheet "Számlák" wb)
-        header-row (first (xls/row-seq sheet))]
-    (xls/set-row-style! header-row (xls/create-cell-style! wb {:background :yellow,
-                                                               :font {:bold true}}))
-    (xls/save-workbook! "invoices.xlsx" wb)))
+                 sheet (xls/select-sheet "Számlák" wb)
+                 header-row (first (xls/row-seq sheet))]
+             (xls/set-row-style! header-row (xls/create-cell-style! wb {:background :yellow,
+                                                                        :font {:bold true}}))
+             (xls/save-workbook! "invoices.xlsx" wb))))
 
 
 ;; We can watch this atom for changes if we like
@@ -396,59 +112,6 @@
            (fn [_ _ old new]
              (when (not= old new)
                (infof "Connected uids change: %s" new))))
-
-(defn login-handler
-  "Here's where you'll add your server-side login/auth procedure (Friend, etc.).
-  In our simplified example we'll just always successfully authenticate the user
-  with whatever user-id they provided in the auth request."
-  [ring-req]
-  (let [{:keys [session params]} ring-req
-        {:keys [user-id user-pass]} params] {:status 200 :session (assoc session :uid user-id)}))
-
-;;;; dungeon/get-dungeon server>user async push examples
-
-
-(defn random-stuff []
-  (doseq [uid (:any @connected-uids)]
-    (chsk-send! uid [:count/clicks {:valami "más"}])))
-
-(defn count-clicks []
-  (doseq [uid (:any @connected-uids)]
-
-    (reset! clicks (inc @clicks))
-    (chsk-send! uid [:count/clicks {:number @clicks}])))
-
-(defn test-fast-server>user-pushes
-  "Quickly pushes 100 events to all connected users. Note that this'll be
-  fast+reliable even over Ajax!"
-  []
-  (doseq [uid (:any @connected-uids)]
-    (doseq [i (range 100)]
-      (chsk-send! uid [:fast-push/is-fast (str "hello " i "!!")]))))
-
-(comment (test-fast-server>user-pushes)
-
-         (defonce broadcast-enabled?_ (atom true))
-
-         (let [broadcast!
-               (fn [i]
-                 (let [uids (:any @connected-uids)]
-                   (debugf "Broadcasting server>user: %s uids" (count uids))
-                   (doseq [uid uids]
-                     (chsk-send! uid
-                                 [:dungeon/get-dungeon
-                                  {:what-is-this "Paul async broadcast pushed from server"
-                                   :how-often "Every 10 seconds"
-                                   :to-whom uid
-                                   :how-many (str uids)
-                                   :connected-users (str (second (:any @connected-uids)))
-                                   :hmm "halika"
-                                   :i i}]))))]
-
-           (go-loop [i 0]
-             (<! (async/timeout 10000))
-             (when @broadcast-enabled?_ (broadcast! i))
-             (recur (inc i)))))
 
 ;;;; Sente event handlers
 
@@ -473,107 +136,108 @@
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-from-server event}))))
 
-(defmethod -event-msg-handler :example/test-rapid-push
-  [ev-msg] (test-fast-server>user-pushes))
 
-(defmethod -event-msg-handler :example/button2
-  [ev-msg] (random-stuff))
 
-(defmethod -event-msg-handler :dungeon/get-dungeon
-  [{:as ev-msg :keys [?reply-fn]}]
-  (?reply-fn (get-dungeon)))
+(defn flatten-map [path the-key m]
+  (if (map? m)
+    (mapcat (fn [[k v]] (flatten-map (conj path k) k v)) m)
+    [[path the-key m]]))
+
+(defn find-in [coll x]
+  (->> (flatten-map [] :member-id coll)
+       (filter (fn [[_ the-key v]] (= the-key x)))
+       (map (fn [a] (assoc {} :key-vec (first a)
+                              :value (nth a 2))))))
+
+(defn find-all-nested
+  [m k]
+  ;(.log js/console "érdekes: " (str (tree-seq (or map? vector?) vals m)))
+  (->> (tree-seq map? vals m)
+       (filter map?)
+       (keep k)))
+
+(defmethod -event-msg-handler :discounts/add-discount
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (db/add-discount ev-msg ring-req))
+
+(defmethod -event-msg-handler :discounts/remove-discount
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (db/remove-discount ev-msg ring-req))
 
 (defmethod -event-msg-handler :dungeon/add-invoice
-  [{:as ev-msg :keys [?reply-fn]}]
-  (add-invoice ev-msg)
-  (?reply-fn true))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (db/add-invoice ev-msg ring-req)))
 
 (defmethod -event-msg-handler :dungeon/add-reservations
-  [{:as ev-msg :keys [?reply-fn]}]
-  (?reply-fn (add-reservations ev-msg)))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (db/add-reservations ev-msg ring-req)))
 
 (defmethod -event-msg-handler :dungeon/remove-reservations
-  [{:as ev-msg :keys [?reply-fn]}]
-  (?reply-fn (remove-reservations ev-msg)))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (db/remove-reservations ev-msg ring-req)))
 
 (defmethod -event-msg-handler :dungeon/get-reservations
-  [{:as ev-msg :keys [?reply-fn]}]
-  (?reply-fn (get-reservations ev-msg)))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (db/get-reservations ev-msg ring-req)))
 
 (defmethod -event-msg-handler :dungeon/add-member
-  [ev-msg] (add-member ev-msg))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (db/add-member ev-msg ring-req)))
 
-(defmethod -event-msg-handler :dungeon/remove-member
-  [ev-msg] (remove-member ev-msg))
 
 (defmethod -event-msg-handler :dungeon/update-member
-  [ev-msg] (update-member ev-msg))
-
-(defmethod -event-msg-handler :dungeon/get-max-id
-  [ev-msg] (get-max-id))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (broadcast-city (-> ring-req :session :city)  [:dungeon/replace-member (db/update-member ev-msg ring-req)]))
 
 (defmethod -event-msg-handler :dungeon/season-pass
-  [{:as ev-msg :keys [?reply-fn]}]
-  (season-pass ev-msg)
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (send-all [:dungeon/replace-member
+             (db/season-pass ev-msg ring-req)])
   (?reply-fn true))
 
 (defmethod -event-msg-handler :state/get-state
-  [{:as ev-msg :keys [?reply-fn ring-req]}] (?reply-fn (get @local-db (:city (:session ring-req)))))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (if
+    (= "admin" (:role (:session ring-req)))
+    (?reply-fn (find-all-nested @db/local-db :member-id))
+    (?reply-fn (get @db/local-db (:city (:session ring-req))))))
+
+(defmethod -event-msg-handler :dungeon/get-invoices
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (db/get-invoices ev-msg ring-req)))
 
 (defmethod -event-msg-handler :dungeon/modify-invoice
-  [{:as ev-msg :keys [?reply-fn]}]
-  (modify-invoice ev-msg)
-  (?reply-fn true))
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (db/modify-invoice ev-msg ring-req)))
 
 (defmethod -event-msg-handler :dungeon/get-members
-  [{:as ev-msg :keys [?reply-fn]}] (?reply-fn (get-members ev-msg)))
+  [{:as ev-msg :keys [?reply-fn ring-req]}] (?reply-fn (db/get-members ev-msg ring-req)))
 
-(defmethod -event-msg-handler :dungeon/add-to-waiting-pool
-  [ev-msg] (add-to-waiting-pool ev-msg))
-
-(defmethod -event-msg-handler :dungeon/remove-from-waiting-pool
-  [ev-msg] (remove-from-waiting-pool ev-msg))
-
-(defmethod -event-msg-handler :dungeon/get-waiting-pool
-  [ev-msg] (get-waiting-pool))
-
-(defmethod -event-msg-handler :dungeon/get-members-with-id
-  [{:as ev-msg :keys [?reply-fn]}]
-  (?reply-fn (get-members-with-id ev-msg)))
+(defmethod -event-msg-handler :bosses/get-statistics-data
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (?reply-fn (str (vec (db/get-statistic (-> ring-req :session :city)
+                                         (:days (-> ev-msg :event second))
+                                         (:dates (-> ev-msg :event second)))))))
 
 (defmethod -event-msg-handler :dungeon/get-member-with-id
-  [{:as ev-msg :keys [?reply-fn]}]
-  (?reply-fn (get-member-with-id ev-msg)))
-
+  [{:as ev-msg :keys [?reply-fn ring-req event]}]
+  (?reply-fn (db/get-member-with-id (second event)
+                                    ring-req)))
 
 (defmethod -event-msg-handler :crusader/add-user
   [{:as ev-msg :keys [?reply-fn]}]
-  (add-user ev-msg))
+  (db/add-user ev-msg))
 (defmethod -event-msg-handler :crusader/remove-user
   [{:as ev-msg :keys [?reply-fn]}]
-  (remove-user ev-msg))
+  (db/remove-user ev-msg))
 (defmethod -event-msg-handler :crusader/get-users
   [{:as ev-msg :keys [?reply-fn]}]
-  (?reply-fn (get-users ev-msg)))
-
-
+  (?reply-fn (db/get-users ev-msg)))
 (defmethod -event-msg-handler :dungeon/change
   [{:as ev-msg :keys [?reply-fn ring-req]}]
-  (dungeon-change ev-msg ring-req))
+  (db/dungeon-change ev-msg ring-req))
 
 
-(defmethod -event-msg-handler :example/count-clicks
-  [ev-msg] (count-clicks))
-
-(comment
-  (defmethod -event-msg-handler :example/toggle-broadcast
-    [{:as ev-msg :keys [?reply-fn]}]
-    (let [loop-enabled? (swap! broadcast-enabled?_ not)]
-      (?reply-fn loop-enabled?))))
-
-;; TODO Add your (defmethod -event-msg-handler <event-id> [ev-msg] <body>)s here...
-
-;;;; Sente event router (our `event-msg-handler` loop)
 
 (defonce router_ (atom nil))
 (defn  stop-router! [] (when-let [stop-fn @router_] (stop-fn)))

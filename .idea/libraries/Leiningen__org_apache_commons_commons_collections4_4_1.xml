@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.apache.commons/commons-collections4:4.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.m2/repository/org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

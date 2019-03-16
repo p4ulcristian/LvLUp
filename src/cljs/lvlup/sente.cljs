@@ -16,7 +16,7 @@
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
 (defn notification [valami]
-  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-secondary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left"})))
+  (.notification js/UIkit (str "<adiv class='uk-padding-small uk-card uk-card-secondary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left"})))
 
 (defn notification-sente [fmt & args]
   (let [msg (apply encore/format fmt args)]
@@ -74,23 +74,17 @@
     ;(.log js/console (str action-type ?data))
     ;(dispatch [:set-loading false])
     (case action-type
-      :dungeon/bug-check (.log js/console (str data))
+      :dungeon/bug-check (.log js/console "Csekkolás: "(str data))
       :dungeon/change (dispatch [:set-system data])
       :dungeon/get-reservations (dispatch [:set-reservations (read-string data)])
-      :dungeon/max-id (dispatch [:set-max-id data])
-      :dungeon/get-dungeon (do
-                             (case @actual-page
-                               (dispatch [:set-systems (read-string data)])))
       :state/diff (dispatch [:state/diff data])
       :dungeon/replace-member (do
-                                ;(js/console.log (str data))
-                                (dispatch [:add-player data])
+                                (js/console.log "replacelve? " (str data))
+                                (dispatch [:add-player (assoc {} (:id data) data)])
                                 (chsk-send! [:dungeon/get-max-id]))
                                ;(dispatch [:set-members (read-string data)]))
-
-
       :dungeon/waiting-pool (dispatch [:set-waiting-pool (read-string data)])
-      :dungeon/get-invoices (dispatch [:set-invoices (read-string data)])
+      :dungeon/get-invoices (dispatch [:set-invoices data])
       (.log js/console (str action-type " - " data)))))
 
     ;(notification (str ev-msg))))
@@ -103,14 +97,10 @@
                                :role (:role ?handshake-data)
                                :city (:city ?handshake-data)}])
     (dispatch [:state/get-state])
-    (case @actual-page
-      "registration" (chsk-send! [:dungeon/get-max-id])
-      "checkout" (dispatch [:dungeon/get-invoices])
-      "dungeon" (do
-                  (chsk-send! [:dungeon/get-max-id])
-                  (dispatch [:dungeon/get-dungeon]))
-      "reservation" (dispatch [:dungeon/get-reservations])
-      (notification (str "Hello " ?uid "!")))))
+    ;(dispatch [:set-date])
+    ;(dispatch [:dungeon/get-reservations])
+    (chsk-send! [:dungeon/get-max-id])
+    (dispatch [:dungeon/get-invoices 0])))
 
 (defn chsk-disconnect! []
   (sente/chsk-disconnect! chsk))

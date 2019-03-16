@@ -4,13 +4,13 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[bidi "2.1.3"]
+  :dependencies [[bidi "2.1.3" :exclusions [ring/ring-core]]
                  [org.clojure/clojure "1.8.0"]
                  [com.taoensso/nippy "2.14.0"]
-                 [ring-server "0.4.0"]
-                 [reagent "0.7.0"]
-                 [reagent-utils "0.2.0"]
-                 [ring "1.5.0"]
+                 ;[ring-server "0.4.0"]
+                 [reagent "0.8.1"]
+                 [reagent-utils "0.3.1"]
+                 [ring "1.7.0"]
                  [differ "0.3.2"]
                  [re-frame "0.10.5"]
                  [ring.middleware.logger "0.5.0"]
@@ -18,7 +18,7 @@
                  [bk/ring-gzip "0.1.1"]
                  [duratom "0.3.5"]
                  [ring-transit-middleware "0.1.3"]
-                 [com.novemberain/monger "3.1.0"]
+                 [com.novemberain/monger "3.5.0"]
                  [com.google.guava/guava "24.1-jre"]
                  [ring/ring-defaults        "0.3.1"]
                  [compojure "1.5.1"]
@@ -36,7 +36,7 @@
                  [buddy/buddy-hashers "1.3.0" :exclusions [cheshire commons-codec com.fasterxml.jackson.core/jackson-core]]
                  [cljs-ajax "0.5.8" :exclusions [commons-codec]]
                  [com.andrewmcveigh/cljs-time "0.5.0"]
-                 [clj-time "0.14.2"]
+                 [clj-time "0.15.0"]
                  [com.taoensso/timbre       "4.7.4"]
                  [http-kit "2.2.0"]
                  [secretary "1.2.3"]
@@ -106,16 +106,16 @@
                                   [ring/ring-mock "0.3.0"]
                                   [ring/ring-devel "1.5.0"]
                                   [prone "1.1.4"]
-                                  [figwheel-sidecar "0.5.8"]
-                                  [org.clojure/tools.nrepl "0.2.12"]
-                                  [com.cemerick/piggieback "0.2.2-SNAPSHOT"]
+                                  [figwheel-sidecar "0.5.18"]
+                                  [org.clojure/tools.nrepl "0.2.13"]
+                                  [cider/piggieback "0.4.0"]
                                   [pjstadig/humane-test-output "0.8.1"]] :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.5.15"]] :injections [(require 'pjstadig.humane-test-output)
+                   :plugins [[lein-figwheel "0.5.18"]] :injections [(require 'pjstadig.humane-test-output)
                                                                     (pjstadig.humane-test-output/activate!)]
 
                    :env {:dev true}}
 
-             :uberjar {:hooks [minify-assets.plugin/hooks]
+             :uberjar {;:hooks [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
                        :env {:production true}

@@ -8,6 +8,10 @@
     width: 0px;
 }
 
+body {
+    overflow: auto;
+}
+
 
 
 .noselect {
@@ -20,9 +24,28 @@
                                   supported by Chrome and Opera */
 }
 
+
+
 .maintooltipped{
 
   height: 100%;
+}
+
+.hover-anim:hover img{
+
+transform: scale(1.1);
+transition: 0.3s ease;
+}
+.hover-anim img{
+
+
+transition: 0.3s ease;
+}
+
+
+.franchise-szoveg{
+    font-size: bold !important;
+    color: white !important;
 }
 
 table.highlight>tbody>tr:hover {
@@ -151,17 +174,10 @@ font-family: "Jura";
   margin-bottom : 0px;
 
 }
+.pointer{cursor:pointer;}
 
-html, body, .page {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  color: #fff;
-   overflow: hidden;
-  position: absolute;
-  font-family: "Jura";
-}
+.white{
+color: white;}
 
 .page2 {
 

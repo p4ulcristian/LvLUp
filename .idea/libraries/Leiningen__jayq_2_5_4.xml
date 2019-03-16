@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: jayq:2.5.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.m2/repository/jayq/jayq/2.5.4/jayq-2.5.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -12,6 +12,30 @@
     width: 230px;
 }
 
+.sort-arrow{
+cursor: pointer;
+color: darkblue;
+padding: 0.5px;
+transition: 0.2s ease;
+}
+
+.discount-button{
+
+color: black !important;
+background: lightgreen !important;
+}
+
+
+.sort-arrow:hover{
+transform: scale(1.2);
+color: darkred;
+}
+
+.calendar-choose {
+    background: rgba(0,0,0,0.5) !important;
+    border: solid 1px rgba(255,0,0,0.5);
+}
+
 .reservation-grid{
   width: max-content;
   width: -moz-max-content;
@@ -59,16 +83,7 @@ height: 60px;
   overflow: hidden;
 }
 
-.invoice-icon{
 
-  transition: 0.2s ease-in-out;
-}
-
-.invoice-icon:hover{
-  color: white !important;
-  transition: 0.2s ease-in-out;
-  transform: scale(1.2);
-}
 
 .name-animated:hover {
   animation: backAndForth 10s linear infinite;
@@ -115,6 +130,10 @@ background: darkblue;
     100% { box-shadow: 0 0 -10px lightblue; }
 }
 
+.the-reservations{height:100%;}
+
+
+
 .search-player:hover{
 background: lightblue!important;
 cursor: pointer;
@@ -138,9 +157,8 @@ cursor: pointer;
 }
 
 .uk-tooltip{
-  color: black;
-  background: white;
-  font-size: 1.1em;
+
+  font-size: 1em;
 }
 
 .trans-black{
@@ -351,25 +369,6 @@ color: white !important;
   padding: 0px !important;
 }
 
-
-
-.uk-subnav-pill div.uk-active{
-  border: solid #7F0100 2px;
-  background: white;
-
-  margin: 3px;
-  border-radius: 5px;
-  color: black;
-}
-.uk-subnav-pill{
-
-
-
-  margin-bottom: 10px !important;
-  border-bottom: 5px solid black;
-
-  color: white;
-}
 
 @-webkit-keyframes rotation {
 		from {

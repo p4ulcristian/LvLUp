@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: com.cemerick/piggieback:0.2.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.m2/repository/com/cemerick/piggieback/0.2.2-SNAPSHOT/piggieback-0.2.2-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
