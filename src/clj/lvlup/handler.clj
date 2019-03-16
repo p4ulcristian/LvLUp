@@ -15,7 +15,7 @@
             [hiccup.element :refer [javascript-tag]]
             [ring.middleware.session :refer [wrap-session]]
             [postal.core :refer [send-message]]
-            [ring.middleware.logger :refer [wrap-with-logger]]
+            ;[ring.middleware.logger :refer [wrap-with-logger]]
             [lvlup.crusader :as crusader]
             [ring.middleware.anti-forgery :refer :all]
             ;[ring.util.anti-forgery :refer [wrap-anti-forgery]]
@@ -229,6 +229,6 @@
         (wrap-transit)
         (wrap-params)
         (wrap-multipart-params)
-        (wrap-with-logger)
+        ;(wrap-with-logger)
         (wrap-session)
         (wrap-gzip))))
