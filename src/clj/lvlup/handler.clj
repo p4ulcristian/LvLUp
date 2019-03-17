@@ -17,7 +17,7 @@
             [postal.core :refer [send-message]]
             ;[ring.middleware.logger :refer [wrap-with-logger]]
             [lvlup.crusader :as crusader]
-            [ring.middleware.anti-forgery :refer :all]
+            [ring.middleware.anti-forgery :refer :all :as anti-forgery]
             ;[ring.util.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.params :refer [wrap-params]]
             [buddy.hashers :as hashers]
@@ -55,8 +55,9 @@
                                 :content (str
                                           "<h1>Szép volt!</h1>")}]})))
 
-(def mount-target
+(defn mount-target []
   [:div#app
+   [:div#sente-csrf-token {:data-csrf-token anti-forgery/*anti-forgery-token*}]
    [:div.uk-card.uk-card-primary.uk-height-viewport.uk-width-viewport.uk-inline
     {:style "background: url(../img/cash.jpg);
               background-size: cover;
@@ -108,7 +109,7 @@
     (html5
      (head-crusader)
      [:body#fullscreen {:class "body-container"}
-      mount-target
+      (mount-target)
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.8/js/uikit.min.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.8/js/uikit-icons.min.js")
@@ -129,7 +130,7 @@
   (html5
    (head)
    [:body {:class "body-container"}
-    mount-target
+    (mount-target)
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.8/js/uikit.min.js")
     (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.8/js/uikit-icons.min.js")
     (include-js (str "/js/app.js" version))]))
@@ -163,7 +164,7 @@
     (throw-unauthorized)
     (html5 (head)
            [:body {:class "body-container"}
-            mount-target
+            (mount-target)
             (include-js "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js") (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit.min.js")
             (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.28/js/uikit-icons.min.js")
             (include-js "/js/app3.js")])))

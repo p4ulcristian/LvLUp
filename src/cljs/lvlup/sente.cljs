@@ -15,8 +15,25 @@
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
+
 (defn notification [valami]
-  (.notification js/UIkit (str "<adiv class='uk-padding-small uk-card uk-card-secondary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left"})))
+  (.notification js/UIkit (str "<div class='uk-padding-small uk-card uk-card-secondary notification-style'><span uk-icon='icon: check'></span> " valami "</div>") (clj->js {:pos "bottom-left"})))
+
+(defn output [msg]
+  (.log js/console (str msg)))
+
+(defn csrf-token []
+  (when-let [el (.getElementById js/document "sente-csrf-token")]
+    (.getAttribute el "data-csrf-token")))
+
+
+
+;(def csrf-token "marha")
+
+(if (csrf-token)
+  (output (str "CSRF token detected: " (csrf-token)))
+  (output "CSRF token NOT detected in HTML, default Sente config will reject requests"))
+
 
 (defn notification-sente [fmt & args]
   (let [msg (apply encore/format fmt args)]
@@ -34,6 +51,7 @@
       {:keys [chsk ch-recv send-fn state]}
       (sente/make-channel-socket-client!
        "/chsk" ; Must match server Ring routing URL
+       (csrf-token)
        {:type   rand-chsk-type
         :packer packer})]
 

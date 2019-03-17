@@ -6,7 +6,7 @@
 
   :dependencies [[bidi "2.1.5"]
                  [org.clojure/clojure "1.10.0"]
-                 [com.taoensso/nippy "2.14.0"]
+                 [com.taoensso/nippy "2.14.0" :exclusions [com.taoensso/encore]]
                  [ring-server "0.5.0"]
                  [javax.servlet/servlet-api "2.5"]
                  [reagent "0.8.1"]
@@ -24,14 +24,14 @@
                  [ring/ring-defaults        "0.3.2"]
                  [compojure "1.6.1" :exclusions [commons-codec]]
                  [dk.ative/docjure "1.12.0"]
-                 [org.clojure/core.async    "0.2.395"]
+                 [org.clojure/core.async "0.4.490"]
                  [day8.re-frame/async-flow-fx "0.0.9"]
-                 [org.clojure/core.async "0.4.474"]
+
                  [hiccup "1.0.5"]
                  [yogthos/config "0.8"]
                  [org.clojure/clojurescript "1.10.520"]
                  [com.draines/postal "2.0.0"]
-                 [com.taoensso/sente "1.11.0"]
+                 [com.taoensso/sente "1.14.0-RC2" :exclusions [ring/ring-core]]
                  ;[clojure-guava "0.0.8"]
                  [buddy/buddy-auth "2.1.0" :exclusions [cheshire commons-codec com.fasterxml.jackson.core/jackson-core]]
                  [buddy/buddy-hashers "1.3.0" :exclusions [cheshire commons-codec com.fasterxml.jackson.core/jackson-core]]
@@ -45,7 +45,7 @@
                  [venantius/accountant "0.1.7"]]
 
 
-  :plugins [[lein-cljsbuild "1.1.1"]
+  :plugins [[lein-cljsbuild "1.1.7"]
             [lein-asset-minifier "0.2.7"
              :exclusions [org.clojure/clojure]]]
 
