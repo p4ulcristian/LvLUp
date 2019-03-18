@@ -9,6 +9,7 @@
                  [com.taoensso/nippy "2.14.0" :exclusions [com.taoensso/encore]]
                  [ring-server "0.5.0"]
                  [javax.servlet/servlet-api "2.5"]
+                 [binaryage/devtools "0.9.10"]
                  [reagent "0.8.1"]
                  [reagent-utils "0.3.1"]
                  [ring "1.7.1"]
@@ -40,9 +41,9 @@
                  [clj-time "0.15.0"]
                  [com.taoensso/timbre       "4.7.4"]
                  [http-kit "2.3.0"]
-                 [secretary "1.2.3"]
-                 [jayq "2.5.4"]
-                 [venantius/accountant "0.1.7"]]
+                 [clj-commons/secretary "1.2.4"]
+                 ;[jayq "2.5.4"]
+                 [venantius/accountant "0.2.4"]]
 
 
   :plugins [[lein-cljsbuild "1.1.7"]

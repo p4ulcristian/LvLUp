@@ -87,7 +87,7 @@
 
 (defmethod -event-msg-handler :chsk/recv
   [{:as ev-msg :keys [?data]}]
-  (let [actual-page (subscribe [:data "actual-page"])
+  (let [actual-page (subscribe [:data :actual-page])
         [action-type data] ?data]
     ;(.log js/console (str action-type ?data))
     ;(dispatch [:set-loading false])

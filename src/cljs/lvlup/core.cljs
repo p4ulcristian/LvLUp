@@ -248,14 +248,15 @@
             [crusader-sidenav]]]
           [:nav#stick
            {:data-uk-grid true
-            :style {:z-index 1000 :cursor "pointer"}
-            :data-uk-sticky true}
+            :style {:z-index 1000 :cursor "pointer"}}
+
            [:div.uk-navbar-left
               [:div.stick-logo.scale-hover
-               [:img.rotate {:src "/img/lvlup-logo-transparent.png" :data-uk-toggle "target :#container-nav"}]]]
-           [:div.uk-navbar-center.uk-padding-remove.uk-margin-remove
-              { :data-uk-toggle "target :#container-nav"}
-            [:div
+               [:img.rotate.uk-margin-small-left
+                {:src "/img/lvlup-logo-transparent.png" :data-uk-toggle "target :#container-nav"}]]]
+           [:div.uk-padding-remove
+              {:data-uk-toggle "target :#container-nav"}
+            [:div.uk-margin-left
              [:div {:href "/crusader"}
               [:h1.uk-margin-remove.uk-padding-remove.uk-text-center
                {:style {:font-size "2em" :color "white"}}
@@ -270,11 +271,11 @@
                (:city @user)
                "-"
                (:role @user))]
-            [:div.uk-margin-remove.uk-padding-small
-             {:data-uk-tooltip "Fullscreen"
-              :on-click #(.fullscreen js/window)}
-             [:img {:width "20"
-                    :src "/Icons/fullscreen.svg"}]]]]])})))
+            (comment [:div.uk-margin-remove.uk-padding-small
+                      {:data-uk-tooltip "Fullscreen"
+                       :on-click #(.fullscreen js/window)}
+                      [:img {:width "20"
+                             :src "/Icons/fullscreen.svg"}]])]]])})))
 
 
 
@@ -356,9 +357,11 @@
        (fn []
          [:div.uk-offcanvas-content
           {:style
-           {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh" :min-width "100vw"}}
+           {:background-image "url('../img/shattered-island.gif')" :min-height "100vh" :min-width "100vw"}}
+          ;"loooool"
           (if (some #(= % @actual-page) ["admin" "crusader" "dungeon" "reservation" "checkout" "statistics" "discounts"])
             [crusader-navbar])
+          ;(str "Muhaha: " @actual-page)
           (case @actual-page
             "franchise" [franchise]
             "szeged" [home-template]
@@ -401,24 +404,19 @@
                     (start-router!)
                     (dispatch [:set-actual-page "crusader"]))
 
-(secretary/defroute "/crusader/:a" [a]
+
+
+(secretary/defroute "/crusader/:a"  [a]
                     (start-router!)
-                    ;(js/console.log "The fuck is this")
+
                     (dispatch [:set-actual-page a]))
+
 
 
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
 
-(defn default-headers [request]
-  (-> request
-      (update :uri #(str js/context %))
-      (update
-        :headers
-        #(merge
-           %
-           {"Accept" "application/transit+json"
-            "x-csrf-token" js/csrfToken}))))
+
 
 
 (defn init! []

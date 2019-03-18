@@ -1364,7 +1364,7 @@
          [:div.uk-width-1-1
           [:div.uk-margin-remove.uk-padding-remove.uk-flex-center
            {:class "uk-child-width-1-1 uk-child-width-1-3@s"
-            :data-uk-grid true :data-uk-sticky "offset: 60; media: @s"}
+            :data-uk-grid true}
            [:div.uk-padding-remove.uk-card-secondary
             {:class (if (= 0 @selected-user) "" "active-border")}
             (if (not= 0 @selected-user)
@@ -1432,4 +1432,3 @@
             {:data-uk-grid true}
             [system-row]]]
           [:h1.uk-headding {:style {:color "white"}} "Szólj a GM-nek :) !"]))})))
-
