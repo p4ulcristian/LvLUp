@@ -651,15 +651,19 @@
           :id (:number item)
           :on-click #(dispatch [:set-active-system (:number item)])}
         ; (str item)
-         [:div.uk-card.uk-card-secondary.system-wall
+         [:div.uk-card.uk-card-secondary
           {:style {:border "solid 2px"
+                   :background "rgba(0,0,0,0.25)"
                    :border-color (if (= @selected-system (:number item))
-                                   "rgba(255,0,0,0.5)"
-                                   "rgba(255,255,255,0.5)")
+                                   "rgba(255,0,0,0.2)"
+                                   "rgba(255,255,255,0.2)")
 
                    :border-radius "5px"}}
           [:div.uk-padding-remove
-           {:style {:padding-top "5px" :cursor "pointer" :background (:color item)}}
+           {:style {:padding-top "5px" :cursor "pointer"
+                    :background (:color item)
+                    :border "2px solid #222"
+                    :border-radius "5px"}}
            ; :data-uk-toggle (str "target: #color-choose" (:number item))}
           ; (str item)
            [:div.uk-margin-remove {:data-uk-grid true}
@@ -670,6 +674,7 @@
               :style {:background (:color item)}}
 
              [:b.uk-text-large
+               {:style {:color "white"}}
                (str (:number item) " ")]
              [:img
                {:src (get-photo-by-type (:type item))
