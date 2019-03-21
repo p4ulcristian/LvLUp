@@ -15,6 +15,7 @@
                  [ring "1.7.1"]
                  [differ "0.3.2"]
                  [re-frame "0.10.5"]
+                 [reanimated "0.6.1"]
                  ;[ring.middleware.logger "0.5.0"]
                  [com.cognitect/transit-clj "0.8.313" :exclusions [commons-codec]]
                  [bk/ring-gzip "0.3.0"]

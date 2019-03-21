@@ -374,8 +374,7 @@
                          [crusader]]
             "dungeon"    [:div ;{:style {:background-image "url('../img/cash.jpg')" :background-size "cover"}} ;:min-height "100vh"}}
                           [dungeon]]
-            "checkout"    [:div ;{:style {:background-image "url('../img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
-                           [checkout]]
+            "checkout"    [checkout]
             "reservation"   [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}
                              [reservation]]
             "discounts"  [:div {:style {:background-image "url('/img/cash.jpg')" :background-size "cover" :min-height "100vh"}}

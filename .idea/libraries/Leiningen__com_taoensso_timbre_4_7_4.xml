@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: com.taoensso/timbre:4.7.4">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.m2/repository/com/taoensso/timbre/4.7.4/timbre-4.7.4.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

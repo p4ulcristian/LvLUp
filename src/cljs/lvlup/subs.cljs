@@ -72,6 +72,52 @@
 
 
 
+
+(reg-sub
+  :checkout-invoices
+  (fn [db [_ type ids]]
+    (let [invoices (for [id ids]
+                     (get-in
+                       db
+                       [:app-state :checkout type id]))]
+
+      (for [invoice invoices]
+        (let [{:keys [start finish]} invoice
+              start (if (= start "") nil start)]
+          (assoc
+            invoice
+            :spent-time (if (and start finish)
+                          (elapsing-time-no-seconds
+                            (core/in-seconds
+                              (core/interval
+                                start
+                                finish)))
+                          "-")
+            :datum-interval (if (and start finish)
+                              (utils/read-date start finish)
+                              (utils/read-date finish))))))))
+
+(reg-sub
+  :checkout-invoice
+  (fn [db [_ type id]]
+    (let [invoice (get-in
+                    db
+                    [:app-state :checkout type id])
+          {:keys [start finish]} invoice
+          start (if (= start "") nil start)]
+      (assoc
+        invoice
+        :spent-time (if (and start finish)
+                      (elapsing-time-no-seconds
+                        (core/in-seconds
+                          (core/interval
+                            start
+                            finish)))
+                      "-")
+        :datum-interval (if (and start finish)
+                          (utils/read-date start finish)
+                          (utils/read-date finish))))))
+
 (reg-sub
   :checkout-invoice
   (fn [db [_ type id]]
@@ -148,6 +194,19 @@
       (sort-by (fn [a] (get (val a) sort-type))
                (fn [a b] (decide-direction #(make-bool (compare a b))))
                data))))
+
+
+(reg-sub
+  :checkout-keys-grouped
+  (fn [db [_ the-key]]
+    (map (fn [a] (vector (key a)
+                         (vec (map first (val a)))))
+         (group-by
+              #(:member-id (val %))
+              (get-in
+                db
+                [:app-state :checkout the-key])))))
+
 
 (reg-sub
   :checkout-keys

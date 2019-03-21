@@ -14,8 +14,10 @@
 
 
 (defn crusader []
-  [:div.uk-align-center.uk-container.uk-padding-large
+  [:div.uk-align-center.uk-container.uk-padding-large.uk-width-2-3
    [:div.uk-card.uk-card-default
+    {:style {:border-radius "5px"
+             :background "rgba(255,255,255,0.7)"}}
     [:div.uk-card-body
      [:p.uk-text-meta.uk-text-center "Minden új verzió után érdemes Ctrl+Shift+R-rel frissíteni az oldalt."]
      [patch-card "Welcome Szombathely"

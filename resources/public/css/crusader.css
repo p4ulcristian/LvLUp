@@ -12,6 +12,70 @@
     width: 230px;
 }
 
+.invoices-types {
+padding: 20px;
+}
+
+.important-data{
+    color: #6E8EE8;
+    font-weight: bold;}
+
+.warning-data{
+    color: #E8AE0C;
+    font-weight: 400;
+    font-size: 1.1em;}
+
+.player-invoice {
+padding: 10px;
+margin: 5px 0px;
+background: #CBF6FF;
+}
+
+.invoices-type{
+background: white;
+border-radius: 5px;
+
+}
+
+.invoices-title{
+    font-weight: bold;
+    background: #77E4F4;
+    padding: 5px 10px;
+    border-radius: 5px 5px 0px 0px;
+}
+
+
+.toggle-contain{
+    padding: 10px 8px 10px 8px;
+}
+.checkout-panel {
+    padding: 5px 5px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.checkout-panel:hover {
+    border: 1.5px solid #77E4F4 !important;
+     transition: border .25s ease-in-out;
+}
+
+.checkout-panel.active {
+    background: #77E4F4;
+    border: 1.5px solid white;
+    transition: background .25s ease-in-out;
+    -moz-transition: background .25s ease-in-out;
+    -webkit-transition: background .25s ease-in-out;
+}
+
+.checkout-panel.inactive {
+    background: white;
+    border: 1.5px solid white;
+    transition: background .25s ease-in-out;
+    -moz-transition: background .25s ease-in-out;
+    -webkit-transition: background .25s ease-in-out;
+}
+
 .sort-arrow{
 cursor: pointer;
 color: darkblue;

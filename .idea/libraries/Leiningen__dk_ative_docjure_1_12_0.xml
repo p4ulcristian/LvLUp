@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: dk.ative/docjure:1.12.0">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.m2/repository/dk/ative/docjure/1.12.0/docjure-1.12.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -10,6 +10,7 @@
    [goog.events :as events]
    [goog.events.EventType :as EventType]
    [goog.dom :as dom]
+   [reanimated.core :as anim]
    [cljs-time.core :as core]
    [cljs-time.format :as format]
    [cljs-time.coerce :as coerce]
@@ -1013,28 +1014,57 @@
   [:th.uk-text-center [:b name]
    [sort-buttons type]])
 
+
+(defn player-profile [member]
+  (let [{:keys [name id season-pass]} member]
+    (fn []
+      [:div
+       [:div.uk-text-large.uk-text-truncate.important-data name]
+       [:div "ID: " [:span.important-data id]]
+       [:div "Bérlet: " [:span.important-data season-pass]]
+       [:div.warning-data "Még játszik lent!"]])))
+
+(defn player-invoices [type ids]
+  (let [invoices (subscribe [:checkout-invoices type ids])]
+    (fn [ids]
+      [:div (str @invoices)])))
+
+(defn invoice-group [[member-id ids] type]
+  (let [member (subscribe [:player member-id])]
+    (fn [[member-id ids] type]
+      [:div.uk-grid-collapse.player-invoice {:data-uk-grid true}
+       [:div.uk-width-medium
+        [player-profile @member]]
+       [:div.uk-width-expand
+        [player-invoices type ids]]])))
+
+
 (defn checkout-tab [type]
-  (let [invoices-keys (subscribe [:checkout-keys type])]
+  (let [invoices-keys (subscribe [:checkout-keys-grouped type])]
     (fn [type]
       [:div.uk-width-1-1
-       [:div.uk-overflow-auto
-        [:table.uk-table.uk-table-middle.uk-table-striped.uk-table-responsive
-         [:thead ;{:style {:background "rgba(255,255,255,0.1)"}}
-          [:tr
-           [table-head "Típus" :type]
-           [table-head "Id" :member-id]
-           [table-head "Vevő" :name]
-           [table-head "Intervallum" :start]
-           [table-head "Eltelt idő" :spent-time]
-           [table-head "Bérlet" :season-pass]
-           [table-head "Ár" :price]
-           [:th.uk-text-center
-            {:style {:line-height "24px"}}
-            [:b "Action"]]]]
-         [:tbody
-          (map
-            #(-> ^{:key (first %)} [invoice % type])
-            @invoices-keys)]]]
+       ;(str @invoices-keys)
+       (map
+        #(-> ^{:key (first %)} [invoice-group % type])
+        @invoices-keys)
+       (comment [:div.uk-overflow-auto
+                 [:table.uk-table.uk-table-middle.uk-table-striped.uk-table-responsive
+                  [:thead ;{:style {:background "rgba(255,255,255,0.1)"}}
+                   [:tr
+                    [table-head "Típus" :type]
+                    [table-head "Id" :member-id]
+                    [table-head "Vevő" :name]
+                    [table-head "Intervallum" :start]
+                    [table-head "Eltelt idő" :spent-time]
+                    [table-head "Bérlet" :season-pass]
+                    [table-head "Ár" :price]
+                    [:th.uk-text-center
+                     {:style {:line-height "24px"}}
+                     [:b "Action"]]]]
+                  [:tbody
+                   (map
+                     #(-> ^{:key (first %)} [invoice % type])
+                     @invoices-keys)]]])
        (if (= 0 (count @invoices-keys))
          [:div.uk-background-contain.uk-height-medium.uk-panel.uk-flex.uk-flex-center.uk-flex-middle
           {:style {:background-image "url(../img/pipboy-gangster.png)"}}])])))
@@ -1089,33 +1119,80 @@
                        (reset! number (+ 20 @number)))}
          "Mutass többet ..."]]])))
 
-(defn checkout []
+
+(defn invoices []
   (let [checkout (subscribe [:data :app-state])]
     (reagent/create-class
      {:reagent-render
       (fn []
-        [:div.uk-container
-         [:div.uk-card.uk-card-default
-          [:div {:data-uk-sticky "offset: 60"}
-           [:ul.uk-subnav.uk-flex-center.uk-subnav-pill.uk-card-default.uk-margin-remove
-            {:data-uk-switcher "connect: .uk-switcher ;animation: uk-animation-fade"
-             :data-uk-tab true}
-            [:li.uk-active {:on-click #(.scrollTo js/window 0 0)}
-             [:a "Fizetendő"]]
-            [:li {:on-click #(.scrollTo js/window 0 0)}
-             [:a "Fizetetlen"]]
-            [:li {:on-click #(.scrollTo js/window 0 0)}
-             [:a "Fizetett"]]]]
-          [smart-pult]
-          [:ul.uk-switcher
-           [:li [checkout-tab :progress]]
-           [:li [checkout-tab :unpayed]]
-           [:li [payed-tab]]]]
+        [:div.invoices-types
+         [:ul
+          {:data-uk-accordion "collapsible: true"}
+          [:li.invoices-type
+           [:a.uk-accordion-title.invoices-title {:href "#"} "Fizetendő"]
+           [:div.uk-accordion-content.uk-margin-remove
+              [checkout-tab :progress]]]
+          [:li.invoices-type
+           [:a.uk-accordion-title.invoices-title {:href "#"} "Fizetetlen"]
+           [:div.uk-accordion-content.uk-margin-remove
+            [:p
+             "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor reprehenderit."]]]
+          [:li.invoices-type
+           [:a.uk-accordion-title.invoices-title {:href "#"} "Fizetett"]
+           [:div.uk-accordion-content.uk-margin-remove
+            [:p
+             "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat proident."]]]]
+         (comment [:div.uk-container
+                   [:div.uk-card.uk-card-default
+                    [:div {:data-uk-sticky "offset: 60"}
+                     [:ul.uk-subnav.uk-flex-center.uk-subnav-pill.uk-card-default.uk-margin-remove
+                      {:data-uk-switcher "connect: .uk-switcher ;animation: uk-animation-fade"
+                       :data-uk-tab true}
+                      [:li.uk-active {:on-click #(.scrollTo js/window 0 0)}
+                       [:a "Fizetendő"]]
+                      [:li {:on-click #(.scrollTo js/window 0 0)}
+                       [:a "Fizetetlen"]]
+                      [:li {:on-click #(.scrollTo js/window 0 0)}
+                       [:a "Fizetett"]]]]
+                    [smart-pult]
+                    [:ul.uk-switcher
+                     [:li [checkout-tab :progress]]
+                     [:li [checkout-tab :unpayed]]
+                     [:li [payed-tab]]]]
+                   [:div.uk-width-1-4]])])})))
 
 
+(defn tarsas-asztalok []
+  [:div "Asztalok"])
 
+(defn checkout []
+  (let [toggle (atom :invoices)
+        act? (fn [panel] (if (= panel @toggle)
+                           "active"
+                           "inactive"))]
+    (fn []
+      [:div
+       [:div.uk-width-1-1.uk-grid-collapse
+        {:data-uk-grid true}
+        [:div.uk-width-1-2.toggle-contain
+         {:on-click #(reset! toggle :invoices)}
+         [:div
+          {:class ["checkout-panel"
+                   (act? :invoices)]}
+          [:img {:data-uk-tooltip "title: Számlák; pos: bottom"
+                 :src "/Icons/money.svg" :width "50"}]]]
+        [:div.uk-width-1-2.toggle-contain
+         {:on-click #(reset! toggle :tarsas)}
+         [:div
+          {:class ["checkout-panel"
+                   (act? :tarsas)]}
+          [:img {:data-uk-tooltip "title: Társas asztalok; pos: left"
+                 :src "/Icons/dice.svg" :width "50"}]]]]
+       (case @toggle
+             :invoices [invoices]
+             :tarsas [tarsas-asztalok]
+             "Nincs a gombhoz tartalom! :O")])))
 
-         [:div.uk-width-1-4]])})))
 
 
 
