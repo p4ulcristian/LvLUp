@@ -94,6 +94,13 @@
           {:keys [start finish pay-date]} invoice]
       (assoc
         invoice
+        :spent-time (if (and start finish)
+                      (elapsing-time-no-seconds
+                        (core/in-seconds
+                          (core/interval
+                            start
+                            finish)))
+                      "-")
         :datum-interval (if (and start finish)
                           (utils/read-date start finish)
                           (utils/read-date finish))
@@ -317,6 +324,8 @@
    (filter
      #(not= (:players %) {})
      (map val (:dungeon (:app-state db))))))
+
+
 
 (reg-sub
   :free-systems

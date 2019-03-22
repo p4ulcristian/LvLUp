@@ -1067,10 +1067,9 @@
                     [:th.uk-text-center
                      {:style {:line-height "24px"}}
                      [:b "Action"]]]]
-                  [:tbody
-                   (map
-                     #(-> ^{:key (first %)} [invoice % type])
-                     @invoices-keys)]]])
+                  (map
+                    #(-> ^{:key (first %)} [invoice % type])
+                    @invoices-keys)]])
        (if (= 0 (count @invoices-keys))
          [:div.uk-background-contain.uk-height-medium.uk-panel.uk-flex.uk-flex-center.uk-flex-middle
           {:style {:background-image "url(../img/pipboy-gangster.png)"}}])])))
@@ -1082,19 +1081,23 @@
     (reagent/create-class
       {:reagent-render
        (fn [[id member-id]]
-         [:tr.uk-text-center.uk-padding-small
-          [:td.uk-padding-small.uk-inline
-           {:style {:background (if (:color @one-invoice) (:color @one-invoice) "#222")}}
+         [:div.uk-grid-collapse.uk-child-width-expand.uk-width-1-1
+          {:style {:margin "5px"}
+           :data-uk-grid true}
+          [:div.uk-width-auto
+           {:style {:padding "10px"
+                    :border-radius "5px"
+                    :background (if (:color @one-invoice) (:color @one-invoice) "#222")}}
            [:img
             {:src (get-photo-by-type (:type @one-invoice))
              :height "40"
              :width "40"}]]
-          [:td [:b member-id ". "]]
-          [:td (:name @member)]
-          [:td (:datum-interval @one-invoice)]
-          [:td (:spent-time @one-invoice)]
-          [:td (:pay-date-str @one-invoice)]
-          [:td (str (:price @one-invoice) " Ft")]])})))
+          [:div.uk-padding-small [:b member-id ". " (:name @member)]]
+          [:div.uk-padding-small (:datum-interval @one-invoice)]
+          [:div.uk-padding-small (:spent-time @one-invoice)]
+          [:div.uk-padding-small (:pay-date-str @one-invoice)]
+          [:div.uk-padding-small (str (:price @one-invoice) " Ft")]])})))
+
 
 
 
@@ -1104,20 +1107,19 @@
     (fn []
       [:div.uk-width-1-1
        [:div
-        [:table.uk-table.uk-table-middle.uk-table-striped
-         [:thead {:style {:background "rgba(255,255,255,0.1)"}}
-          [:tr
-           [table-head "Típus" :type]
-           [table-head "Id" :member-id]
-           [table-head "Vevő" :name]
-           [table-head "Mikor?" :start]
-           [table-head "Mennyit?" :spent-time]
-           [table-head "Fizetés időpontja" :pay-date]
-           [table-head "Ár" :price]]]
-         [:tbody
-          (map
-           #(-> ^{:key %}[payed-invoice %])
-           @invoices)]]
+        (comment [:table.uk-table.uk-table-middle.uk-table-striped
+                  [:thead {:style {:background "rgba(255,255,255,0.1)"}}
+                   [:tr
+                    [table-head "Típus" :type]
+                    [table-head "Id" :member-id]
+                    [table-head "Vevő" :name]
+                    [table-head "Mikor?" :start]
+                    [table-head "Mennyit?" :spent-time]
+                    [table-head "Fizetés időpontja" :pay-date]
+                    [table-head "Ár" :price]]]])
+        (map
+         #(-> ^{:key %}[payed-invoice %])
+         @invoices)
 
         [:button.uk-width-1-1.uk-button.uk-button-primary
          {:on-click #(do
@@ -1145,8 +1147,7 @@
           [:li.invoices-type
            [:a.uk-accordion-title.invoices-title {:href "#"} "Fizetett"]
            [:div.uk-accordion-content.uk-margin-remove
-            [:p
-             "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat proident."]]]]
+            [payed-tab]]]]
          (comment [:div.uk-container
                    [:div.uk-card.uk-card-default
                     [:div {:data-uk-sticky "offset: 60"}
