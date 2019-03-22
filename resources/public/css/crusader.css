@@ -61,7 +61,7 @@ border-radius: 5px;
 }
 
 .checkout-panel.active {
-    background: #77E4F4;
+    background: white;
     border: 1.5px solid white;
     transition: background .25s ease-in-out;
     -moz-transition: background .25s ease-in-out;
@@ -69,7 +69,7 @@ border-radius: 5px;
 }
 
 .checkout-panel.inactive {
-    background: white;
+    background: #77E4F4;
     border: 1.5px solid white;
     transition: background .25s ease-in-out;
     -moz-transition: background .25s ease-in-out;

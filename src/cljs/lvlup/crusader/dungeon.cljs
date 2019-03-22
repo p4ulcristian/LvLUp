@@ -874,38 +874,35 @@
     (reagent/create-class
       {:reagent-render
        (fn [[id member-id] type]
-         [:tr.uk-text-center.uk-padding-small
-          {:style {:background (if
-                                 (and
-                                   (= type :progress)
-                                   (not= 0 (count (filter #(= (:member-id @one-invoice)
-                                                              (:member-id %))
-                                                          (map val (:unpayed @checkout))))))
-                                 "rgba(255,0,0,0.6)"
-                                 (if (plays? (:member-id @one-invoice))
-                                     "#FFA500"
-                                     ""))}}
-          [:td.uk-padding-small.uk-inline
-           {:style {:background (if (:color @one-invoice) (:color @one-invoice) "#222")}}
-           [:img
+         [:div.uk-grid-collapse.uk-child-width-auto
+          {:style {:background "white"
+                   :border-style "solid"
+                   :border-color "#222"
+                   :border-width "1px 1px 1px 0px"
+                   :border-radius "5px"
+                   :margin-bottom "5px"}
+           :data-uk-grid true}
+          [:div.uk-inline.uk-margin-right.uk-padding-small
+           {:style {:width "50px"
+                    :height "50px"
+                    :border-radius "5px"
+                    :background (if (:color @one-invoice) (:color @one-invoice) "#222")}}
+           [:img.uk-position-center
             {:src (get-photo-by-type (:type @one-invoice))
-             :height "40"
-             :width "40"}]
+             :width "30"}]
+
            (if (or (= type "pc") (= type "ps") (= type "xbox"))
                [:div.uk-badge.uk-position-bottom-right (:number @one-invoice)])]
-
-
-          [:td [:b member-id ". "]]
-          [:td (str (:name @member))]
-          [:td (:datum-interval @one-invoice)]
-          [:td (:spent-time @one-invoice)]
-          [:td (:season-pass @member)]
-          [:td
-           (str (if (:discount @one-invoice)
-                  "Akció: "
-                  "")
-                (:price @one-invoice) " Ft")]
-          [:td [invoice-action @one-invoice member-id type]]])})))
+          ;[:div (:datum-interval @one-invoice)]
+          [:div.uk-width-expand.uk-margin-small-right.uk-padding-small.uk-text-center (:spent-time @one-invoice)]
+          [:div.uk-width-auto.uk-padding-small
+           [:div.uk-align-right
+            [:b.important-data
+             (str (if (:discount @one-invoice)
+                    "Akció: "
+                    "")
+                  (:price @one-invoice) " Ft")]]]
+          [:div.uk-width-auto.uk-padding-small [invoice-action @one-invoice member-id type]]])})))
 
 
 
@@ -1016,27 +1013,36 @@
 
 
 (defn player-profile [member]
-  (let [{:keys [name id season-pass]} member]
-    (fn []
-      [:div
-       [:div.uk-text-large.uk-text-truncate.important-data name]
-       [:div "ID: " [:span.important-data id]]
-       [:div "Bérlet: " [:span.important-data season-pass]]
-       [:div.warning-data "Még játszik lent!"]])))
+  [:div
+   [:div.uk-text-large.uk-text-truncate.important-data (:name @member)]
+   [:div "ID: " [:span.important-data (:id @member)]]
+   [:div "Bérlet: " [:span.important-data (:season-pass @member)]]
+   [:div.warning-data "Még játszik lent!"]])
 
-(defn player-invoices [type ids]
-  (let [invoices (subscribe [:checkout-invoices type ids])]
-    (fn [ids]
-      [:div (str @invoices)])))
+(defn player-invoices [member-id type ids]
+  (let [invoices (fn [the-ids] (deref (subscribe [:checkout-invoices type the-ids])))]
+    (fn [member-id type ids]
+      [:div
+       ;[:div (str ids)]
+       ;[:div (str @invoices)]
+       ;(str (group-by :invoice-date @invoices))
+       (map
+         #(-> ^{:key (key %)} [:div [:h4.uk-margin-small [:u (str (key %))]]
+                               (map
+                                 (fn [a] (-> ^{:key (:id a)} [invoice [(:id a) member-id] type]))
+                                 (val %))])
+         (group-by :invoice-date (invoices ids)))])))
+
 
 (defn invoice-group [[member-id ids] type]
   (let [member (subscribe [:player member-id])]
     (fn [[member-id ids] type]
       [:div.uk-grid-collapse.player-invoice {:data-uk-grid true}
        [:div.uk-width-medium
-        [player-profile @member]]
+        [player-profile member]]
        [:div.uk-width-expand
-        [player-invoices type ids]]])))
+        [player-invoices member-id type ids]]])))
+
 
 
 (defn checkout-tab [type]
@@ -1127,7 +1133,7 @@
       (fn []
         [:div.invoices-types
          [:ul
-          {:data-uk-accordion "collapsible: true"}
+          {:data-uk-accordion "active: 0"}
           [:li.invoices-type
            [:a.uk-accordion-title.invoices-title {:href "#"} "Fizetendő"]
            [:div.uk-accordion-content.uk-margin-remove
@@ -1135,8 +1141,7 @@
           [:li.invoices-type
            [:a.uk-accordion-title.invoices-title {:href "#"} "Fizetetlen"]
            [:div.uk-accordion-content.uk-margin-remove
-            [:p
-             "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor reprehenderit."]]]
+            [checkout-tab :unpayed]]]
           [:li.invoices-type
            [:a.uk-accordion-title.invoices-title {:href "#"} "Fizetett"]
            [:div.uk-accordion-content.uk-margin-remove

@@ -4,6 +4,36 @@
             [lvlup.utils :as utils]
             [cljs-time.format :as format]))
 
+(def days
+  {1 "hétfő"
+   2 "kedd"
+   3 "szerda"
+   4 "csütörtök"
+   5 "péntek"
+   6 "szombat"
+   7 "vasárnap"})
+
+(defn get-day [number]
+  (get days number))
+
+
+(def months
+  {1 "Január"
+   2 "Február"
+   3 "Március"
+   4 "Április"
+   5 "Május"
+   6 "Június"
+   7 "Július"
+   8 "Augusztus"
+   9 "Szeptember"
+   10 "Október"
+   11 "November"
+   12 "December"})
+
+(defn get-month [number]
+  (get months number))
+
 
 (reg-sub
   :data
@@ -82,20 +112,29 @@
                        [:app-state :checkout type id]))]
 
       (for [invoice invoices]
-        (let [{:keys [start finish]} invoice
-              start (if (= start "") nil start)]
-          (assoc
-            invoice
-            :spent-time (if (and start finish)
-                          (elapsing-time-no-seconds
-                            (core/in-seconds
-                              (core/interval
-                                start
-                                finish)))
-                          "-")
-            :datum-interval (if (and start finish)
-                              (utils/read-date start finish)
-                              (utils/read-date finish))))))))
+        (if invoice
+          (let [{:keys [start finish]} invoice
+                start (if (= start "") nil start)]
+            (assoc
+              invoice
+              :invoice-date (str (core/year finish)
+                                 " "
+                                 (get-month (core/month finish))
+                                 " "
+                                 (core/day finish)
+                                 ". "
+                                 (get-day (core/day-of-week finish)))
+              :spent-time (if (and start finish)
+                            (elapsing-time-no-seconds
+                              (core/in-seconds
+                                (core/interval
+                                  start
+                                  finish)))
+                            "-")
+              :datum-interval (if (and start finish)
+                                (utils/read-date start finish)
+                                (utils/read-date finish)))))))))
+
 
 (reg-sub
   :checkout-invoice
@@ -105,39 +144,26 @@
                     [:app-state :checkout type id])
           {:keys [start finish]} invoice
           start (if (= start "") nil start)]
-      (assoc
-        invoice
-        :spent-time (if (and start finish)
-                      (elapsing-time-no-seconds
-                        (core/in-seconds
-                          (core/interval
-                            start
-                            finish)))
-                      "-")
-        :datum-interval (if (and start finish)
-                          (utils/read-date start finish)
-                          (utils/read-date finish))))))
-
-(reg-sub
-  :checkout-invoice
-  (fn [db [_ type id]]
-    (let [invoice (get-in
-                    db
-                    [:app-state :checkout type id])
-          {:keys [start finish]} invoice
-          start (if (= start "") nil start)]
-      (assoc
-        invoice
-        :spent-time (if (and start finish)
-                      (elapsing-time-no-seconds
-                        (core/in-seconds
-                          (core/interval
-                            start
-                            finish)))
-                      "-")
-        :datum-interval (if (and start finish)
-                          (utils/read-date start finish)
-                          (utils/read-date finish))))))
+      (if invoice
+        (assoc
+          invoice
+          :invoice-date (str (core/year finish)
+                             " "
+                             (get-month (core/month finish))
+                             " "
+                             (core/day finish)
+                             ". "
+                             (get-day (core/day-of-week finish)))
+          :spent-time (if (and start finish)
+                        (elapsing-time-no-seconds
+                          (core/in-seconds
+                            (core/interval
+                              start
+                              finish)))
+                        "-")
+          :datum-interval (if (and start finish)
+                            (utils/read-date start finish)
+                            (utils/read-date finish)))))))
 
 
 (defn sort-spent [a direction])
