@@ -1012,22 +1012,49 @@
    [sort-buttons type]])
 
 
+
+(defn one-slot [place]
+  (let []
+    (fn [place]
+      [:div.player-slot
+       [:div.uk-grid-collapse {:data-uk-grid true}
+        [:div.uk-width-auto
+         [:img
+          {:src (get-photo-by-type (:type place))
+           :height "40"
+           :width "40"}]]
+        [:div.uk-width-extend (str place)]]])))
+
+(defn this-player-in-dungeon [dungeon-places]
+  [:div.uk-grid-collapse.uk-child-width-1-2 {:data-uk-grid true}
+    (map-indexed
+      #(-> ^{:key %1}[one-slot %2])
+      dungeon-places)])
+
+
 (defn player-profile [member]
-  [:div
-   [:div.uk-text-large.uk-text-truncate.important-data (:name @member)]
-   [:div "ID: " [:span.important-data (:id @member)]]
-   [:div "Bérlet: " [:span.important-data (:season-pass @member)]]
-   [:div.warning-data "Még játszik lent!"]])
+  (let [systems (subscribe [:still-gaming])]
+    (fn [member]
+      [:div
+       [:div.uk-text-large.uk-text-truncate.important-data (:name @member)]
+       [:div "ID: " [:span.important-data (:id @member)]]
+       [:div "Bérlet: " [:span.important-data (:season-pass @member)]]
+       [:div.warning-data "Még játszik lent!"]
+       [this-player-in-dungeon
+        (filter (fn [a] (=
+                          (:id @member)
+                          (:member-id a)))
+                (reduce concat
+                      (map vals (map :players
+                                     @systems))))]])))
 
 (defn player-invoices [member-id type ids]
   (let [invoices (fn [the-ids] (deref (subscribe [:checkout-invoices type the-ids])))]
     (fn [member-id type ids]
       [:div
-       ;[:div (str ids)]
-       ;[:div (str @invoices)]
-       ;(str (group-by :invoice-date @invoices))
        (map
-         #(-> ^{:key (key %)} [:div [:h4.uk-margin-small [:u (str (key %))]]
+         #(-> ^{:key (key %)} [:div
+                               [:h4.uk-margin-small [:u (str (key %))]]
                                (map
                                  (fn [a] (-> ^{:key (:id a)} [invoice [(:id a) member-id] type]))
                                  (val %))])

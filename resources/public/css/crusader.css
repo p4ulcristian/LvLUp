@@ -76,6 +76,15 @@ border-radius: 5px;
     -webkit-transition: background .25s ease-in-out;
 }
 
+.player-slot{
+padding: 10px;
+}
+.player-slot>div{
+background: white;
+border-radius: 5px;
+padding: 10px;
+}
+
 .sort-arrow{
 cursor: pointer;
 color: darkblue;
