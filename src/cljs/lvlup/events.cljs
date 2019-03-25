@@ -653,7 +653,27 @@
                 (fn [reply] ; Reply is arbitrary Clojure data
                   (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                     (do
-                      (dispatch [:set-users reply])))))
+                      (dispatch [:set-users reply]))
+                    (.log js/console ":crusader/get-users töltés-hiba"))))
+    db))
+
+
+
+(reg-event-db
+  :set-admin-state
+  (fn [db [_ reply]]
+    (assoc db :admin-state reply)))
+
+(reg-event-db
+  :admin/get-dungeons
+  (fn [db [_]]
+    (chsk-send! [:admin/get-dungeons]
+                8000 ; Timeout
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                    (do
+                      (dispatch [:set-admin-state reply]))
+                    (.log js/console ":admin/get-dungeons töltés-hiba"))))
     db))
 
 

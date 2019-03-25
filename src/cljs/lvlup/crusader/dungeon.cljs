@@ -961,10 +961,6 @@
                                    (dispatch [:set-loading false]))))))}]]])})))
 
 
-
-
-     ;(str item)]))
-
 (defn still-gaming [gamer-system]
   (let [{:keys [number type color players]} gamer-system]
     [:div.uk-margin-remove.uk-grid-collapse.uk-flex-center
