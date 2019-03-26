@@ -23,12 +23,13 @@
    [taoensso.sente.packers.transit :as sente-transit]))
 
 
+(def all-sessions (atom {}))
+
 (reset! sente/debug-mode?_ true) ; Uncomment for extra debug info
 
 (let [;; Serialization format, must use same val for client + server:
       packer :edn ; Default packer, a good choice in most cases
       ;; (sente-transit/get-transit-packer) ; Needs Transit dep
-
       chsk-server
       (sente/make-channel-socket-server!
        (get-sch-adapter)
@@ -233,6 +234,16 @@
 (defmethod -event-msg-handler :crusader/get-users
   [{:as ev-msg :keys [?reply-fn]}]
   (?reply-fn (db/get-users ev-msg)))
+
+(defmethod -event-msg-handler :admin/get-dungeons
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn (db/get-dungeons)))
+
+
+(defmethod -event-msg-handler :admin/get-uuids
+  [{:as ev-msg :keys [?reply-fn]}]
+  (?reply-fn @all-sessions))
+
 (defmethod -event-msg-handler :dungeon/change
   [{:as ev-msg :keys [?reply-fn ring-req]}]
   (db/dungeon-change ev-msg ring-req))

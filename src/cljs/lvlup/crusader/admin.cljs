@@ -66,23 +66,69 @@
      items)])
 
 
-(defn the-dungeons []
-  [:div.uk-padding
-   [:div.uk-card-default.uk-padding
-    {:style {:border-radius "20px"}}
-    "valami"]])
+(def random-colors
+  ["Aqua" "lightgreen" "PaleTurquoise" "lime" "Bisque" "tan" "lightpink"
+   "aqumarine" "aqua" "peachpuff" "lavender" "slategrey" "slateblue"])
 
+
+(defn process-tree [tree number]
+  (if tree
+    (if (map? tree)
+      [:div {:style {:padding-left (str (* number 10) "px")
+                     :border "1px solid white"}}
+
+       (map-indexed
+         #(-> ^{:key %1}[:div
+                         [:span.tree-design
+                          {:style {:color "#E8B53B"
+                                   :width "100%"}}
+                          (str (key %2))]
+                         (process-tree (second %2) (inc number))])
+         tree)]
+      [:span.uk-margin-small-left [:b (str tree)]])
+    ""))
+
+(defn the-dungeons []
+  (let [dungeons (subscribe [:data :admin-dungeons])]
+    (reagent/create-class
+      {:component-did-mount #(dispatch [:admin/get-dungeons])
+       :reagent-render
+       (fn []
+         [:div.uk-padding
+          [:div.uk-card-default.uk-padding
+           {:style {:border-radius "20px"}}
+           [process-tree @dungeons 0]]])})))
+
+(defn one-profile [[the-key data]]
+  [:div [:b the-key]
+   [:ul (map-indexed #(-> ^{:key %1}[:li (str (first %2))])
+                     data)]])
+
+
+(defn connected-users []
+  (let [users (subscribe [:data :admin-uuids])]
+    (reagent/create-class
+      {:component-did-mount #(dispatch [:admin/get-uuids])
+       :reagent-render
+       (fn []
+         [:div.uk-padding
+          [:div.uk-card-default.uk-padding
+           {:style {:border-radius "20px"}}
+
+           (map-indexed #(-> ^{:key %1}[one-profile %2])
+                        (group-by #(:uid (second %)) @users))]])})))
 
 (defn admin []
   (let [active (atom :users)]
     (fn []
       [:div
        [toggler
-        [:users :dungeon :active-right-now :prices]
+        [:users :dungeon :connected-users :prices]
         active]
        (case @active
          :users [the-users]
          :dungeon [the-dungeons]
+         :connected-users [connected-users]
          :else)])))
 
 

@@ -101,6 +101,8 @@
     (js/String (coerce/from-long (js/parseInt ido)))
     ido))
 
+
+
 (defn iterate-convert [players]
   (reduce merge {}
           (map #(if (:start (second %))
@@ -660,9 +662,9 @@
 
 
 (reg-event-db
-  :set-admin-state
+  :set-admin-dungeons
   (fn [db [_ reply]]
-    (assoc db :admin-state reply)))
+    (assoc db :admin-dungeons reply)))
 
 (reg-event-db
   :admin/get-dungeons
@@ -672,9 +674,45 @@
                 (fn [reply] ; Reply is arbitrary Clojure data
                   (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
                     (do
-                      (dispatch [:set-admin-state reply]))
+                      (dispatch [:set-admin-dungeons (read-string reply)]))
                     (.log js/console ":admin/get-dungeons töltés-hiba"))))
     db))
+
+
+(reg-event-db
+  :set-admin-uuids
+  (fn [db [_ reply]]
+    (assoc db :admin-uuids (read-string reply))))
+
+(reg-event-db
+  :admin/get-uuids
+  (fn [db [_]]
+    (chsk-send! [:admin/get-uuids]
+                8000 ; Timeout
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                    (do
+                      (dispatch [:set-admin-uuids (str reply)]))
+                    (.log js/console ":admin/get-dungeons töltés-hiba"))))
+    db))
+
+(reg-event-db
+  :set-sessions
+  (fn [db [_ reply]]
+    (assoc db :all-sessions reply)))
+
+(reg-event-db
+  :admin/get-sessions
+  (fn [db [_]]
+    (chsk-send! [:admin/get-sessions]
+                8000 ; Timeout
+                (fn [reply] ; Reply is arbitrary Clojure data
+                  (if (cb-success? reply) ; Checks for :chsk/closed, :chsk/timeout, :chsk/error
+                    (do
+                      (dispatch [:set-sessions (read-string reply)]))
+                    (.log js/console ":admin/get-dungeons töltés-hiba"))))
+    db))
+
 
 
 

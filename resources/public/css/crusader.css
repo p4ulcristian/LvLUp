@@ -112,6 +112,11 @@ transition: 0.2s ease;
    transition: background 0.2s ease-out;
 }
 
+.tree-design {
+font-weight: bold;
+
+}
+
 .admin-users:hover{
    background: #E8B53B;
    transition: background 0.2s ease-out;

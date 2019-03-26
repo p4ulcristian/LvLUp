@@ -107,6 +107,9 @@
 ;     :write nippy/freeze-to-file))
 
 
+(defn get-dungeons []
+  (str @local-db))
+
 ;Adatbazis kezdete
 (let [^MongoOptions opts (mg/mongo-options {:threads-allowed-to-block-for-connection-multiplier 300})
       ^ServerAddress sa  (mg/server-address "127.0.0.1" 27017)
@@ -137,6 +140,24 @@
   (defn find-user [username]
     (let []
       (dissoc (mc/find-one-as-map db "users" {:username username}) :_id)))
+
+
+  (defn find-users [usernames]
+    (let []
+      (str (vec (for [username usernames]
+                  (dissoc (mc/find-one-as-map db "users" {:username username}) :_id))))))
+
+
+  ;user megtalalasa
+  (defn update-user [username req]
+    (let []
+      (mc/update db "users"
+         {:username username}
+         {"$addToSet"
+          {:logged-in (str
+                        (:value (get (:cookies req) "ring-session")))}})))
+
+
 
   ;osszes user lekerese, veszelyes
   (defn get-users [{:keys [event]}]
@@ -196,10 +217,6 @@
                                                           :checkout :progress])
                                                (:id change-map)))))))
 
-  ;szamla hozzadasa
-
-
-          
 
   (defn get-invoices [{:keys [event]} req]
     (let [[key change-map] event]
@@ -352,12 +369,6 @@
   (defn parse-date-str-two [one-item]
     (if one-item
       (hun-time (f/parse custom-format one-item))))
-
-
-
-  (defn get-after-date [the-date]
-    (mc/find-maps db "szegedinvoices" {:pay-date {"$gte" (f/parse custom-format-three the-date)}}))
-
 
 
   (defn days [the-days date]

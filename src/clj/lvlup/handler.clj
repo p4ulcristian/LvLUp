@@ -5,6 +5,7 @@
             [hiccup.form :refer [hidden-field]]
             [lvlup.middleware :refer [wrap-middleware]]
             [ring.middleware.transit :refer [wrap-transit]]
+            [ring.middleware.cookies :refer [wrap-cookies]]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.multipart-params :refer [wrap-multipart-params]]
             [compojure.response :refer [render]]
@@ -28,6 +29,7 @@
             [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults secure-site-defaults]]
             [config.core :refer [env]]))
 
+(def all-the-sessions (atom {}))
 
 (defn stop!  []  (crusader/stop-router!)) ;(crusader/stop-web-server!))
 (defn start! [] (crusader/start-router!))
@@ -192,13 +194,14 @@
   (let [username (get-in request [:form-params "username"])
         password (get-in request [:form-params "password"])
         session (:session request)
-        user (db/find-user username)]
+        user (db/find-user username)
+        update-user (db/update-user username request)]
     (if (hashers/check password (:password user))
       (let [next-url (get-in request [:query-params :next] "/crusader")
             updated-session (assoc session :identity username :uid username :role (:role user) :city (:city user))]
                                            ;:city (:city user))]
-        (-> (redirect next-url)
-            (assoc :session updated-session)))
+           (-> (redirect next-url)
+               (assoc :session updated-session)))
 
       (let []
         (-> (redirect "/login")
@@ -217,12 +220,17 @@
     ["crusader" {true (fn [req] {:status 200 :body (loading-page-crusader req) :headers {"Content-Type" "text/html"}})}]
     [true (fn [req] {:status 200 :body (loading-page) :headers {"Content-Type" "text/html"}})]]])
 
+
+
 (def app
   (let [handler (make-handler routes)]
     (-> handler
         (wrap-authorization auth-backend)
         (wrap-authentication auth-backend)
-        (wrap-defaults (assoc site-defaults :proxy true)); :cookies false))
+        (wrap-defaults (assoc site-defaults
+                         :proxy true
+                         :session {:store (ring.middleware.session.memory/memory-store crusader/all-sessions)}))
+                                            ; :cookies false))
         (wrap-reload)
         ;(wrap-anti-forgery)
         ;ring.middleware.keyword-params/wrap-keyword-params
@@ -231,5 +239,5 @@
         (wrap-params)
         (wrap-multipart-params)
         ;(wrap-with-logger)
-        (wrap-session)
+        ;(wrap-session {:store (ring.middleware.session.memory/memory-store all-the-sessions)})
         (wrap-gzip))))
