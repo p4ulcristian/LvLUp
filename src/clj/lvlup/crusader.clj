@@ -248,6 +248,10 @@
   [{:as ev-msg :keys [?reply-fn ring-req]}]
   (db/dungeon-change ev-msg ring-req))
 
+(defmethod -event-msg-handler :tarsas/change
+  [{:as ev-msg :keys [?reply-fn ring-req]}]
+  (db/tarsas-change ev-msg ring-req))
+
 
 
 (defonce router_ (atom nil))

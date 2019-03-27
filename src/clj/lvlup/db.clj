@@ -186,6 +186,14 @@
                        [(:city (:session req)) :dungeon (:number change-map)]
                        change-map))))
 
+  (defn tarsas-change [{:keys [event]} req]
+    ":tarsas változása városonként"
+    (let [[key change-map] event]
+      (reset! local-db
+              (assoc-in @local-db
+                        [(:city (:session req)) :tables (first change-map)]
+                        (second change-map)))))
+
   (defn add-discount [{:keys [event]} req]
     (let [[key change-map] event]
       (reset! local-db

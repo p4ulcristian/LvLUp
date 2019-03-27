@@ -454,6 +454,16 @@
     ;(assoc-in db [:app-state :dungeon (:number the-map)] the-map)))
     db))
 
+(reg-event-db
+  :tarsas/change
+  (fn [db [_ the-map]]
+    (let []
+      (.log js/console (str "meh:" the-map))
+      (chsk-send! [:tarsas/change the-map]))
+    db))
+
+
+
 
 
 
@@ -530,7 +540,7 @@
                   (if (cb-success? reply)
                     (dispatch [:set-statistic-data id reply])
                     (do
-                      (.log js/console "mi a lekérés: " (str id " " data))
+                      (.log js/console (str id   "mi a lekérés: " " " data))
                       (.log js/console "mi a baj: " reply)))))
     (assoc-in db [:statistic id :loading?] true)))
 
@@ -634,6 +644,7 @@
                              (:app-state db)
                              [(process-dates (first new-state))
                               (second new-state)])))))
+
 
 
 (reg-event-db

@@ -972,7 +972,7 @@
        {:src (get-photo-by-type type)
         :height "30"
         :width "30"}]]
-     (map-indexed #(-> ^{:key %2}[invoice-player %2 gamer-system])
+     (map-indexed #(-> ^{:key (random-uuid)}[invoice-player %2 gamer-system])
                   players)]))
 
 (defn smart-pult []
@@ -981,15 +981,15 @@
     (fn []
       [:div
        [:div.uk-button.uk-button-danger.uk-align-center
-        {:data-uk-sticky "offset: 87"
-         :style {:font-size "3em" :padding "10px"}}
+        {:style {:font-size "3em" :padding "10px"}}
         @free-systems]
        [:div.uk-child-width-auto.uk-grid-collapse.uk-padding-remove.uk-card-default.uk-card.uk-height-large.uk-overflow-auto
         {:data-uk-drop "mode: click; pos: bottom-center"
          :data-uk-grid true :style {:padding-top "10px"}}
         (map-indexed
-          #(-> ^{:key %2}[still-gaming %2])
-          (filter #(not= (:players %) {}) @systems))]])))
+          #(-> ^{:key (:number %2)}
+               [still-gaming %2])
+          (doall (filter #(not= (:players %) {}) @systems)))]])))
 
 (defn sort-buttons [type]
   (let []
@@ -1019,7 +1019,7 @@
           {:src (get-photo-by-type (:type place))
            :height "40"
            :width "40"}]]
-        [:div.uk-width-extend (str place)]]])))
+        [:div.uk-width-extended "Soon..."]]]))) ;(str place)]]])))
 
 (defn this-player-in-dungeon [dungeon-places]
   [:div.uk-grid-collapse.uk-child-width-1-2 {:data-uk-grid true}
@@ -1035,14 +1035,14 @@
        [:div.uk-text-large.uk-text-truncate.important-data (:name @member)]
        [:div "ID: " [:span.important-data (:id @member)]]
        [:div "Bérlet: " [:span.important-data (:season-pass @member)]]
-       [:div.warning-data "Még játszik lent!"]
+       ;[:div.warning-data "Még játszik lent!"]
        [this-player-in-dungeon
-        (filter (fn [a] (=
-                          (:id @member)
-                          (:member-id a)))
-                (reduce concat
-                      (map vals (map :players
-                                     @systems))))]])))
+        (doall (filter (fn [a] (=
+                                 (:id @member)
+                                 (:member-id a)))
+                       (reduce concat
+                             (map vals (map :players
+                                            @systems)))))]])))
 
 (defn player-invoices [member-id type ids]
   (let [invoices (fn [the-ids] (deref (subscribe [:checkout-invoices type the-ids])))]
@@ -1107,6 +1107,7 @@
          [:div.uk-grid-collapse.uk-child-width-expand.uk-width-1-1
           {:style {:margin "5px"}
            :data-uk-grid true}
+          ;(str @one-invoice)
           [:div.uk-width-auto
            {:style {:padding "10px"
                     :border-radius "5px"
@@ -1157,6 +1158,7 @@
      {:reagent-render
       (fn []
         [:div.invoices-types
+         [smart-pult]
          [:ul
           {:data-uk-accordion "active: 0"}
           [:li.invoices-type
@@ -1183,7 +1185,7 @@
                        [:a "Fizetetlen"]]
                       [:li {:on-click #(.scrollTo js/window 0 0)}
                        [:a "Fizetett"]]]]
-                    [smart-pult]
+
                     [:ul.uk-switcher
                      [:li [checkout-tab :progress]]
                      [:li [checkout-tab :unpayed]]
@@ -1191,11 +1193,122 @@
                    [:div.uk-width-1-4]])])})))
 
 
+(defn add-drink [id asztal]
+  (let [drink (atom {:price nil
+                     :name nil})]
+    (fn []
+      [:div.uk-grid-collapse {:data-uk-grid true}
+       [:input.uk-input-small.uk-text-center.uk-width-2-3
+        {:on-change #(swap! drink assoc :name (-> % .-target .-value))
+         :placeholder "Termék"}]
+       [:input.uk-input-small.uk-text-center.uk-width-1-3
+        {:on-change #(swap! drink assoc :price (js/parseInt (-> % .-target .-value)))
+         :placeholder "Ár"}]
+       (if (and (:price @drink) (:name @drink))
+         [:button.uk-button-primary.uk-button-small.uk-text-center.uk-width-1-1
+          {:on-click #(dispatch [:tarsas/change
+                                 id
+                                 (assoc-in asztal
+                                           [:bought-items (str (random-uuid))]
+                                           @drink)])}
+          "Hozzáadás"])])))
+
+(defn one-drink [[id drink]]
+  [:div.uk-grid-collapse.uk-text-center
+   {:style {:margin-top "7px"}
+    :data-uk-grid true}
+   [:div.uk-width-2-3 (:name drink)]
+   [:div.uk-width-1-3 (str (:price drink) " Ft")]])
+
+
+
+
+(defn drinks [items]
+  [:div
+   (map-indexed #(-> ^{:key (first %2)}[one-drink %2])
+                items)
+   [:div.uk-text-right
+    {:style {:border-top "1px solid white" :padding-top "5px" :padding-right "5px"}}
+    (str "Összesen: "(reduce + (map #(:price (val %)) items))
+         " Ft")]])
+
+
+
+(defn tarsas-time [start drink-price]
+  (let [timer (atom (calculate-time-interval
+                      start
+                      (calculate-time-zone)))
+        time-price (fn [a] (quot @timer 60))]
+    (reagent/create-class
+      {:component-did-mount #(js/setInterval (fn [a] (reset! timer (inc @timer)))
+                                             1000)
+       :reagent-render
+       (fn [start drink-price]
+         (let [drinked-hours (fn [] (quot drink-price 1000))
+               tarsas-hours (fn [] (time-price @timer))]
+           [:div
+            [:div [:b.uk-text-large (elapsing-time @timer)]]
+            [:div "Társasórák: " (tarsas-hours)]
+            [:div "Lefogyasztott órák: " (drinked-hours)]
+            [:div [:b.uk-text-large
+                   "Összesen: " (* 500 (max 0 (- (tarsas-hours) (drinked-hours))))
+                   " Ft"]]]))})))
+
+(defn tarsas-asztal [[the-key table]]
+  (let [tarsas-details (atom table)
+        started? (atom (if (:start-tarsas table) true false))]
+    (fn [[the-key table]]
+      [:div.uk-padding-small
+       [:div.uk-card-secondary.uk-card {:style {:border-radius "5px"}}
+        [:div.uk-text-center
+         [:h3.uk-margin-remove
+          [:b (str the-key)]
+          [:span.uk-position-right {:data-uk-icon "close"
+                                    :on-click #(do
+                                                 (reset! started? false)
+                                                 (swap! tarsas-details assoc
+                                                        :name nil :start-tarsas nil)
+                                                 (dispatch [:tarsas/change
+                                                            [the-key {}]]))}]]
+         (if-not @started?
+           [:div
+            [:input.uk-input-small.uk-text-center.uk-width-1-1
+             {:placeholder "Név"
+              :value (:name @tarsas-details)
+              :on-change #(swap! tarsas-details assoc :name (-> % .-target .-value))}]
+            (if
+              (:name @tarsas-details)
+              [:div.uk-button-small.uk-button-default.uk-width-1-1
+               {:on-click #(do
+                             (reset! started? true)
+                             (dispatch [:tarsas/change
+                                         [the-key (assoc @tarsas-details
+                                                    :start-tarsas (str (calculate-time-zone)))]]))
+                :data-uk-icon "play"}])]
+
+           [:div
+            [:h4 [:b (:name table)]]
+            [add-drink the-key @tarsas-details]
+            [drinks (:bought-items table)]
+            [tarsas-time
+             (calculate-time-zone)
+             (reduce + (map #(:price (val %))
+                            (:bought-items table)))]])]]])))
+
+
+
 (defn tarsas-asztalok []
-  [:div "Asztalok"])
+  (let [state (subscribe [:data :app-state])]
+    (fn []
+      [:div.uk-grid-collapse
+       {:class ["uk-child-width-1-4"]
+        :data-uk-grid true}
+       (map #(-> ^{:key (first %)} [tarsas-asztal %])
+            (:tables @state))])))
+
 
 (defn checkout []
-  (let [toggle (atom :invoices)
+  (let [toggle (atom :tarsas)
         act? (fn [panel] (if (= panel @toggle)
                            "active"
                            "inactive"))]

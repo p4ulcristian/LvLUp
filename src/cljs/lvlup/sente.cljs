@@ -95,7 +95,9 @@
       :dungeon/bug-check (.log js/console "Csekkolás: "(str data))
       :dungeon/change (dispatch [:set-system data])
       :dungeon/get-reservations (dispatch [:set-reservations (read-string data)])
-      :state/diff (dispatch [:state/diff data])
+      :state/diff (do
+                    (.log js/console (str "a változás" data))
+                    (dispatch [:state/diff data]))
       :dungeon/replace-member (do
                                 (js/console.log "replacelve? " (str data))
                                 (dispatch [:add-player (assoc {} (:id data) data)])
