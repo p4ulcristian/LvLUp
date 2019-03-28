@@ -166,6 +166,16 @@
     db))
 
 (reg-event-db
+  :set-data
+  (fn [db [_ the-key the-map]]
+    (assoc db the-key the-map)))
+
+(reg-event-db
+  :set-data-tree
+  (fn [db [_ the-keys the-map]]
+    (assoc-in db the-keys the-map)))
+
+(reg-event-db
  :set-any-data
  (fn [db [_ the-key the-map]]
    (assoc db the-key the-map)))
@@ -458,7 +468,6 @@
   :tarsas/change
   (fn [db [_ the-map]]
     (let []
-      (.log js/console (str "meh:" the-map))
       (chsk-send! [:tarsas/change the-map]))
     db))
 

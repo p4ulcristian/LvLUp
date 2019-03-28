@@ -43,6 +43,13 @@
       the-key)))
 
 (reg-sub
+  :data-tree
+  (fn [db [_ the-keys]]
+    (get-in
+      db
+      the-keys)))
+
+(reg-sub
   :dungeon
   (fn [db [_]]
     (get-in

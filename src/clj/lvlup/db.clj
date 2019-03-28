@@ -191,7 +191,7 @@
     (let [[key change-map] event]
       (reset! local-db
               (assoc-in @local-db
-                        [(:city (:session req)) :tables (first change-map)]
+                        [(:city (:session req)) :tarsas (first change-map)]
                         (second change-map)))))
 
   (defn add-discount [{:keys [event]} req]

@@ -53,6 +53,7 @@
 
 (defn get-photo-by-type [type]
   (case type
+    "tarsas" "/Icons/board-games.svg"
     "ps" "/Icons/ps.svg"
     "xbox" "/Icons/xbox.svg"
     "vr" "/Icons/vr.svg"
@@ -89,6 +90,12 @@
 
 (defn convert-time [origin]
   (format/unparse timeformat (coerce/from-long origin)))
+
+
+(def date-time (format/formatter "yyyyMMdd'T'HHmmss"))
+
+(defn convert-to-time [the-string]
+  (format/parse date-time the-string))
 
 
 (defn calculate-time-zone []
@@ -1076,23 +1083,6 @@
        (map
         #(-> ^{:key (first %)} [invoice-group % type])
         @invoices-keys)
-       (comment [:div.uk-overflow-auto
-                 [:table.uk-table.uk-table-middle.uk-table-striped.uk-table-responsive
-                  [:thead ;{:style {:background "rgba(255,255,255,0.1)"}}
-                   [:tr
-                    [table-head "Típus" :type]
-                    [table-head "Id" :member-id]
-                    [table-head "Vevő" :name]
-                    [table-head "Intervallum" :start]
-                    [table-head "Eltelt idő" :spent-time]
-                    [table-head "Bérlet" :season-pass]
-                    [table-head "Ár" :price]
-                    [:th.uk-text-center
-                     {:style {:line-height "24px"}}
-                     [:b "Action"]]]]
-                  (map
-                    #(-> ^{:key (first %)} [invoice % type])
-                    @invoices-keys)]])
        (if (= 0 (count @invoices-keys))
          [:div.uk-background-contain.uk-height-medium.uk-panel.uk-flex.uk-flex-center.uk-flex-middle
           {:style {:background-image "url(../img/pipboy-gangster.png)"}}])])))
@@ -1196,21 +1186,26 @@
 (defn add-drink [id asztal]
   (let [drink (atom {:price nil
                      :name nil})]
-    (fn []
+    (fn [id asztal]
       [:div.uk-grid-collapse {:data-uk-grid true}
        [:input.uk-input-small.uk-text-center.uk-width-2-3
         {:on-change #(swap! drink assoc :name (-> % .-target .-value))
+         :value (:name @drink)
          :placeholder "Termék"}]
        [:input.uk-input-small.uk-text-center.uk-width-1-3
-        {:on-change #(swap! drink assoc :price (js/parseInt (-> % .-target .-value)))
+        {:value (:price @drink)
+         :on-change #(swap! drink assoc :price (js/parseInt (-> % .-target .-value)))
          :placeholder "Ár"}]
+
        (if (and (:price @drink) (:name @drink))
          [:button.uk-button-primary.uk-button-small.uk-text-center.uk-width-1-1
-          {:on-click #(dispatch [:tarsas/change
-                                 id
-                                 (assoc-in asztal
-                                           [:bought-items (str (random-uuid))]
-                                           @drink)])}
+          {:on-click #(do
+                        (dispatch [:tarsas/change
+                                   [id
+                                    (assoc-in @asztal
+                                              [:bought-items (str (random-uuid))]
+                                              @drink)]])
+                        (reset! drink {:price nil :name nil}))}
           "Hozzáadás"])])))
 
 (defn one-drink [[id drink]]
@@ -1229,21 +1224,32 @@
                 items)
    [:div.uk-text-right
     {:style {:border-top "1px solid white" :padding-top "5px" :padding-right "5px"}}
-    (str "Összesen: "(reduce + (map #(:price (val %)) items))
-         " Ft")]])
+    [:div.uk-text-large [:b (reduce + (map #(:price (val %)) items))
+                            " Ft"]]]])
 
 
+(defn tarsas-fizetes [item price]
+  (dispatch
+    [:dungeon/add-invoice
+     [:progress
+      (assoc  {}
+        :id (str (random-uuid))
+        :type "tarsas"
+        :name (:name item)
+        :member-id 0
+        :finish (convert-to-clojurescript-time (str (calculate-time-zone)))
+        :price price)]]))
 
-(defn tarsas-time [start drink-price]
+(defn tarsas-time [[id table] drink-price]
   (let [timer (atom (calculate-time-interval
-                      start
+                      (convert-to-time (:start-tarsas table))
                       (calculate-time-zone)))
-        time-price (fn [a] (quot @timer 60))]
+        time-price (fn [a] (quot @timer 10))]
     (reagent/create-class
       {:component-did-mount #(js/setInterval (fn [a] (reset! timer (inc @timer)))
                                              1000)
        :reagent-render
-       (fn [start drink-price]
+       (fn [[id table] drink-price]
          (let [drinked-hours (fn [] (quot drink-price 1000))
                tarsas-hours (fn [] (time-price @timer))]
            [:div
@@ -1252,48 +1258,56 @@
             [:div "Lefogyasztott órák: " (drinked-hours)]
             [:div [:b.uk-text-large
                    "Összesen: " (* 500 (max 0 (- (tarsas-hours) (drinked-hours))))
-                   " Ft"]]]))})))
+                   " Ft"]]
+            [:button.uk-button-primary.uk-button.uk-width-1-1
+             [:span {:on-click #(do
+                                  (tarsas-fizetes table (* 500 (max 0 (- (tarsas-hours) (drinked-hours)))))
+                                  (dispatch [:tarsas/change
+                                             [id {}]]))
+                     :data-uk-icon "cart"}]]]))})))
+
 
 (defn tarsas-asztal [[the-key table]]
-  (let [tarsas-details (atom table)
+  (let [asztal (subscribe [:data-tree [:app-state :tarsas the-key]])
         started? (atom (if (:start-tarsas table) true false))]
     (fn [[the-key table]]
       [:div.uk-padding-small
        [:div.uk-card-secondary.uk-card {:style {:border-radius "5px"}}
         [:div.uk-text-center
-         [:h3.uk-margin-remove
+         [:h3.uk-margin-remove.uk-inline.uk-width-1-1
           [:b (str the-key)]
-          [:span.uk-position-right {:data-uk-icon "close"
-                                    :on-click #(do
-                                                 (reset! started? false)
-                                                 (swap! tarsas-details assoc
-                                                        :name nil :start-tarsas nil)
-                                                 (dispatch [:tarsas/change
-                                                            [the-key {}]]))}]]
+          [:span.uk-position-right
+           {:data-uk-icon "close"
+            :on-click #(dispatch [:tarsas/change
+                                  [the-key {}]])}]]
          (if-not @started?
            [:div
             [:input.uk-input-small.uk-text-center.uk-width-1-1
              {:placeholder "Név"
-              :value (:name @tarsas-details)
-              :on-change #(swap! tarsas-details assoc :name (-> % .-target .-value))}]
+              :value (:name @asztal)
+              :on-change #(dispatch [:set-data-tree
+                                     [:app-state :tarsas the-key :name]
+                                     (-> % .-target .-value)])}]
             (if
-              (:name @tarsas-details)
+              (:name @asztal)
               [:div.uk-button-small.uk-button-default.uk-width-1-1
                {:on-click #(do
                              (reset! started? true)
                              (dispatch [:tarsas/change
-                                         [the-key (assoc @tarsas-details
+                                         [the-key (assoc @asztal
                                                     :start-tarsas (str (calculate-time-zone)))]]))
                 :data-uk-icon "play"}])]
 
            [:div
             [:h4 [:b (:name table)]]
-            [add-drink the-key @tarsas-details]
+            [add-drink the-key asztal]
             [drinks (:bought-items table)]
-            [tarsas-time
-             (calculate-time-zone)
-             (reduce + (map #(:price (val %))
-                            (:bought-items table)))]])]]])))
+            (if (:start-tarsas @asztal)
+              [tarsas-time
+               [the-key table]
+               (reduce + (map #(:price (val %))
+                              (:bought-items table)))])])]]])))
+
 
 
 
@@ -1304,7 +1318,7 @@
        {:class ["uk-child-width-1-4"]
         :data-uk-grid true}
        (map #(-> ^{:key (first %)} [tarsas-asztal %])
-            (:tables @state))])))
+            (:tarsas @state))])))
 
 
 (defn checkout []
