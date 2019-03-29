@@ -34,7 +34,7 @@
 (defn stop!  []  (crusader/stop-router!)) ;(crusader/stop-web-server!))
 (defn start! [] (crusader/start-router!))
 
-(def version "?v=323")
+(def version "?v=326")
 
 (start!)
 

@@ -491,7 +491,7 @@
        {:data-uk-modal true
         :id (str "color-choose")}
        [:div.uk-modal-dialog.uk-margin-auto-vertical {:style {:background "rgba(0,0,0,0)"}}
-        [:div.uk-flex.uk-child-width-extend.uk-margin-remove.uk-flex-center
+        [:div.uk-flex.uk-margin-remove.uk-flex-center
          {:data-uk-grid true}
          (map-indexed #(-> ^{:key %1}[modify-color item %2])
                       system-colors)]]])))
@@ -897,19 +897,24 @@
            [:img.uk-position-center
             {:src (get-photo-by-type (:type @one-invoice))
              :width "30"}]
-
            (if (or (= type "pc") (= type "ps") (= type "xbox"))
                [:div.uk-badge.uk-position-bottom-right (:number @one-invoice)])]
-          ;[:div (:datum-interval @one-invoice)]
-          [:div.uk-width-expand.uk-margin-small-right.uk-padding-small.uk-text-center (:spent-time @one-invoice)]
+
+          (if (= 0 (:member-id @one-invoice))
+            [:div.uk-width-expand.uk-margin-small-right.uk-padding-small.uk-text-center
+             (:tarsas-name @one-invoice)])
+          [:div.uk-width-expand.uk-margin-small-right.uk-padding-small.uk-text-center
+           (nth (:datum-interval @one-invoice) 3)]
+          [:div.uk-width-expand.uk-margin-small-right.uk-padding-small.uk-text-center
+           (:spent-time @one-invoice)]
+          [:div.uk-width-auto.uk-padding-small [invoice-action @one-invoice member-id type]]
           [:div.uk-width-auto.uk-padding-small
            [:div.uk-align-right
             [:b.important-data
              (str (if (:discount @one-invoice)
                     "Akció: "
                     "")
-                  (:price @one-invoice) " Ft")]]]
-          [:div.uk-width-auto.uk-padding-small [invoice-action @one-invoice member-id type]]])})))
+                  (:price @one-invoice) " Ft")]]]])})))
 
 
 
@@ -1026,7 +1031,7 @@
           {:src (get-photo-by-type (:type place))
            :height "40"
            :width "40"}]]
-        [:div.uk-width-extended "Soon..."]]]))) ;(str place)]]])))
+        [:div.uk-width-expand.uk-padding-small "Soon..."]]]))) ;(str place)]]])))
 
 (defn this-player-in-dungeon [dungeon-places]
   [:div.uk-grid-collapse.uk-child-width-1-2 {:data-uk-grid true}
@@ -1038,18 +1043,23 @@
 (defn player-profile [member]
   (let [systems (subscribe [:still-gaming])]
     (fn [member]
-      [:div
-       [:div.uk-text-large.uk-text-truncate.important-data (:name @member)]
-       [:div "ID: " [:span.important-data (:id @member)]]
-       [:div "Bérlet: " [:span.important-data (:season-pass @member)]]
-       ;[:div.warning-data "Még játszik lent!"]
-       [this-player-in-dungeon
-        (doall (filter (fn [a] (=
-                                 (:id @member)
-                                 (:member-id a)))
-                       (reduce concat
-                             (map vals (map :players
-                                            @systems)))))]])))
+      (if
+        (= 0 (:id @member))
+        [:div
+         [:h2 {:style {:color "#AD2109"}}
+          [:b [:u "Társasok"]]]]
+        [:div
+         [:div.uk-text-large.uk-text-truncate.important-data (:name @member)]
+         [:div "ID: " [:span.important-data (:id @member)]]
+         [:div "Bérlet: " [:span.important-data (:season-pass @member)]]
+         ;[:div.warning-data "Még játszik lent!"]
+         [this-player-in-dungeon
+          (doall (filter (fn [a] (=
+                                   (:id @member)
+                                   (:member-id a)))
+                         (reduce concat
+                               (map vals (map :players
+                                              @systems)))))]]))))
 
 (defn player-invoices [member-id type ids]
   (let [invoices (fn [the-ids] (deref (subscribe [:checkout-invoices type the-ids])))]
@@ -1061,7 +1071,11 @@
                                (map
                                  (fn [a] (-> ^{:key (:id a)} [invoice [(:id a) member-id] type]))
                                  (val %))])
-         (group-by :invoice-date (invoices ids)))])))
+         (group-by :invoice-date (invoices ids)))
+       (if-not (= 0 member-id)
+         [:h3.uk-text-right.uk-padding-small.uk-margin-remove
+          [:b.important-data "Összesen: " (reduce + (map :price (invoices ids)))
+              " Ft"]])])))
 
 
 (defn invoice-group [[member-id ids] type]
@@ -1106,7 +1120,9 @@
             {:src (get-photo-by-type (:type @one-invoice))
              :height "40"
              :width "40"}]]
-          [:div.uk-padding-small [:b member-id ". " (:name @member)]]
+          (if (= 0 member-id)
+            [:div.uk-padding-small [:b (:tarsas-name @one-invoice)]]
+            [:div.uk-padding-small [:b member-id ". " (:name @member)]])
           [:div.uk-padding-small (:datum-interval @one-invoice)]
           [:div.uk-padding-small (:spent-time @one-invoice)]
           [:div.uk-padding-small (:pay-date-str @one-invoice)]
@@ -1194,7 +1210,11 @@
          :placeholder "Termék"}]
        [:input.uk-input-small.uk-text-center.uk-width-1-3
         {:value (:price @drink)
-         :on-change #(swap! drink assoc :price (js/parseInt (-> % .-target .-value)))
+         :on-change #(swap! drink assoc :price
+                            (if (number? (cljs.reader/read-string (-> % .-target .-value)))
+                              (cljs.reader/read-string (-> % .-target .-value))
+                              0))
+
          :placeholder "Ár"}]
 
        (if (and (:price @drink) (:name @drink))
@@ -1208,19 +1228,29 @@
                         (reset! drink {:price nil :name nil}))}
           "Hozzáadás"])])))
 
-(defn one-drink [[id drink]]
-  [:div.uk-grid-collapse.uk-text-center
-   {:style {:margin-top "7px"}
-    :data-uk-grid true}
-   [:div.uk-width-2-3 (:name drink)]
-   [:div.uk-width-1-3 (str (:price drink) " Ft")]])
+(defn one-drink [[id drink] the-key asztal]
+  [:div.uk-grid-collapse {:data-uk-grid true}
+   [:div.uk-width-expand
+    [:div.uk-grid-collapse.uk-text-center
+     {:style {:margin-top "7px"}
+      :data-uk-grid true}
+     [:div.uk-width-2-3 (:name drink)]
+     [:div.uk-width-1-3 (str (:price drink) " Ft")]]]
+   [:div.uk-width-auto [:span {:on-click #(dispatch [:tarsas/change
+                                                     [the-key
+                                                      (assoc @asztal
+                                                             :bought-items
+                                                             (dissoc (:bought-items @asztal)
+                                                                     id))]])
+                               :data-uk-tooltip "fogyasztás törlése"
+                               :data-uk-icon "close"}]]])
 
 
 
 
-(defn drinks [items]
+(defn drinks [items the-key asztal]
   [:div
-   (map-indexed #(-> ^{:key (first %2)}[one-drink %2])
+   (map-indexed #(-> ^{:key (first %2)}[one-drink %2 the-key asztal])
                 items)
    [:div.uk-text-right
     {:style {:border-top "1px solid white" :padding-top "5px" :padding-right "5px"}}
@@ -1229,14 +1259,16 @@
 
 
 (defn tarsas-fizetes [item price]
+  (.log js/console (str "Na most mivan" item " " price))
   (dispatch
     [:dungeon/add-invoice
      [:progress
       (assoc  {}
         :id (str (random-uuid))
         :type "tarsas"
-        :name (:name item)
+        :tarsas-name (:name item)
         :member-id 0
+        :start (:start-tarsas item)
         :finish (convert-to-clojurescript-time (str (calculate-time-zone)))
         :price price)]]))
 
@@ -1244,64 +1276,71 @@
   (let [timer (atom (calculate-time-interval
                       (convert-to-time (:start-tarsas table))
                       (calculate-time-zone)))
-        time-price (fn [a] (quot @timer 10))]
+        time-price (fn [a] (quot @timer 3600))]
     (reagent/create-class
       {:component-did-mount #(js/setInterval (fn [a] (reset! timer (inc @timer)))
                                              1000)
        :reagent-render
        (fn [[id table] drink-price]
          (let [drinked-hours (fn [] (quot drink-price 1000))
-               tarsas-hours (fn [] (time-price @timer))]
+               tarsas-hours (fn [] (inc (time-price @timer)))
+               price-multiplier (fn [] (max 0 (- (tarsas-hours) (drinked-hours))))]
            [:div
-            [:div [:b.uk-text-large (elapsing-time @timer)]]
-            [:div "Társasórák: " (tarsas-hours)]
-            [:div "Lefogyasztott órák: " (drinked-hours)]
-            [:div [:b.uk-text-large
+            [:div [:b.uk-text-large.important-data (elapsing-time @timer)]]
+            [:div "Társasórák: " [:b.uk-text-large (tarsas-hours)]]
+            [:div "Lefogyasztott órák: " [:b.uk-text-large (drinked-hours)]]
+            [:div [:b.uk-text-large.important-data
                    "Összesen: " (* 500 (max 0 (- (tarsas-hours) (drinked-hours))))
                    " Ft"]]
             [:button.uk-button-primary.uk-button.uk-width-1-1
-             [:span {:on-click #(do
-                                  (tarsas-fizetes table (* 500 (max 0 (- (tarsas-hours) (drinked-hours)))))
-                                  (dispatch [:tarsas/change
-                                             [id {}]]))
+             {:on-click #(do
+                           (if
+                             (not= 0 (price-multiplier))
+                             (tarsas-fizetes table (* 500 (price-multiplier))))
+                           (dispatch [:tarsas/change
+                                      [id {}]]))}
+             [:span {:data-uk-tooltip "Kasszához küldés"
                      :data-uk-icon "cart"}]]]))})))
 
 
 (defn tarsas-asztal [[the-key table]]
-  (let [asztal (subscribe [:data-tree [:app-state :tarsas the-key]])
-        started? (atom (if (:start-tarsas table) true false))]
+  (let [asztal (subscribe [:data-tree [:app-state :tarsas the-key]])]
     (fn [[the-key table]]
       [:div.uk-padding-small
-       [:div.uk-card-secondary.uk-card {:style {:border-radius "5px"}}
+       [:div.uk-card-secondary.uk-card
+        {:style {:border-radius "5px"
+                 :border-top "4px solid #AD2109"}}
         [:div.uk-text-center
          [:h3.uk-margin-remove.uk-inline.uk-width-1-1
           [:b (str the-key)]
           [:span.uk-position-right
            {:data-uk-icon "close"
+            :data-uk-tooltip "asztal resetelése"
             :on-click #(dispatch [:tarsas/change
                                   [the-key {}]])}]]
-         (if-not @started?
+         (if-not (if (:start-tarsas table) true false)
            [:div
-            [:input.uk-input-small.uk-text-center.uk-width-1-1
-             {:placeholder "Név"
-              :value (:name @asztal)
-              :on-change #(dispatch [:set-data-tree
-                                     [:app-state :tarsas the-key :name]
-                                     (-> % .-target .-value)])}]
+            [:div.uk-padding-small [:input.uk-input-small.uk-text-center.uk-width-1-1
+                                    {:placeholder "Név"
+                                     :value (:name @asztal)
+                                     :on-change #(dispatch [:set-data-tree
+                                                            [:app-state :tarsas the-key :name]
+                                                            (-> % .-target .-value)])}]]
             (if
               (:name @asztal)
-              [:div.uk-button-small.uk-button-default.uk-width-1-1
-               {:on-click #(do
-                             (reset! started? true)
-                             (dispatch [:tarsas/change
-                                         [the-key (assoc @asztal
-                                                    :start-tarsas (str (calculate-time-zone)))]]))
-                :data-uk-icon "play"}])]
+              [:div.uk-padding-small
+               [:div.uk-button-small.uk-button-default.uk-width-1-1
+                {:on-click #(do
+                              (dispatch [:tarsas/change
+                                          [the-key (assoc @asztal
+                                                     :start-tarsas (str (calculate-time-zone)))]]))
+                 :data-uk-icon "play"}]])]
 
            [:div
-            [:h4 [:b (:name table)]]
-            [add-drink the-key asztal]
-            [drinks (:bought-items table)]
+            [:h4.uk-margin-remove [:b (:name table)]]
+            [:div.uk-padding-small.uk-padding-remove-bottom
+             [add-drink the-key asztal]
+             [drinks (:bought-items table) the-key asztal]]
             (if (:start-tarsas @asztal)
               [tarsas-time
                [the-key table]
@@ -1322,7 +1361,7 @@
 
 
 (defn checkout []
-  (let [toggle (atom :tarsas)
+  (let [toggle (atom :invoices)
         act? (fn [panel] (if (= panel @toggle)
                            "active"
                            "inactive"))]

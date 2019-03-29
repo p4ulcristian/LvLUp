@@ -174,7 +174,7 @@
                             (core/interval
                               start
                               finish)))
-                        "-")
+                        "")
           :datum-interval (if (and start finish)
                             (utils/read-date start finish)
                             (utils/read-date finish)))))))

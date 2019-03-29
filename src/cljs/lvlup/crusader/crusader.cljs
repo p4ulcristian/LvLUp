@@ -16,17 +16,30 @@
 (defn crusader []
   [:div.uk-align-center.uk-container.uk-padding-large.uk-width-2-3
    [:div.uk-card.uk-card-default
-    {:style {:border-radius "5px"
-             :background "rgba(255,255,255,0.7)"}}
+    {:style {:border-radius "5px"}}
     [:div.uk-card-body
      [:p.uk-text-meta.uk-text-center "Minden új verzió után érdemes Ctrl+Shift+R-rel frissíteni az oldalt."]
+     [patch-card "Beta Kassza/Tarsas"
+      ["Kasszában két rész: Számlák és társasok"
+       "A társas ára óránként 500 forint, vagy óránkénti 1000 Ft fogyasztás"
+       "A társasasztalhoz fogyasztás hozzáadása/törlése"
+       "A kassza rész nevek szerint csoportosít, azon belül napok szerint."
+       "Társasjáték számla esetén a 'Társasok' kategóriába kerül, és a számlára kivan írva a név."
+       [:b "Ismert hibák"]
+       "kontrolleres hiba kasszából való kasszához küldésnél (csak több kontrollernél)"
+       "ha a kliens gépén elvan állítva az idő, nem reális számlák vannak kiállítva"
+       [:b "Soon"]
+       "Fent említett hibák javítása"
+       "Dungeonhöz jegyzetek hozzáadása"
+       "Jobb mobiloptimalizáció"
+       "Számlák ABC sorrendben"]]
      [patch-card "Welcome Szombathely"
       [[:div "Kérdéseket, felvetéseket, problémabejelentéseket ide küldjétek -> " [:a {:href "mailto:paul931224@gmail.com"} "paul931224@gmail.com"]]
        [:h2 "Bugfix/Miscellaneous"]
-       [:li "Kassza visual bug javítva"]
-       [:li "Beállítható árak báronként"]
-       [:li "Új item, kis monster"]
-       [:li "Dungeonben kis rendezés"]]]
+       [:div "Kassza visual bug javítva"]
+       [:div "Beállítható árak báronként"]
+       [:div "Új item, kis monster"]
+       [:div "Dungeonben kis rendezés"]]]
      [patch-card "Patch 199"
       [[:b "Pult"]
        [:div "A monsternél megjelenik a vásárlás időpontja"]
