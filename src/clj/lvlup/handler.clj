@@ -34,7 +34,7 @@
 (defn stop!  []  (crusader/stop-router!)) ;(crusader/stop-web-server!))
 (defn start! [] (crusader/start-router!))
 
-(def version "?v=326")
+(def version "?v=328")
 
 (start!)
 
@@ -60,13 +60,13 @@
 (defn mount-target []
   [:div#app
    [:div#sente-csrf-token {:data-csrf-token anti-forgery/*anti-forgery-token*}]
-   [:div.uk-card.uk-card-primary.uk-height-viewport.uk-width-viewport.uk-inline
-    {:style "background: url(../img/cash.jpg);
-              background-size: cover;
-              min-height: 100vh;
-              min-width: 100vw"}
-    [:span.uk-position-center {
-                               :data-uk-spinner "ratio: 4"}]]])
+   [:div.uk-card.uk-card-primary.uk-height-viewport.uk-width-viewport.uk-inline.nice-back
+    [:span.uk-position-center {:data-uk-spinner "ratio: 4"}]]])
+
+
+(defn negyzet []
+  ()
+  ())
 
 
 (defn head []
@@ -83,8 +83,9 @@
                    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
                    ga('create', 'UA-99055366-1', 'auto');
                    ga('send', 'pageview');")
-   (include-css "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.8/css/uikit.min.css")
-   (include-css (str "/css/style.css" version))])
+   (include-css "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/css/uikit.min.css")
+   (include-css "https://fonts.googleapis.com/css?family=Jura")
+   (include-css (str "/css/homepage.css" version))])
 
 (defn head-crusader []
   [:head
@@ -126,16 +127,20 @@
       (include-js "/externaljs/dragscroll.js")
       (include-js "/externaljs/fullscreen.js")
       (include-js "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
-      (include-js (str "/js/app.js" version))])))
+      (include-js (str "/js/crusader.js" version))])))
 
-(defn loading-page []
+(defn home-page []
   (html5
    (head)
    [:body {:class "body-container"}
     (mount-target)
-    (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.8/js/uikit.min.js")
-    (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.8/js/uikit-icons.min.js")
-    (include-js (str "/js/app.js" version))]))
+    (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/js/uikit.min.js")
+    (include-js "//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/ScrollMagic.min.js")
+    (include-js "//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/plugins/debug.addIndicators.min.js")
+    (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/js/uikit-icons.min.js")
+    (include-js "https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js")
+    (include-js "https://maps.googleapis.com/maps/api/js?key=AIzaSyCt16ohB_WYucOx-6S-d8je1Nor8Kw9pOY")
+    (include-js (str "/js/homepage.js" version))]))
 
 (def authdata
   "Global var that stores valid users with their
@@ -218,7 +223,7 @@
                             (assoc :session {})))] ;:session {}))
     ["send-email" (fn [req] (send-email-to-fellow-gamer req))]
     ["crusader" {true (fn [req] {:status 200 :body (loading-page-crusader req) :headers {"Content-Type" "text/html"}})}]
-    [true (fn [req] {:status 200 :body (loading-page) :headers {"Content-Type" "text/html"}})]]])
+    [true (fn [req] {:status 200 :body (home-page) :headers {"Content-Type" "text/html"}})]]])
 
 
 

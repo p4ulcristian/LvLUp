@@ -1,0 +1,511 @@
+.green{
+height: 100px;
+width: 100px;
+background: lightgreen;
+}
+
+.white-text{
+color: white !important;
+}
+.egyesulet {
+background-image: linear-gradient(180deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4));
+border-radius: 5px;
+border: 1px solid white;
+
+}
+
+.one-system-free{
+background: rgba(0,100,250,0.9);
+ box-shadow:
+     -2px -2px 5px #fff,
+     -2px -2px 10px #fff;
+     filter:brightness(80%);
+}
+
+.one-system-not-free{
+background: rgba(150,0,0,0.9);
+box-shadow:
+     -2px -2px 5px #000,
+     -2px -2px 10px #000;
+filter: brightness(50%);
+}
+
+.bounce {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+
+
+.tarsas-back{
+ background-image: url("/img/boardgame.jpg");
+ background-size: cover;
+ filter: brightness(40%);
+ position: absolute;
+ height: 100%;
+ width: 100%;
+ z-index: -1;
+}
+
+.esport-back{
+ background-image: url("/img/egyesulet.jpg");
+ background-size: cover;
+}
+
+.dungeon-back{
+ background-image: url("/img/gamer.jpg");
+ background-size: cover;
+ filter: brightness(70%);
+ position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+}
+
+.black-grad{
+background-image: linear-gradient(180deg, #222, #333 50%, #444);
+}
+
+.black-grad-rev{
+background-image: linear-gradient(0deg, #222, #333 50%, #444);
+}
+
+.glitch {
+  position: relative;
+  margin: 0 auto;
+  color: #fff;
+  font-size: 2em;
+  font-family: "Exo", sans-serif;
+  font-weight: 600;
+
+  letter-spacing: 0.01em;
+  -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+}
+.glitch::before, .glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: #222;
+  color: #fff;
+  clip: rect(0, 900px, 0, 0);
+}
+.glitch::before {
+  left: 7px;
+  text-shadow: 1px 0 green;
+  animation: glitch-effect 4s infinite linear alternate-reverse;
+}
+.glitch::after {
+  left: 3px;
+  text-shadow: -1px 0 red;
+  animation: glitch-effect 4s infinite linear alternate-reverse;
+}
+
+@-webkit-keyframes glitch-effect {
+  0% {
+    clip: rect(38px, 9999px, 55px, 0);
+  }
+  5% {
+    clip: rect(23px, 9999px, 47px, 0);
+  }
+  10% {
+    clip: rect(70px, 9999px, 2px, 0);
+  }
+  15% {
+    clip: rect(35px, 9999px, 81px, 0);
+  }
+  20% {
+    clip: rect(14px, 9999px, 16px, 0);
+  }
+  25% {
+    clip: rect(48px, 9999px, 8px, 0);
+  }
+  30% {
+    clip: rect(67px, 9999px, 53px, 0);
+  }
+  35% {
+    clip: rect(33px, 9999px, 37px, 0);
+  }
+  40% {
+    clip: rect(53px, 9999px, 13px, 0);
+  }
+  45% {
+    clip: rect(26px, 9999px, 7px, 0);
+  }
+  50% {
+    clip: rect(98px, 9999px, 38px, 0);
+  }
+  55% {
+    clip: rect(54px, 9999px, 27px, 0);
+  }
+  60% {
+    clip: rect(63px, 9999px, 36px, 0);
+  }
+  65% {
+    clip: rect(24px, 9999px, 37px, 0);
+  }
+  70% {
+    clip: rect(14px, 9999px, 85px, 0);
+  }
+  75% {
+    clip: rect(5px, 9999px, 53px, 0);
+  }
+  80% {
+    clip: rect(48px, 9999px, 1px, 0);
+  }
+  85% {
+    clip: rect(83px, 9999px, 14px, 0);
+  }
+  90% {
+    clip: rect(34px, 9999px, 31px, 0);
+  }
+  95% {
+    clip: rect(5px, 9999px, 14px, 0);
+  }
+  100% {
+    clip: rect(95px, 9999px, 85px, 0);
+  }
+}
+
+@keyframes glitch-effect {
+  0% {
+    clip: rect(38px, 9999px, 55px, 0);
+  }
+  5% {
+    clip: rect(23px, 9999px, 47px, 0);
+  }
+  10% {
+    clip: rect(70px, 9999px, 2px, 0);
+  }
+  15% {
+    clip: rect(35px, 9999px, 81px, 0);
+  }
+  20% {
+    clip: rect(14px, 9999px, 16px, 0);
+  }
+  25% {
+    clip: rect(48px, 9999px, 8px, 0);
+  }
+  30% {
+    clip: rect(67px, 9999px, 53px, 0);
+  }
+  35% {
+    clip: rect(33px, 9999px, 37px, 0);
+  }
+  40% {
+    clip: rect(53px, 9999px, 13px, 0);
+  }
+  45% {
+    clip: rect(26px, 9999px, 7px, 0);
+  }
+  50% {
+    clip: rect(98px, 9999px, 38px, 0);
+  }
+  55% {
+    clip: rect(54px, 9999px, 27px, 0);
+  }
+  60% {
+    clip: rect(63px, 9999px, 36px, 0);
+  }
+  65% {
+    clip: rect(24px, 9999px, 37px, 0);
+  }
+  70% {
+    clip: rect(14px, 9999px, 85px, 0);
+  }
+  75% {
+    clip: rect(5px, 9999px, 53px, 0);
+  }
+  80% {
+    clip: rect(48px, 9999px, 1px, 0);
+  }
+  85% {
+    clip: rect(83px, 9999px, 14px, 0);
+  }
+  90% {
+    clip: rect(34px, 9999px, 31px, 0);
+  }
+  95% {
+    clip: rect(5px, 9999px, 14px, 0);
+  }
+  100% {
+    clip: rect(95px, 9999px, 85px, 0);
+  }
+}
+
+.red-shadow{
+   box-shadow:
+     -2px -2px 5px #d00,
+     -2px -2px 20px #d00;
+ }
+
+ .blue-shadow{
+   box-shadow:
+      -2px -2px 5px #00d,
+      -2px -2px 20px #00d;
+  }
+
+
+.neon {
+  color: #fff;
+  cursor: pointer;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 5px;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 20px #fff,
+    0 0 40px #00f,
+    0 0 50px #00f,
+    0 0 60px #00f;
+
+    border-bottom: 2px solid transparent;
+
+
+}
+
+@keyframes glowing {
+  0% { text-shadow: 0 0 -5px #00f; }
+  35% { text-shadow: 0 0 5px #00f; }
+  50% { text-shadow: 0 0 10px #00f; }
+  55% { text-shadow: 0 0 5px #00f; }
+  100% { text-shadow: 0 0 -5px #00f; }
+}
+
+
+.neon-menu-red{
+    padding: 20px 20px 30px 30px;
+    font-size: 1.8em;
+    color: white;
+    text-shadow:
+        0 0 5px #d00,
+        0 0 10px #d00,
+        0 0 20px #d00,
+        0 0 40px #d00,
+        0 0 80px #d00,
+        0 0 90px #d00,
+        0 0 100px #d00,
+        0 0 150px #d00;
+}
+
+.neon-menu-blue{
+    padding: 20px;
+    font-size: 1.8em;
+    color: white;
+    text-shadow:
+        0 0 5px #00d,
+        0 0 10px #00d,
+        0 0 20px #00d,
+        0 0 40px #00d,
+        0 0 80px #00d,
+        0 0 90px #00d,
+        0 0 100px #00d,
+        0 0 150px #00d;
+}
+
+.neon-chosen {
+color: #fff;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 5px;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 20px #fff,
+    0 0 40px #d00,
+    0 0 80px #d00,
+    0 0 90px #d00,
+    0 0 100px #d00,
+    0 0 150px #d00;
+    border-bottom: 2px solid transparent;
+}
+
+.neon:hover {
+border-bottom: 2px solid white;
+transition: 0.3s ease-in;
+
+}
+
+#logo{
+position: fixed;
+
+}
+:root{
+ --neon-text-color: #f40;
+  --neon-border-color: #08f;
+}
+
+.monster{
+font-family: 'Jura', sans-serif;
+}
+
+#nyitvatartas {
+  font-size: 35px;
+  font-weight: 200;
+  font-style: italic;
+  color: #fff;
+  padding: 10px 15px 13.75px;
+  border: 1px solid #fff;
+  border-radius: 5;
+  width: fit-content;
+  text-transform: uppercase;
+  animation: flicker 1.5s infinite alternate;
+}
+
+#nyitvatartas::-moz-selection {
+  background-color: var(--neon-border-color);
+  color: var(--neon-text-color);
+}
+
+#nyitvatartas::selection {
+  background-color: var(--neon-border-color);
+  color: var(--neon-text-color);
+}
+
+#nyitvatartas:focus {
+  outline: none;
+}
+
+/* Animate neon flicker */
+@keyframes flicker {
+
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+
+        text-shadow:
+            -0.5px -0.5px 2.5px #fff,
+            0.5px 0.5px 2.5px #fff,
+            0 0 5px var(--neon-text-color),
+            0 0 10px var(--neon-text-color),
+            0 0 15px var(--neon-text-color),
+            0 0 20px var(--neon-text-color),
+            0 0 25px var(--neon-text-color);
+
+        box-shadow:
+            0 0 1.25px #fff,
+            inset 0 0 1.25px #fff,
+            0 0 5px var(--neon-border-color),
+            inset 0 0 5px var(--neon-border-color),
+            0 0 10px var(--neon-border-color),
+            inset 0 0 10px var(--neon-border-color);
+    }
+
+    20%, 24%, 55% {
+        text-shadow: none;
+        box-shadow: none;
+    }
+}
+
+.city{
+margin: 15px;
+font-size: 5px;
+color: white;
+background: rgba(0,0,0,0.7);
+padding: 5px 10px;
+border: 1px solid rgba(0,0,0,0);
+border-radius: 10px;
+animation: glowing 2s infinite;
+
+}
+
+.city:hover{
+box-shadow:
+        0 0 5px 2.5px #FF0000,  /* inner white */
+        0 0 10px 5px #0000FF, /* middle magenta */
+        0 0 10px 5px #0000FF; /* outer cyan */
+transition: 0.3s ease-out;
+
+}
+
+.nice-back{
+height: 100vh;
+width: 100%;
+background-image: linear-gradient(45deg,#00F,#222 25%, #222 75%, #F00);
+}
+
+.nice-back-simple{
+background-image: linear-gradient(45deg,#00F,#222 25%, #222 75%, #F00);
+}
+
+
+
+.nice-back-rev{
+background-image: linear-gradient(135deg,#00F,#222 18%, #222 80%, #F00);
+}
+
+
+
+.red-blue-wall{
+height: 450px;
+width: 100%;
+position: relative;
+
+}
+
+.valami{
+position: absolute;
+height: 100%;
+width: 100%;
+top: 0;
+left: 0;
+background-image: url("/img/wow.jpg");
+background-size: cover;
+}
+
+.mas{
+position: absolute;
+width: 100%;
+height: 100%;
+background-image: linear-gradient(-45deg, rgba(0,0,255,0.3), rgba(255,0,0,0.5));
+}
+
+
+.boxes{
+width: 100vw;
+flex: 1;
+align-content: center;
+align-items: center;
+justify-content: center;
+display: flex;
+
+}
+
+.box{
+background: beige;
+height: 100px;
+width: 100px;
+border: 1px solid black;
+margin: 2px;
+}
+
+
+
+
+
+
+.nav-wall-right{
+background: rgb(2,0,36);
+background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(2,0,36,0.5550595238095238) 100%);
+
+}
+
+.nav-wall-left{
+background: rgb(2,0,36);
+background: linear-gradient(90deg, rgba(2,0,36,0.5550595238095238) 0%, rgba(255,255,255,1) 100%);
+}

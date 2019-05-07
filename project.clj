@@ -28,7 +28,6 @@
                  [dk.ative/docjure "1.12.0"]
                  [org.clojure/core.async "0.4.490"]
                  [day8.re-frame/async-flow-fx "0.0.9"]
-
                  [hiccup "1.0.5"]
                  [yogthos/config "0.8"]
                  [org.clojure/clojurescript "1.10.520"]
@@ -73,27 +72,45 @@
    {"resources/public/css/style.min.css" "resources/public/css/style.css"}}
 
   :cljsbuild
-  {:builds {:min
-            {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
+  {:builds {:home-page-prod
+            {:source-paths ["src/cljs/homepage" "src/cljc" "env/prod/cljs/homepage"]
              :compiler
-                           {:output-to "target/cljsbuild/public/js/app.js"
-                            :output-dir "target/uberjar"
+                           {:output-to        "target/cljsbuild/public/js/homepage.js"
+                            :output-dir       "target/homepage"
                             :optimizations :simple
-                            :externs ["externs/jquery.js"]
-
                             :pretty-print  false}}
-            :app
-            {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+            :crusader-prod
+            {:source-paths ["src/cljs/crusader" "src/cljc" "env/prod/cljs/crusader"]
+             :compiler
+                           {:output-to "target/cljsbuild/public/js/crusader.js"
+                            :output-dir "target/crusader"
+                            :optimizations :simple
+                            :pretty-print  false}}
+            :home-page
+            {:source-paths ["src/cljs/homepage" "src/cljc" "env/dev/cljs/homepage"]
              :compiler
                            {:closure-defines      {"re_frame.trace.trace_enabled_QMARK_" true}
                             :preloads             [day8.re-frame-10x.preload]
-                            :main "lvlup.dev"
-                            :asset-path "/js/out"
-                            :output-to "target/cljsbuild/public/js/app.js"
-                            :output-dir "target/cljsbuild/public/js/out"
+                            :main "homepage.dev"
+                            :asset-path "/js/homepageout"
+                            :output-to        "target/cljsbuild/public/js/homepage.js"
+                            :output-dir       "target/cljsbuild/public/js/homepageout"
                             :source-map true
                             :optimizations :none
-                            :pretty-print  true}}}} :figwheel
+                            :pretty-print  false}}
+            :crusader
+            {:source-paths ["src/cljs/crusader" "src/cljc" "env/dev/cljs/crusader"]
+             :compiler
+                           {:closure-defines      {"re_frame.trace.trace_enabled_QMARK_" true}
+                            :preloads             [day8.re-frame-10x.preload]
+                            :main "crusader.dev"
+                            :asset-path "/js/crusaderout"
+                            :output-to "target/cljsbuild/public/js/crusader.js"
+                            :output-dir "target/cljsbuild/public/js/crusaderout"
+                            :source-map true
+                            :optimizations :none
+                            :pretty-print  true}}}}
+  :figwheel
   {:http-server-root "public"
    :server-port 3449
    :nrepl-port 7002
@@ -117,9 +134,8 @@
 
                    :env {:dev true}}
 
-             :uberjar {;:hooks [minify-assets.plugin/hooks]
-                       :source-paths ["env/prod/clj"]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+             :uberjar {:source-paths ["env/prod/clj"]
+                       :prep-tasks ["compile" ["cljsbuild" "once" "crusader-prod" "home-page-prod"]]
                        :env {:production true}
                        :aot :all
                        :omit-source true}})
