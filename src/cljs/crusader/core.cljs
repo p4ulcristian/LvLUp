@@ -349,6 +349,7 @@
 
 
 
+
 (defn current-page []
   (let [user (subscribe [:data :user])
         actual-page (subscribe [:data :actual-page])]

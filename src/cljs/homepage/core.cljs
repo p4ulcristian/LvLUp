@@ -9,6 +9,33 @@
             [re-frame.core :refer [dispatch-sync dispatch subscribe]]
             [cljs-time.core :as tcore]))
 
+(defn scroll-magic []
+  (js/ScrollMagic.Controller.))
+
+(defn get-height [id]
+  (let [el (.getElementById js/document id)]
+    (if el
+      (.-clientHeight el)
+      0)))
+
+(def app-state (atom {:loading-images 4
+                      :chosen-city nil
+                      :chosen-part "tarsas"
+                      :scroll-magic (scroll-magic)})) ;tarsas/itallap/dungeon
+
+
+
+
+
+
+(defn scroll-to [id]
+  (.scrollIntoView
+    (.getElementById js/document id)
+    (clj->js {:behavior "smooth" :block "start"})))
+
+(defn scroll-some [quantity]
+  (.scrollTo js/window (clj->js {:top quantity
+                                 :behavior "smooth"})))
 
 (def google-map-styles
   (.parse js/JSON "[\n    {\n        \"featureType\": \"all\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n            {\n                \"saturation\": 36\n            },\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 40\n            }\n        ]\n    },\n    {\n        \"featureType\": \"all\",\n        \"elementType\": \"labels.text.stroke\",\n        \"stylers\": [\n            {\n                \"visibility\": \"on\"\n            },\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 16\n            }\n        ]\n    },\n    {\n        \"featureType\": \"all\",\n        \"elementType\": \"labels.icon\",\n        \"stylers\": [\n            {\n                \"visibility\": \"off\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"administrative\",\n        \"elementType\": \"all\",\n        \"stylers\": [\n            {\n                \"hue\": \"#ff0000\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"administrative\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"color\": \"#b93131\"\n            },\n            {\n                \"visibility\": \"on\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"administrative\",\n        \"elementType\": \"geometry.fill\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 20\n            },\n            {\n                \"visibility\": \"on\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"administrative\",\n        \"elementType\": \"geometry.stroke\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 17\n            },\n            {\n                \"weight\": 1.2\n            },\n            {\n                \"visibility\": \"on\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"administrative.country\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"visibility\": \"on\"\n            },\n            {\n                \"color\": \"#af0f0f\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"landscape\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 20\n            }\n        ]\n    },\n    {\n        \"featureType\": \"poi\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 21\n            }\n        ]\n    },\n    {\n        \"featureType\": \"road.highway\",\n        \"elementType\": \"geometry.fill\",\n        \"stylers\": [\n            {\n                \"color\": \"#0f0b2c\"\n            },\n            {\n                \"lightness\": 17\n            }\n        ]\n    },\n    {\n        \"featureType\": \"road.highway\",\n        \"elementType\": \"geometry.stroke\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 29\n            },\n            {\n                \"weight\": 0.2\n            }\n        ]\n    },\n    {\n        \"featureType\": \"road.arterial\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 18\n            }\n        ]\n    },\n    {\n        \"featureType\": \"road.arterial\",\n        \"elementType\": \"geometry.fill\",\n        \"stylers\": [\n            {\n                \"visibility\": \"on\"\n            },\n            {\n                \"color\": \"#271e78\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"road.local\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 16\n            }\n        ]\n    },\n    {\n        \"featureType\": \"road.local\",\n        \"elementType\": \"geometry.fill\",\n        \"stylers\": [\n            {\n                \"visibility\": \"on\"\n            },\n            {\n                \"color\": \"#192059\"\n            }\n        ]\n    },\n    {\n        \"featureType\": \"transit\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"color\": \"#000000\"\n            },\n            {\n                \"lightness\": 19\n            }\n        ]\n    },\n    {\n        \"featureType\": \"water\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n            {\n                \"color\": \"#367791\"\n            },\n            {\n                \"lightness\": 17\n            }\n        ]\n    }\n]"))
@@ -22,27 +49,17 @@
         map-canvas (reagent/dom-node this)
         map-options (clj->js {"scrollwheel" false
                               "center" (google.maps.LatLng. the-first the-second)
-                              "zoom" 6.5
-                              "styles" google-map-styles
-                              "disableDefaultUI" true})
+                              "zoom" 16
+                              "mapTypeControl" false
+                              "fullscreenControl" false
+                              "streetViewControl" true
+                              "styles" google-map-styles})
         the-map (js/google.maps.Map. map-canvas map-options)
 
         map-with-marker (clj->js  {"position" (google.maps.LatLng. the-first the-second)
                                    "map" the-map
-                                   "icon" "/img/marker2.png"})
-        map-with-marker2 (clj->js  {"position" (google.maps.LatLng. (+ 2 the-first)
-                                                                    (+ 2 the-second))
-                                    "map" the-map
-
-                                    "icon" "/img/marker2.png"})
-        map-with-marker3 (clj->js  {"position" (google.maps.LatLng. (+ 2 the-first)
-                                                                    (+ 2 the-second))
-                                    "map" the-map
-
-                                    "icon" "/img/marker2.png"})]
-    (js/google.maps.Marker. ^js/google.maps.Marker map-with-marker)
-    (js/google.maps.Marker. ^js/google.maps.Marker map-with-marker2)
-    (js/google.maps.Marker. ^js/google.maps.Marker map-with-marker3)))
+                                   "icon" "/img/marker2.png"})]
+    (js/google.maps.Marker. ^js/google.maps.Marker map-with-marker)))
 
 (defn google-maps-render [coordinates]
   [:div.noselect {:style {:height "400px"}}])
@@ -72,88 +89,49 @@
 
 
 
-(defn logo []
-  [:img#logo
-   {:style {:z-index 100
-            :border "10px"
-            :margin-top "-150px"
-            :filter "brightness(20%)"
-            :transform "rotate(15deg)"};}
-
-    :width 300
-    :height "auto"
-
-    :src "/img/lvlup-logo-white.png"}])
-
-(defn logos-animation []
-  (reagent/create-class
-    {:component-did-mount #(do
-                             ;(tween-from "#logo" 0.4 (clj->js {:ease js/Power1.easeIn :opacity 0 :delay 0.85 :scale 1.3}))
-
-                             (tween-from "#logo" 0.8 (clj->js {:ease js/Bounce.easeOut :opacity 0 :delay 0 :scale 3}))
-                             (tween-to "#logo" 1.2 (clj->js {:ease js/Bounce.easeOut  ;(-> js/Elastic.easeOut (.config 1 0.3))
-                                                             :transform "rotate(0deg)" :delay 0.8}))
-                             (tween-to "#logo" 0.4 (clj->js {:ease js/Power1.easeIn  :delay 0.4 :filter "brightness(100%)"})))
-
-
-
-     :reagent-render
-     (fn []
-       [:div {:style {:width "300px"}}
-        [logo]])}))
 
 
 
 
 
 
+(defn logo-anim-if []
+  (swap! app-state update :loading-images dec)
+  (do
+    (tween-to "#logo" 0.8 (clj->js {:ease js/Bounce.easeOut :opacity 1 :delay 0.3 :scale 1}))
+    (tween-to "#logo" 0.8 (clj->js {:ease js/Bounce.easeOut  ;(-> js/Elastic.easeOut (.config 1 0.3))
+                                    :transform "rotate(0deg)" :delay 1.1}))))
 
-(defn black-bar []
-  [:div.uk-width-1-1.uk-flex-bottom.nav-wall-right
-   {:style {:margin-top "-25px"
-            :height "50px" :background-color "black"}}])
+(defn one-city [{:keys [name]}]
+  (let [lower-name (clojure.string/lower-case name)]
+    (fn [{:keys [name]}]
+      [:div.one-bar.uk-width-expand
+       [:div.city-container.uk-width-1-1 {:class (if (= lower-name (:chosen-city @app-state))
+                                                   "active" "")
+                                          :on-click #(do
+                                                       (swap! app-state assoc :chosen-city lower-name)
+                                                       (scroll-some (get-height "scrollmagic")))}
 
-(defn nav []
-  (reagent/create-class
-    {:component-did-mount #(do
-                             (tween-from ".nav-right" 1 (clj->js {:opacity 0 :x "50vw" :y -50
-                                                                  :border-radius "20px"}))
-                             (tween-from ".nav-left" 1 (clj->js {:opacity 0 :x "-50vw" :y -50
-                                                                 :border-radius "20px"})))
+        [:div.uk-inline
+         [:img.uk-align-center.one-city-margin
+          {:src "/img/lvlup-logo-transparent.png"
+           :on-load #(logo-anim-if)}]
+         [:img.hover-city.one-city-margin
+          {:src "/img/lvlup-logo-white.png"
+           :on-load #(logo-anim-if)}]]
+        [:h5.neon.uk-text-center.uk-margin-remove
+         (clojure.string/upper-case name)]]])))
 
-     :reagent-render
-     (fn []
-       [:nav.uk-flex.uk-flex-row {:data-uk-navbar true :style {:height "150px"}}
-        [:div.uk-flex.uk-flex-auto.uk-flex-middle.nav-left
-         [:div.uk-width-1-1.uk-flex-bottom.nav-wall-left
-          {:style {:margin-top "-25px"
-                   :height "50px"}}]]
-
-        [:div.uk-flex.uk-flex-auto.uk-flex-middle.nav-right
-         [:div.uk-width-1-1.uk-flex-bottom.nav-wall-right
-          {:style {:margin-top "-25px"
-                   :height "50px"}}]]
-
-        [:div.uk-position-center
-           [logos-animation]]
-        [:div
-         [:div#blink.blink
-          [:p#blinkText "lel"]]]])}))
-           ;[logo]]])}))
-
-
-
-
-
-
-
-(defn one-bar [{:keys [src name]}]
-  [:div.one-bar.uk-align-center.uk-margin-remove-top {:style { :padding "20px"}}
-   ;[:img {:src src :width "300px"}]
-   [:h1.neon.uk-text-center.uk-margin-remove
-    (clojure.string/upper-case
-      name)]])
-
+(defn all-cities []
+  [:div.uk-width-1-1
+   [:div#which-city.uk-width-1-1
+    [:h1.uk-text-center.monster.neon.uk-animation-slide-bottom.which-city-margin
+     "Melyik városba látogatnál el?"]]
+   [:div#bars.uk-flex-center.uk-grid-collapse {:data-uk-grid true}
+    [:div.uk-width-1-2 {:data-uk-grid true}
+     [one-city {:name "Debrecen"}]
+     [one-city {:name "Szombathely"}]
+     [one-city {:name "Szeged"}]]]])
 
 (defn get-system-photo [type]
   (case type
@@ -168,19 +146,18 @@
    "xbox" "vr"])
 
 (defn system [data]
-  [:div.uk-padding-small
-   [:div.one-system
-    {:style {:padding "25px" :border-radius "8px"}
-     :class (rand-nth ["one-system-free" "one-system-not-free"])}
-    [:img {:src (get-system-photo data)}]]])
+  [:div
+   [:div.uk-inline
+    [:button.one-system.uk-padding-small
+     {;:data-uk-tooltip "title: Foglalások: 17:30-18:30; 19:30-20:30"
+      :style {:border-radius "8px"}
+      :class (rand-nth ["one-system-free" "one-system-not-free"])}
+     [:img {:src (get-system-photo data)}]]
+    [:div {:data-uk-drop "pos: left; mode: click"}
+     "pff"]]])
 
 
-(defn dungeon []
-  [:div.uk-grid-collapse.uk-child-width-1-5
-   {:data-uk-grid true}
-   (map-indexed
-     #(-> ^{:key %1}[system %2])
-     systems)])
+
 
 
 (def tarsasok
@@ -209,234 +186,368 @@
 
 
 (defn board-game [[name desc url]]
-  [:div.uk-flex {:style {:background "rgba(0,0,0,0.6)"
-                         :margin "10px"
-                         :border-bottom "1px solid white"
-                         :border-radius "5px"}}
-   [:div
+  [:div.uk-width-1-3
+   [:div.uk-padding-small
     {:style {:padding "10px"}}
-    [:a {:href url :target "_blank"}
-     [:b {:style {:color "white"}}
-      name]]]
-   [:div
-    {:style {:padding "10px"
-             :color "white"}}
-    desc]])
+    [:div.board-game.uk-padding-small {:style {:border-radius "5px"}}
+     [:a {:href url :target "_blank"}
+      [:b {:style {:color "white"}}
+       name]]]]])
+
 
 (defn board-games []
   (reagent/create-class
     {:reagent-render
      (fn []
-       [:div.uk-grid-collapse.uk-height-large.uk-overflow-auto {:data-uk-grid true}
-        [:div.uk-padding
-         (map-indexed #(-> ^{:key %1} [board-game %2])
-                      tarsasok)]])}))
+       [:div#board
+        {:class (if (= "tarsas" (:chosen-part @app-state))
+                  "seen"
+                  "not-seen")
+         :style {:width "100%"}}
+        [:div.uk-grid-collapse {:data-uk-grid true}
 
-(defn cities []
-  (reagent/create-class
-    {:component-did-mount #(do
-                             (stagger-from ".choose-city" 0.5 (clj->js {:y 100 :opacity 0}))
-                             (stagger-from ".one-bar" 1 (clj->js
-                                                         {:delay 0.1
-                                                          :x "50vw"
-                                                          :opacity 0
-                                                          :ease (js/Elastic.easeInOut.config 1 1)})
-                                                    0.2)
-                             (stagger-from ".anim-city" 0.3 (clj->js
-                                                              {:delay 1
-                                                               :y -50
-                                                               :opacity 0})
-
-                                           0.2))
-     :reagent-render
-     (fn []
-       [:div#main.nice-back-rev
-        [:div.uk-grid-collapse
-         {:data-uk-grid true}
          [:div.uk-width-1-3
-          [:div.uk-padding
-           [:div.uk-card-secondary.uk-card.red-shadow.anim-city {:style {:border-radius "10px"}}
-            [:div {:style {:padding "10px 0px 10px 20px"}}
-             [:h4.glitch.monster {:data-text "Koktéllap"} "Koktéllap"]]
-            [:div.uk-padding-small
-             [:img {:src "/img/cocktail.png"}]]]]
-          (comment
-            [:div.uk-padding.uk-padding-remove-top.anim-city
-             [google-maps [46.248214 20.146354]]])
-          [:div.uk-padding.uk-padding-remove-top
-           [:div.uk-card-secondary.uk-card.red-shadow.anim-city {:style {:border-radius "10px" :padding-top "15px"}}
-            [:div#nyitvatartas.uk-width-auto.uk-align-center "Nyitvatartás"]
-            [:div.uk-flex.uk-flex-column.monster.uk-text-center.uk-padding-small
-             [:div "Hétfő - 12:00 - 20:00"]
-             [:div "Kedd - 12:00 - 20:00"]
-             [:div "Szerda - 12:00 - 20:00"]
-             [:div "Csütörtök - 12:00 - 20:00"]
-             [:div "Péntek - 12:00 - 20:00"]
-             [:div "Szombat - 12:00 - 20:00"]
-             [:div "Vasárnap - Zárva"]]]]]
+          [:div.uk-inline {:style {:width "100%" :height "100%"}}
+           [:div.uk-padding.monster.white-text.board-text
+            [:p "Több mint 50 féle társasjáték várja, hogy szórakoztasson téged és barátaid egy finom ital kíséretében!"]
+            [:p " Fogyasztás fejében, minden játékunk ingyenesen játszható!
+           Érdemes asztalt foglalnotok, hogy biztosan legyen helyetek, amit az oldalunknak irt facebook üzenetben tudtok megtenni:"]
+            [:a.uk-text-center.uk-align-center
+             {:style {:font-size "2em" :font-weight "bold"}
+              :href "https://www.facebook.com/pg/LvLUpBar"
+              :target "_blank"}
+             "Foglalj facebook üzenetben!"]]]]
+         [:div.uk-width-2-3.uk-inline
+          [:div.tarsas-front
+           [:div.uk-padding-small
+            [:input.uk-input.uk-text-center.uk-width-1-3.uk-align-center.uk-margin-remove-bottom
+             {:placeholder "Keresés..." :style {:color "#222"}}]]
+           [:div.uk-overflow-auto.uk-grid-collapse {:data-uk-grid true}
+            (map-indexed #(-> ^{:key %1} [board-game %2])
+                         tarsasok)]]]]])}))
 
-         [:div.uk-width-2-3
-          [:div.uk-padding.uk-padding-remove-top
-           [:div.uk-card-secondary.uk-card.blue-shadow.anim-city {:style {:border-radius "10px"}}
-            [:div {:style {:padding "10px 20px 10px 20px" :height "40px"}}
-             [:h4.glitch.uk-width-auto.monster.uk-align-right {:data-text "Társasok"} "Társasok"]]
-            [:div.uk-inline
-             [:div.tarsas-back]
-             [:div.uk-padding [board-games]]]
-            [:div.uk-text-right.uk-padding-small.monster "Szeretettel várunk egy kellemes társas estre. :)"]]]
-          [:div.uk-padding
-           [:div.uk-card-secondary.uk-card.blue-shadow.anim-city {:style {:border-radius "10px"}}
-            [:div {:style {:padding "10px 20px 10px 20px" :height "40px"}}
-             [:h4.glitch.uk-width-auto.monster.uk-align-right {:data-text "Dungeon"} "Dungeon"]]
-            [:div.uk-inline
-             [:div.dungeon-back]
-             [dungeon]]
-            [:div.uk-text-right.uk-padding-small.monster [:b "2 Pc, 2 Xbox csak rád vár. :)"]]]]]]])}))
+
+(defn dungeon []
+  (reagent/create-class
+    {:reagent-render
+     (fn []
+       [:div.uk-inline
+        {:class (if (= "dungeon" (:chosen-part @app-state))
+                  "seen"
+                  "not-seen")
+         :style {:width "100%"}}
+        [:div.dungeon-back]
+        [:div.uk-grid-collapse.dungeon-front {:data-uk-grid true}
+         [:div.uk-width-1-2.uk-inline
+          [:h2.monster.white-text.uk-padding "Játékterem"]
+          [:div.uk-padding.monster.white-text.uk-position-center.board-text
+           [:p "Minden LvL Up Bár rendelkezik a maga gaming részlegével, ahol igazi gamer gépeken és konzolokon játszhattok a legújabb játékokkal valamint lehetőségetek nyílik legújabb VR szemüvegeinket is kipróbálni vagy éppen egy kinect előtt Just Dance-re táncolni, a legfinomabb koktéljaink kíséretében! "]
+           [:p "Gépet foglalni a facebook oldalunknak írt üzenetben tudtok:"]
+           [:a.uk-text-center.uk-align-center
+            {:style {:font-size "2em" :font-weight "bold"}
+             :href "https://www.facebook.com/pg/LvLUpBar"
+             :target "_blank"}
+            "Foglalj facebookon!"]]]
+         [:div.uk-width-1-2.uk-padding-small  {:style {:border-left "0.5px solid white"}}
+          [:h2.monster.white-text.uk-padding-small.uk-text-right.uk-margin-remove-bottom "Szabad helyek"]
+          [:h4.monster.white-text.uk-padding-small.uk-text-right.uk-margin-remove.uk-padding-remove-top
+           "2019.05.07 15:34"]
+          [:div.uk-height-large.uk-overflow-auto.uk-child-width-1-5.uk-padding
+           {:data-uk-grid true}
+           (comment (map-indexed
+                      #(-> ^{:key %1}[system %2])
+                      systems))]]]])}))
+
 
 (def sponsors
-  ["bluechip.png" "dreher.png" "esport.png" "gemklub.png"
-   "pepsi.png" "telekom.png" "cenex.png" "urage.png"])
+  ["cenex420.png" "gemklub420.png" "lays420.png" "monster420.png"
+   "pepsi420.png" "telekom420.png" "urage420.png"])
 
 (defn egyesulet []
-  [:div.uk-padding-small.egyesulet
-   [:div {:class "" :id "" :style {:color "white"}}
-    [:h1.white-text.monster "Egyesület"]
-    [:div.monster.white-text "A szegedi inditattású egyesület immáron több eredménnyel is rendelkezik, és még csapataik is vannak,
-    esport több területén is. Látogass meg minket, légy része"]
-    [:h2.white-text.monster "Csapataink"]
-    [:div.monster.white-text
-     [:div "Hulkeinstenék"]
-     [:div "Dudiék"]]
-    [:h2.white-text.monster "Eredményeink"]
-    [:div.monster.white-text
-     [:div "Magyar Bajnoki PUBG Kupa 5. hely- Chres"]
-     [:div "Olasz Hearthstone bajnokság 3. hely - Dudi"]]]])
+  [:section#egyesulet.uk-width-1-1
+   {:style {:width "100%":height "100%"}}
+   [:div.esport-front
+    [:div {:class "" :id "" :style {:color "white"}}
+     [:h1.white-text.monster.uk-text-center.uk-padding-small "Egyesület"]
+     [:div.uk-container.uk-container-large
+      [:div.uk-padding-small.board-text
+       [:p.monster "Hitvallásunk szerint a videojátékoknak közösségépítő ereje van, melyet megfelelő tapasztalattal és szakértelemmel kihasználva nem csak szórakozásra, hanem az egyének és akár egy nagyobb közösség javára is lehet fordítani."]
+       [:p.monster "Célunk a LvL Up Egyesülettel kétirányú. Egyfelől egy olyan közösség életre hívása, ahol a tagok és játékosok szívesen nyitnak egymás felé és a hazai eSport közösség részeként erősítik azt.\n"]
+       [:p.monster "Másik oldalról pedig olyan tehetséges fiatal játékosoknak és csapatoknak szeretnénk lehetőséget biztosítani, akik országos, de akár regionális szinten is jó eredményeket érhetnek el, ezzel öregbítve országunk, valamint a LvL Up esport Egyesület hírnevét. Jelenleg több mint 37 igazolt tagunk van és ez a szám folyamatosan nő, hála az országban egyre felkapottabb esport kultúrának. \n"]
+       [:p.monster "Ezen alapelvek mentén szeretnénk a LvL Up Esport Egyesületet továbbra is a hazai élet meghatározó multi platform és multi gaming szervezeteként fejleszteni."]
+       [:p.monster "További információkért a facebook oldalunknak irt üzenetben tudtok érdeklődni! (: "]]
+      [:a.uk-text-center.uk-align-center
+       {:style {:font-size "2em" :font-weight "bold"}
+        :href "https://www.facebook.com/pg/LvLUpBar"
+        :target "_blank"}
+       "Facebook oldal"]]
+     [:div.uk-child-width-1-2.uk-text-center.uk-padding-small {:data-uk-grid true}
+      [:div
+       [:h2.white-text.monster "Csapataink"]
+       [:div.monster.white-text
+        [:div "Hulkeinstenék"]
+        [:div "Dudiék"]]]
+      [:div
+       [:h2.white-text.monster "Eredményeink"]
+       [:div.monster.white-text
+        [:div "Magyar Bajnoki PUBG Kupa 5. hely- Chres"]
+        [:div "Olasz Hearthstone bajnokság 3. hely - Dudi"]]]]]]])
 
-(defn page-root []
+
+(defn youtube []
+  [:div#youtube-wrapper
+   [:iframe#youtube
+    {:data-uk-video "mute: true"
+     :height "400"
+     :width "100%"
+     :src "https://www.youtube.com/embed/qTxa2rvoyfo"}]])
+
+(defn choose-part [name part]
+  [:div.neon.uk-flex-auto
+   {:class (if (= part (:chosen-part @app-state))
+             "active"
+             "")
+    :on-click #(swap! app-state assoc :chosen-part part)}
+   [:div name]])
+
+(defn nyitvatartas []
+  [:div
+   [:div#nyitvatartas.uk-width-auto.uk-align-center "Nyitvatartás"]
+   [:div.uk-padding-remove-vertical
+    [:table.monster.opening-text.uk-table
+     [:tbody
+      [:tr
+       [:td  [:b"hetfo"]]
+       [:td.uk-text-nowrap.uk-text-right.uk-table-shrink "20:00-22:00"]]
+      [:tr
+       [:td [:b "kedd"]]
+       [:td.uk-text-nowrap.uk-text-right.uk-table-shrink "20:00-22:00"]]
+      [:tr
+       [:td [:b "szerda"]]
+       [:td.uk-text-nowrap.uk-text-right.uk-table-shrink "20:00-22:00"]]
+      [:tr
+       [:td [:b "csutortok"]]
+       [:td.uk-text-nowrap.uk-text-right.uk-table-shrink "20:00-22:00"]]
+      [:tr
+       [:td [:b "pentek"]]
+       [:td.uk-text-nowrap.uk-text-right.uk-table-shrink "20:00-22:00"]]
+      [:tr
+       [:td [:b "szombat"]]
+       [:td.uk-text-nowrap.uk-text-right.uk-table-shrink "20:00-22:00"]]
+      [:tr
+       [:td [:b "vasarnap"]]
+       [:td.uk-text-nowrap.uk-text-right "Zarva"]]]]]])
+
+
+
+(defn day-hours [day hours]
+  [:tr
+   [:td day]
+   [:td hours]])
+
+
+(defn str-hours [a]
+  (if (= 2 (count a))
+    (clojure.string/join "-" a)
+    "Zárva"))
+
+(defn contact []
+  (let []
+    (fn []
+      (let [shop (:shop-data @app-state)
+            open (:opening-hours shop)
+            address (:contact-address shop)
+            phone (:contact-phone shop)
+            email (:email shop)
+            facebook (:facebook shop)]
+
+        [:div.uk-flex-center {:data-uk-grid true}
+         [:div.uk-grid-collapse.uk-padding-small
+          {:data-uk-grid true}
+          [:div.contact
+           [:h2.title.uk-text-center.monster.white-text.glitch
+            {:style {:margin-left "46px"}
+             :data-text "Kapcsolat"}
+            "Kapcsolat"]
+
+           [:div.uk-grid-collapse.uk-margin {:data-uk-grid true}
+            [:span.uk-width-auto.uk-margin-right {:data-uk-icon "icon: mail; ratio: 1.3"}]
+            [:div.uk-text-center.uk-width-expand {:style {:word-break "break-all"}}
+             [:a {:href (str "mailto:" email)}
+              email "lvlup@lvlup.hu"]]]
+           [:div.uk-grid-collapse.uk-margin {:data-uk-grid true}
+            [:span.uk-width-auto.uk-margin-right {:data-uk-icon "icon: receiver; ratio: 1.3"}]
+            [:div.uk-text-center.uk-width-expand
+             [:a {:href (str "tel:" phone)}
+              phone "+36 30 457 7157"]]]
+           [:div.uk-grid-collapse.uk-margin {:data-uk-grid true}
+            [:span.uk-width-auto.uk-margin-right {:data-uk-icon "icon: facebook; ratio: 1.3"}]
+            [:div.uk-text-center.uk-width-expand
+             [:a {:href (str "https://facebook.com/" facebook)}
+              (str "@" facebook) "lvlupesportbar"]]]
+           [:div.uk-grid-collapse.uk-margin {:data-uk-grid true}
+            [:span.uk-width-auto.uk-margin-right {:data-uk-icon "icon: youtube; ratio: 1.3"}]
+            [:div.uk-text-center.uk-width-expand
+             "link"]]]]]))))
+
+
+(defn itallap []
+  [:div.uk-container.uk-container-small
+   { :class (if (= "itallap" (:chosen-part @app-state))
+              "seen"
+              "not-seen")}
+   [:div.uk-position-relative.uk-visible-toggle.uk-light
+    {:data-uk-slider "uk-slider", :tab-index "-1" :data-uk-lightbox ""}
+    [:ul.uk-slider-items.uk-child-width-1-2.uk-child-width-1-3.uk-grid-small
+     [:li
+      [:div.uk-panel
+       [:a {:href "/itallap/szeged/b.png"}
+        [:img {:alt "", :src "/itallap/szeged/b.png"}]]
+       [:div.uk-position-center.uk-panel [:h1 "1"]]]]
+     [:li
+      [:div.uk-panel
+       [:a {:href "/itallap/szeged/c.png"}
+        [:img {:alt "", :src "/itallap/szeged/c.png"}]]
+       [:div.uk-position-center.uk-panel [:h1 "2"]]]]
+     [:li
+      [:div.uk-panel
+       [:img {:alt "", :src "/itallap/szeged/d.png"}]
+       [:div.uk-position-center.uk-panel [:h1 "3"]]]]
+     [:li
+      [:div.uk-panel
+       [:img {:alt "", :src "/itallap/szeged/e.png"}]
+       [:div.uk-position-center.uk-panel [:h1 "3"]]]]]
+
+    [:a.uk-position-center-left.uk-position-small.uk-hidden-hover
+     {:data-uk-slider-item "previous",
+      :data-uk-slidenav-previous "uk-slidenav-previous",
+      :href "#"}]
+    [:a.uk-position-center-right.uk-position-small.uk-hidden-hover
+     {:data-uk-slider-item "next",
+      :data-uk-slidenav-next "uk-slidenav-next",
+      :href "#"}]]])
+
+
+(defn contact-details []
+  [:div {:class (if (= "contact" (:chosen-part @app-state))
+                  "seen"
+                  "not-seen")}
+   [:div#contact.uk-grid-collapse
+    {:data-uk-grid true
+     :style {:width "100%"}}
+    [:div.uk-width-1-3 {:style {:overflow "hidden"}}
+     [:div.uk-padding-small
+      [:div
+       [nyitvatartas]
+       [contact]]]]
+    [:div.uk-width-2-3
+     [:div.uk-padding-small
+      [youtube]]
+     [:div.uk-padding-small
+      [google-maps [46.248214 20.146354]]]]]])
+
+(defn city-details []
+  [:div {:class "uk-width-1-1 uk-align-center"}
+   [itallap]
+   [dungeon]
+   [contact-details]
+   [board-games]])
+
+
+
+
+(defn sponsors-list []
+  [:div#sponsors.uk-container
+   {:class ["uk-text-center"
+            "uk-grid-collapse"
+            "uk-flex-center"
+            "uk-animation-slide-bottom"]
+    :data-uk-grid true
+    :style {:margin-bottom "auto"
+            :padding-left "30px" :padding-right "30px"}}
+   (map-indexed #(-> ^{:key %1}[:div.uk-width-auto.uk-padding
+                                [:img {:width "75"
+                                       :src (str "/img/logos/" %2)}]])
+                sponsors)])
+
+
+(defn logos-animation []
   (reagent/create-class
-    {:component-did-mount #(tween-from "#chevron" 1 (clj->js {:y -100 :opacity 0 :delay 1}))
+    {:reagent-render
+     (fn []
+       [:div.uk-width-1-1
+        [:div {:class "uk-align-center"
+               :style {:width "300px"}}
+         [:img#logo
+          {:style {:width "300px"
+                   :z-index 100
+                   :border "10px"
+                   :opacity 0
+                   :transform "scale(2) rotate(15deg)"}
+           :on-load #(logo-anim-if)
+           :height "auto"
+           :src "/img/lvlup-logo-white.png"}]]])}))
+
+
+(defn hero-section []
+  [:div.nice-back.uk-grid-collapse {:data-uk-grid true}
+   [:div.uk-width-1-1
+    [:div.neon-menu-red.monster.uk-animation-slide-top.uk-align-left.uk-margin-remove-bottom.uk-padding-remove-bottom
+     [:a {:style {:color "red"}
+          :href "#egyesulet"
+          :data-uk-scroll true} "Egyesület"]]
+    [:div.neon-menu-blue.monster.uk-animation-slide-top.uk-align-right.uk-margin-remove-bottom.uk-padding-remove-bottom
+     [:a {:style {:color "#222" :font-weight 800}
+          :href "#"} "Franchise"]]]
+   [logos-animation]
+   [all-cities]
+   (if (= nil (:chosen-city @app-state))
+       [sponsors-list])])
+
+(defn current-page []
+  (reagent/create-class
+    {:component-did-mount #(do
+                             (stagger-from
+                               ".one-bar" 1
+                               (clj->js
+                                 {:delay 1.5
+                                  :x "100vw"
+                                  :opacity 0
+                                  :ease (js/Elastic.easeInOut.config 1 1)}) 0.2)
+                             (tween-from
+                               "#which-city" 1
+                               (clj->js
+                                 {:delay 2.5
+                                  :y "-60px"
+                                  :opacity 0
+                                  :ease (js/Elastic.easeInOut.config 1 1)}) 0.2))
      :reagent-render
      (fn []
        [:div
-        [:div.full-page.nice-back.uk-inline
+        [hero-section]
+        (if (:chosen-city @app-state)
+          [:section.city-back.uk-padding
+           [:div.uk-grid-collapse {:data-uk-grid true
+                                   :class "uk-flex-center"
+                                   :style {:background "#222"}}
 
-            ;[nav]
-         [:div.uk-position-top-left.neon-menu-red.monster
-          [:a {:style {:color "white"}
-               :href "#egyesulet"
-               :data-uk-scroll true}
-           "Egyesület"]]
-         [:div.uk-position-top-right.neon-menu-blue.monster
-          [:a {:style {:color "white"}
-               :href "#"}
-
-           "Franchise"]]
-         [:div.uk-position-center [logos-animation]]
-         [:div.uk-position-bottom.uk-text-center
-          [:div.uk-flex.uk-width-1-1.uk-flex-between
-           (comment [:div.red-blue-wall
-                     [:div.valami]
-                     [:div.mas]])
-           [one-bar {:src "/img/debrecenbar.png"  :name "Debrecen"}]
-           [one-bar {:src "/img/szombathelybar.png" :name "Szombathely"}]
-           [one-bar {:src "/img/szegedbar.png" :name "Szeged"}]]
-
-          [:div [:a {:href "#main" :data-uk-scroll true}
-                 [:img#chevron.neonfilter.bounce {:src "/img/down-arrow.png" :width "50px"}]]]]
-         [:div.uk-grid-collapse {:data-uk-grid "masonry: true"}
-          ;[bars-gallery]
-          [:div.uk-width-1-1
-           ;[google-maps [46.248214 20.146354]]
-           [:div.uk-width-1-1.uk-card-default]]]]
-        [:section
-         [cities]
-         (comment [:div
-                   [:div.uk-grid-collapse
-                    {:data-uk-grid true
-                     :style {:background "black" :position "relative"}}]
-                   [:div.uk-width-1-2.uk-card-secondary
-                    [:div#nyitvatartas.uk-width-auto "Nyitvatartás"]
-                    [:div.uk-width-1-1
-                     "Hétfő 00-00: 00:00"]]
-                   [:img {:src "/img/boardgame.jpg"}]
-                   [:img {:src "/img/egyesulet.jpg"}]
-                   [:img {:src "/img/gamer.jpg"}]
-                   [:div]
-                   [:div.glitch.uk-text-center {:data-text "Eredményeink"}
-                     "Eredményeink"]])]
-        [:section#egyesulet.esport-back.uk-height-viewport.uk-width-1-1.uk-inline
-         {:data-uk-parallax "bgy: 400"}
-         [:div.uk-position-center.uk-container.uk-container-xsmall
-          [egyesulet]]]
-
-        [:section.uk-card-secondary.uk-card.uk-card-body.nice-back-simple
-         [:div.uk-margin.uk-flex.uk-flex-center {:data-uk-grid "true" :style {:padding-top "30px"}}
-          (map-indexed #(-> ^{:key %1} [:div.uk-width-1-3
-                                        [:img {:src (str "/img/logos/"%2)}]])
-                       sponsors)]]])}))
-
-
-
-
-
-
-
-
-(defn current-page []
-  (let [tl (anim-timeline)
-        tlready (atom nil)
-        tl2 (anim-timeline)
-        tl2ready (atom nil)]
-    (reagent/create-class
-      {:component-did-mount #(do
-                               (reset! tl2ready
-                                       (-> tl2
-                                           (.add (.staggerTo js/TweenMax
-                                                             ".box" 0.5 (clj->js
-                                                                          {:cycle {:y [-25 25]}})
-                                                                        0.2))))
-
-                               (reset! tlready
-                                       (-> tl
-                                           (.add (tween-to ".green" 1 (clj->js {:x 100 :border-radius "5px"})))
-                                           (.add (tween-to ".green" 1 (clj->js {:y 50 :border-radius "40px"})))
-                                           (.add (tween-to ".green" 1 (clj->js {:x "+=100" :border-radius "0px"})))
-                                           (.add (tween-to ".green" 1 (clj->js {:y "+=100" :rotation "+=45"})))
-                                           (.add (tween-to ".green" 1 (clj->js {:x "+=100" :rotation "+=45"})))
-                                           (.add (tween-to ".green" 1 (clj->js {:height "50" :width "50" :x "+=100" :rotation "+=90"}))))))
-
-       :reagent-render
-       (fn []
-         [:div.tween
-          [page-root]
-          (comment [:div
-                    [:button {:on-click #(.restart @tlready)}
-                     "start"]
-                    [:button {:on-click #(.resume @tlready)}
-                     "resume"]
-                    [:button {:on-click #(.pause @tlready)}
-                     "pause"]
-                    [:button {:on-click #(.reverse @tlready)}
-                     "Reverse"]
-                    [:div.green "green"]
-                    [:button {:on-click #(.restart @tl2ready)}
-                     "Huhúúú"]
-                    [:div.boxes
-                     [:div.box]
-                     [:div.box]
-                     [:div.box]
-                     [:div.box]
-                     [:div.box]
-                     [:div.box]
-                     [:div.box]
-                     [:div.box]]
-
-                    [:div.red "red"]])])})))
-
-
+            [:div.uk-width-3-4
+             [:div.uk-box-shadow-medium.uk-grid-collapse
+              {:data-uk-sticky "bottom: true"
+               :id "city-menu"
+               :class "uk-text-center city-menu monster uk-width-1-1"
+               :data-uk-grid true}
+              [choose-part "Kapcsolat" "contact"]
+              [choose-part "Társasjátékok" "tarsas"]
+              [choose-part "Itallap" "itallap"]
+              [choose-part "Foglalás" "dungeon"]]
+             [city-details]]]])
+        [egyesulet]])}))
 
 (secretary/defroute "/" []
                     (dispatch [:set-actual-page "home-page"]))
+
+
 
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))

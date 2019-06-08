@@ -31,6 +31,9 @@
 
 (def all-the-sessions (atom {}))
 
+
+
+
 (defn stop!  []  (crusader/stop-router!)) ;(crusader/stop-web-server!))
 (defn start! [] (crusader/start-router!))
 
@@ -64,9 +67,6 @@
     [:span.uk-position-center {:data-uk-spinner "ratio: 4"}]]])
 
 
-(defn negyzet []
-  ()
-  ())
 
 
 (defn head []
@@ -77,12 +77,18 @@
    [:title "LvL Up"]
    ;[:meta {:name "description" :content ""}]
    [:link {:rel "icon" :href "/favicon.png"}]
-   (javascript-tag "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-                   ga('create', 'UA-99055366-1', 'auto');
-                   ga('send', 'pageview');")
+   [:script {:deref "deref"
+             :src"https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/js/uikit.min.js"}]
+   [:script {:deref "deref"
+             :src "//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/ScrollMagic.min.js"}]
+   [:script {:deref "deref"
+             :src "//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/plugins/debug.addIndicators.min.js"}]
+   [:script {:deref "deref"
+             :src "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/js/uikit-icons.min.js"}]
+   [:script {:deref "deref"
+             :src "https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"}]
+   [:script {:deref "deref"
+             :src "https://maps.googleapis.com/maps/api/js?key=AIzaSyCt16ohB_WYucOx-6S-d8je1Nor8Kw9pOY"}]
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/css/uikit.min.css")
    (include-css "https://fonts.googleapis.com/css?family=Jura")
    (include-css (str "/css/homepage.css" version))])
@@ -134,12 +140,6 @@
    (head)
    [:body {:class "body-container"}
     (mount-target)
-    (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/js/uikit.min.js")
-    (include-js "//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/ScrollMagic.min.js")
-    (include-js "//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.6/plugins/debug.addIndicators.min.js")
-    (include-js "https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.2/js/uikit-icons.min.js")
-    (include-js "https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js")
-    (include-js "https://maps.googleapis.com/maps/api/js?key=AIzaSyCt16ohB_WYucOx-6S-d8je1Nor8Kw9pOY")
     (include-js (str "/js/homepage.js" version))]))
 
 (def authdata

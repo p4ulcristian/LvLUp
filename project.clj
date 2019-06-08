@@ -122,9 +122,9 @@
                                   :nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
 
                    :dependencies [[day8.re-frame/re-frame-10x "0.3.3"]
-                                  ;[ring/ring-mock "0.3.0"]
-                                  ;[ring/ring-devel "1.7.0"]
-                                  [prone "1.1.4"]
+                                  [ring/ring-mock "0.3.0"]
+                                  [ring/ring-devel "1.7.0"]
+                                  [prone "1.6.1"]
                                   [figwheel-sidecar "0.5.18"]
                                   [org.clojure/tools.nrepl "0.2.13"]
                                   [cider/piggieback "0.4.0"]

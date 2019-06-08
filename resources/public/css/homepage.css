@@ -1,17 +1,128 @@
+
+
 .green{
 height: 100px;
 width: 100px;
 background: lightgreen;
 }
 
+.city-container{
+width: 100%;
+cursor: pointer;
+transition: 0.2s ease;
+z-index: 1;
+padding: 10px;
+
+
+}
+.one-bar{position:relative;}
+
+.city-content{
+    z-index: 1000;
+    position: relative;}
+
+
+
+.city-container:hover .hover-city{
+opacity: 1;
+transition: transform .25s ease;
+transform: scale(1.1);
+}
+
+.hover-city{
+position: absolute;
+top: 0;
+
+
+opacity: 0;
+transition: 0.2s ease;
+}
+
+
+.city-card{
+transform: skew(0deg);
+
+
+height: 100%;
+width: 100%;
+position: absolute;
+}
+
+.city-container:hover .city-content {
+transform: scale(1.1);
+
+}
+
+
+.opening-text {
+color: white;
+font-size: 1.0em;
+}
+
+.city-menu{
+padding: 10px;
+background: #902923;
+border-radius: 10px;
+}
+
+.city-menu > div{
+font-size: 1.6em;
+}
+
+.city-back{
+background: #222;
+}
+
+
+
+@keyframes slide-in {
+0% { transform: translateX(0%);}
+100% { transform: translateX(100%); }
+}
+
+@-webkit-keyframes slide-in {
+0% { transform: translateX(0%);}
+100% { transform: translateX(100%); }
+}
+
+.seen{
+position: relative;
+transition: transform 0.3s ease-out;
+will-change: transform;
+transform: translate3d(0px,0px,0px);
+}
+.not-seen {
+visibility:hidden;
+width:0px;
+height:0px;
+overflow-y: false;
+will-change: transform;
+transform: translate3d(100vw,0px,0px);
+}
+
+.city-container.active{
+ background-image: linear-gradient(45deg, #00F, #333 50%, #F00);
+  border: 0px;
+  border-radius: 10px;
+}
+
+.city-container.active  .hover-city{
+opacity: 1;
+transition: 0.5s ease;
+
+
+}
+
+
+
+
+
 .white-text{
 color: white !important;
 }
-.egyesulet {
-background-image: linear-gradient(180deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.4));
-border-radius: 5px;
-border: 1px solid white;
 
+.one-system{
+cursor: pointer;
 }
 
 .one-system-free{
@@ -46,31 +157,67 @@ filter: brightness(50%);
   }
 }
 
+#youtube-wrapper {
+	position: relative;
+	padding-bottom: 56.25%; /* 16:9 */
+	padding-top: 25px;
+	height: 0;
+}
+#youtube {
+	position: absolute;
 
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
 
 .tarsas-back{
  background-image: url("/img/boardgame.jpg");
  background-size: cover;
- filter: brightness(40%);
+ filter: brightness(25%);
  position: absolute;
  height: 100%;
  width: 100%;
- z-index: -1;
-}
+ z-index:1;
 
+
+}
+.tarsas-front{
+z-index: 1;
+position: relative;
+}
+.esport-front{
+z-index: 1;
+position: relative;
+background: #222;
+background-image: url("/img/egyesulet.jpg");
+background-size: cover;
+}
 .esport-back{
  background-image: url("/img/egyesulet.jpg");
  background-size: cover;
+ filter: brightness(35%);
+ position: fixed;
+ height: 100%;
+ width: 100%;
+ left: 0;
+ top: 0;
+ z-index:-1;
 }
 
 .dungeon-back{
  background-image: url("/img/gamer.jpg");
  background-size: cover;
- filter: brightness(70%);
+ filter: brightness(40%);
  position: absolute;
   height: 100%;
   width: 100%;
-  z-index: -1;
+  z-index: 1;
+}
+
+.dungeon-front{
+z-index: 1;
+position: relative;
 }
 
 .black-grad{
@@ -268,16 +415,30 @@ background-image: linear-gradient(0deg, #222, #333 50%, #444);
   padding-left: 10px;
   border-radius: 5px;
   text-shadow:
-    0 0 5px #fff,
-    0 0 10px #fff,
-    0 0 20px #fff,
-    0 0 40px #00f,
-    0 0 50px #00f,
-    0 0 60px #00f;
+    0 0 2px #fff;
+
+
+
+
 
     border-bottom: 2px solid transparent;
+}
+
+.neon.active {
+  color: #fff;
+  cursor: pointer;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 5px;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #f00,
+    0 0 20px #f00,
+    0 0 40px #f00;
 
 
+    border-bottom: 2px solid transparent;
 }
 
 @keyframes glowing {
@@ -291,32 +452,15 @@ background-image: linear-gradient(0deg, #222, #333 50%, #444);
 
 .neon-menu-red{
     padding: 20px 20px 30px 30px;
-    font-size: 1.8em;
-    color: white;
-    text-shadow:
-        0 0 5px #d00,
-        0 0 10px #d00,
-        0 0 20px #d00,
-        0 0 40px #d00,
-        0 0 80px #d00,
-        0 0 90px #d00,
-        0 0 100px #d00,
-        0 0 150px #d00;
+    font-size: 2.2em;
+    color: red!important;
+
 }
 
 .neon-menu-blue{
     padding: 20px;
-    font-size: 1.8em;
-    color: white;
-    text-shadow:
-        0 0 5px #00d,
-        0 0 10px #00d,
-        0 0 20px #00d,
-        0 0 40px #00d,
-        0 0 80px #00d,
-        0 0 90px #00d,
-        0 0 100px #00d,
-        0 0 150px #00d;
+    font-size: 2.2em;
+
 }
 
 .neon-chosen {
@@ -337,16 +481,14 @@ color: #fff;
     border-bottom: 2px solid transparent;
 }
 
-.neon:hover {
-border-bottom: 2px solid white;
-transition: 0.3s ease-in;
-
+.one-city-margin{
+margin-bottom:5px;
+}
+.which-city-margin{
+padding-bottom: 30px;
+padding-top: 70px;
 }
 
-#logo{
-position: fixed;
-
-}
 :root{
  --neon-text-color: #f40;
   --neon-border-color: #08f;
@@ -357,7 +499,7 @@ font-family: 'Jura', sans-serif;
 }
 
 #nyitvatartas {
-  font-size: 35px;
+  font-size: 25px;
   font-weight: 200;
   font-style: italic;
   color: #fff;
@@ -433,11 +575,35 @@ transition: 0.3s ease-out;
 
 }
 
-.nice-back{
-height: 100vh;
-width: 100%;
-background-image: linear-gradient(45deg,#00F,#222 25%, #222 75%, #F00);
+.board-text > p{
+  font-size: 1em;
 }
+
+.board-game{
+background-image: linear-gradient(45deg,rgb(0,0,255,0.8),rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 75%, rgba(255,0,0,0.8));
+}
+
+.nice-back{
+ height: 100%;
+ z-index: -100;
+ width: 100%;
+
+ background: linear-gradient(90deg, #1b3d53 0%, #1f1f1f 30%, #222 ,#1f1f1f 70%,  #991a23 100%);
+
+
+
+
+#991a23 0%, #1f1f1f 100%
+
+ }
+
+ .nice-back2{
+ height: 100%;
+ z-index: -100;
+ width: 100%;
+ background-image: linear-gradient(45deg,#00F,#008 25%, #800 75%, #F00);
+ }
+
 
 .nice-back-simple{
 background-image: linear-gradient(45deg,#00F,#222 25%, #222 75%, #F00);
